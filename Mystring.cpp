@@ -478,5 +478,15 @@ Mystring& insert(int idx1,const char*ref,int idx,int len1){
       str[0]='\0';
       return *this;
   }
-   
+
+ Mystring& erase(int idx){
+     Mystring mystr=*this;
+     delete [ ] str;
+     str=new char[idx+1];
+     for(int i=0;i<idx;i++){
+         str[i]=mystr.str[i];
+     }
+     str[idx]='\0';
+     return *this;
+ }   
 };
