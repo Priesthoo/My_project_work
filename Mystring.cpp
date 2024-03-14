@@ -488,5 +488,30 @@ Mystring& insert(int idx1,const char*ref,int idx,int len1){
      }
      str[idx]='\0';
      return *this;
- }   
+ } 
+ iterator erase(iterator pos){
+    iterator pos1=(*this).begin();
+    int len1=(*this).get_length();
+    Mystring ref=*this;
+    int len=Mystring::get_length_from_pos(pos1,pos);
+    for(int i=0;i<len1;i++){
+        if(str[i]==*pos){
+            str[i]=0;
+            break;
+        }
+    }
+    int total=len1-(len);
+    for(int i=len;i<=total+1;i++){
+        str[i]=ref.str[i+1];
+    }
+    Mystring mystr=*this;
+     int f=len1-1;
+  str=new char[f];
+  for(int i=0;i<f;i++){
+      str[i]=mystr.str[i];
+      } 
+      str[f]='\0'; 
+      iterator iter1=(*this).begin()+len;
+      return iter1;
+} 
 };
