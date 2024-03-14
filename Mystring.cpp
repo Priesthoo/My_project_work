@@ -339,14 +339,24 @@ class Mystring{
        *this+=f;
        return *this;
    }
-void push_back(const char& c){
+Mystring& push_back(const char& c){
    int len=(*this).get_length();
    Mystring mystr=*this;
    str=new char[len+2];
    *this=mystr;
    str[len]=c;
    str[len+1]='\0';
+    return *this;
    }
+  
+ void push_back_once(const char& c){
+   int len=(*this).get_length();
+   Mystring mystr=*this;
+   str=new char[len+2];
+   *this=mystr;
+   str[len]=c;
+   str[len+1]='\0';
+}
  //insert method():To insert elements at a specific location idx...
  Mystring& insert(int idx,const Mystring& ref){
      Mystring mystr=*this;
@@ -488,24 +498,25 @@ Mystring& insert(int idx1,const char*ref,int idx,int len1){
      }
      str[idx]='\0';
      return *this;
- } 
- iterator erase(iterator pos){
+}
+
+iterator erase(iterator pos){
     iterator pos1=(*this).begin();
     int len1=(*this).get_length();
     Mystring ref=*this;
+    Mystring::iterator iter6=this->begin();
     int len=Mystring::get_length_from_pos(pos1,pos);
     for(int i=0;i<len1;i++){
-        if(str[i]==*pos){
+        if((iter6+i)==pos){
             str[i]=0;
             break;
         }
     }
-    int total=len1-(len);
-    for(int i=len;i<=total+1;i++){
+  for(int i=len;i<len1-1;i++){
         str[i]=ref.str[i+1];
     }
     Mystring mystr=*this;
-     int f=len1-1;
+  int f=len1-1;
   str=new char[f];
   for(int i=0;i<f;i++){
       str[i]=mystr.str[i];
@@ -513,5 +524,53 @@ Mystring& insert(int idx1,const char*ref,int idx,int len1){
       str[f]='\0'; 
       iterator iter1=(*this).begin()+len;
       return iter1;
-} 
-};
+}
+iterator erase(iterator begin,iterator end){
+    Mystring mystr=*this;
+    iterator iter1=(*this).begin();
+     int len1=Mystring::get_length_from_pos(iter1,begin);
+     int len2=Mystring::get_length_from_pos(iter1,end);
+     int len3=(*this).get_length();
+     int len4=len3-len2;
+     for(int i=0;i<len4;i++){
+         str[i+len1]=mystr.str[i+len2];
+     }
+     Mystring ref=*this;
+     int len5=len1+len4;
+     str=new char[len5];
+     for(int i=0;i<len5;i++){
+         str[i]=ref.str[i];
+     }
+     iterator iter2=(*this).begin()+len1;
+     return iter2;
+}
+Mystring& pop_back(){
+    int len=(*this).get_length();
+    --len;
+    Mystring mystr=*this;
+    str=new char[len+1];
+    strcpy(str,mystr.str);
+    str[len]='\0';
+    return *this;
+}
+//we are done with variants of erase..
+//we move to replacing set of characters with another set of characters
+Mystring& replace(int idx,int len,const Mystring& ref){
+    for(int i=0;i<len;i++){
+        str[idx+i]=ref.str[i];
+    }
+    return *this;
+}
+Mystring& replace(int idx,int len,const Mystring& ref,int idx1,int len1){
+    if(len1<=len){
+        for(int i=0;i<len1;i++){
+            str[i+idx]=ref.str[i+idx1];
+        }
+    }
+    else{
+        for(int i=0;i<len;i++){
+            str[i+idx]=ref.str[i+idx1];
+        }
+    }
+    return *this;
+}};
