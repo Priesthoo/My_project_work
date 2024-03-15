@@ -778,3 +778,4 @@ size_t find(const Mystring& mystr) const {
         return Mystring::no_pos;
     }
 }
+};
