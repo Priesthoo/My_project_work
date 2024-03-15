@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstring>
 #include<cctype>
+#include<algorithm>
 using namespace std;
 
 class Mystring{
@@ -10,6 +11,10 @@ class Mystring{
      typedef char* iterator;
      typedef const char* const_iterator;
      typedef unsigned int size_c;
+     static  const unsigned int no_pos=4294967295;
+     Mystring get_string(){
+         return str;
+     }
      ~Mystring(){
          if(str!=nullptr){
              delete [ ] str;
@@ -202,6 +207,27 @@ static void advance_by_1(iterator iter){
         return false;
     }
     }
+    bool operator==(const char* ref){
+        bool is_value=true;
+        if(strlen(str)==strlen(ref)){
+            for(int i=0;i<strlen(str);i++){
+                if(str[i]!=ref[i]){
+                   is_value=false;
+                   break;
+                    }
+        }
+        if(is_value==false){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    else{
+        return false;
+    }
+    }
+   
     //indexing
     char& operator[ ](const int idx){
         if(idx<strlen(str)){
@@ -704,4 +730,51 @@ Mystring& replace(iterator iter1,iterator iter2,iterator iter3,iterator iter4){
    }
    return *this;
 }
-//to print out values on the screen.....
+size_t find(const char c) const {
+    int j=-1;
+    for(int i=0;i<(*this).get_length();i++){
+        if(str[i]==c){
+            j=i;
+            break;
+        }
+    }
+    if(j<=(*this).get_length() and j>=0){
+        return j;
+    }
+    else if(j==-1){
+        return Mystring::no_pos;
+    }
+}
+size_t find(const char c,int idx) const {
+    int j=-1;
+    for(int i=idx;i<(*this).get_length();i++){
+        if(str[i]==c){
+            j=i;
+            break;
+        }
+     }
+     if(j<=(*this).get_length()and j>=0){
+         return j;
+     }
+     else if(j==-1){
+         return Mystring::no_pos;
+     }
+}
+size_t find(const Mystring& mystr) const {
+    int p=-1;
+    int g=mystr.get_length();
+    int j=(*this).get_length();
+    int k=j-g;
+    ++k;
+    for(int i=0;i<k;i++){
+        if((*this).substring(i,g)==mystr){
+            p=i;
+     }
+    }
+    if(p<=(*this).get_length() and p>=0){
+        return p;
+    }
+    else if(p==-1){
+        return Mystring::no_pos;
+    }
+}
