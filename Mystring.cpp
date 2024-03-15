@@ -768,7 +768,8 @@ size_t find(const Mystring& mystr) const {
     ++k;
     for(int i=0;i<k;i++){
         if((*this).substring(i,g)==mystr){
-            p=i;
+            p=i;   
+           break;
      }
     }
     if(p<=(*this).get_length() and p>=0){
@@ -778,4 +779,24 @@ size_t find(const Mystring& mystr) const {
         return Mystring::no_pos;
     }
 }
-};
+
+size_t find(const Mystring& mystr,int idx) const {
+ Mystring mine=mystr.substring(idx);
+  int p=-1;
+  int len1=mine.get_length();
+  int j=(*this).get_length();
+  int k=j-len1;
+  ++k;
+  for(int i=0;i<k;i++){
+       if((*this).substring(i,len1)==mine){
+           p=i;
+           break;
+       }
+  }
+  if(p<=(*this).get_length() and p>=0){
+       return p;
+       } 
+    else if(p==-1){
+       return Mystring::no_pos;
+       } 
+}};
