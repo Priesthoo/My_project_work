@@ -157,10 +157,14 @@ class Mystring{
             return false;
         }
     }
-    
-    
-    //substring
-    Mystring substring(const int& idx){
+static void advance_by_1(iterator iter){
+   ++iter;
+   }
+   static iterator advance_by_n(iterator iter1,int n){
+       iterator iter2=iter1+n;
+       return iter2;
+       } 
+   Mystring substring(const int& idx){//substring
         Mystring str1={*this,idx};
         return str1;
     }
@@ -207,6 +211,15 @@ class Mystring{
             return str[idx];
         }
     }
+    char& operator[ ](const int idx) const {
+        if(idx<strlen(str)){
+            return str[idx];
+        }
+        else if(idx==strlen(str)){
+            return str[idx];
+        }
+    }
+    
   
  Mystring operator+(const Mystring& ref){
     int len=strlen(this->str)+strlen(ref.str);
@@ -248,6 +261,13 @@ class Mystring{
      }
      
     }
+     Mystring& n_assign(const Mystring& ref){
+            int y=ref.get_length();
+            str=new char[y+1];
+            strcpy(str,ref.str);
+            str[y]='\0';
+            return *this;
+    }
     Mystring& assign(const Mystring& ref,int idx,int len ){
         if(str[0]=='\0'){
             int j=len-idx;//ifi idx >len, program will misbehave
@@ -263,6 +283,15 @@ class Mystring{
             return *this;
         }
     }
+    Mystring& n_assign(const Mystring& ref,int idx,int len ){
+            int j=len-idx;//ifi idx >len, program will misbehave
+            str=new char[j+1];
+            for(int i=0;i<j;i++){
+                str[i]=ref.str[i+idx];
+            }
+            str[j]='\0';
+            return *this;
+    }
     Mystring& assign(const char*ref){
         if(str[0]=='\0'){
             int len=strlen(ref);
@@ -275,8 +304,15 @@ class Mystring{
             return *this;
         }
     }
+    Mystring& n_assign(const char*ref){
+           int len=strlen(ref);
+            str=new char[len+1];
+            strcpy(str,ref);
+            str[len]='\0';
+            return *this;
+             }
     
-    static int get_length_from_pos(iterator iter1,iterator iter2){
+    static int get_length_from_pos(iterator iter1,iterator iter2) {
         int y=0;
         while(iter1!=iter2){
             ++iter1;
@@ -284,6 +320,7 @@ class Mystring{
         }
         return y;
     }
+    
    
    Mystring& assign(iterator iter1,iterator iter2){
        int m=Mystring::get_length_from_pos(iter1,iter2);
@@ -346,10 +383,9 @@ Mystring& push_back(const char& c){
    *this=mystr;
    str[len]=c;
    str[len+1]='\0';
-    return *this;
+   return *this;
    }
-  
- void push_back_once(const char& c){
+   void push_back_once(const char& c){
    int len=(*this).get_length();
    Mystring mystr=*this;
    str=new char[len+2];
@@ -488,7 +524,6 @@ Mystring& insert(int idx1,const char*ref,int idx,int len1){
       str[0]='\0';
       return *this;
   }
-
  Mystring& erase(int idx){
      Mystring mystr=*this;
      delete [ ] str;
@@ -498,8 +533,7 @@ Mystring& insert(int idx1,const char*ref,int idx,int len1){
      }
      str[idx]='\0';
      return *this;
-}
-
+ }
 iterator erase(iterator pos){
     iterator pos1=(*this).begin();
     int len1=(*this).get_length();
@@ -573,4 +607,101 @@ Mystring& replace(int idx,int len,const Mystring& ref,int idx1,int len1){
         }
     }
     return *this;
-}};
+}
+Mystring& replace(int idx,int len,const char* ref){
+    for(int i=0;i<len;i++){
+        str[idx+i]=ref[i];
+    }
+    return *this;
+}
+Mystring& replace(int idx,int len,const char* ref,int idx1,int len1){
+    if(len1<=len){
+        for(int i=0;i<len1;i++){
+            str[i+idx]=ref[i+idx1];
+        }
+    }
+    else{
+        for(int i=0;i<len;i++){
+            str[i+idx]=ref[i+idx1];
+        }
+    }
+    return *this;
+}
+Mystring& replace( iterator iter1,iterator  iter2,const char* ref){
+    int len1=Mystring::get_length_from_pos(iter1,iter2);
+    for(int i=0;i<len1;i++){
+        *(iter1+i)=ref[i];
+    }
+    return *this;
+}
+Mystring& replace(iterator iter1,iterator iter2,const Mystring& ref){
+    int len1=Mystring::get_length_from_pos(iter1,iter2);
+    for(int i=0;i<len1;i++){
+        *(iter1+i)=ref.str[i];
+    }
+    return *this;
+}
+Mystring& replace(iterator iter1,iterator iter2,const char* ref,int len1){
+    int len=Mystring::get_length_from_pos(iter1,iter2);
+    if(len1<=len){
+        for(int i=0;i<len1;i++){
+            *(iter1+i)=ref[i];
+        }
+    }
+    else{
+        for(int i=0;i<len;i++){
+        *(iter1+i)=ref[i];
+    }
+    }
+    return *this;
+}
+Mystring& replace(iterator iter1,iterator iter2,const Mystring& ref,int len1){
+    int len=Mystring::get_length_from_pos(iter1,iter2);
+    if(len1<=len){
+        for(int i=0;i<len1;i++){
+            *(iter1+i)=ref.str[i];
+        }
+    }
+    else{
+        for(int i=0;i<len;i++){
+        *(iter1+i)=ref.str[i];
+    }
+    }
+    return *this;
+}
+Mystring& replace(int idx,int len,int num,char c){
+    if(num<=len){
+        for(int i=0;i<num;i++){
+            str[i+idx]=c;
+        }
+    }
+    else{
+        for(int i=0;i<len;i++){
+            str[i+idx]=c;
+        }
+    }
+    return *this;
+}
+Mystring& replace(iterator iter1,iterator iter2,char c){
+    int len=Mystring::get_length_from_pos(iter1,iter2);
+    for(int i=0;i<len;i++){
+        *(iter1+i)=c;
+    }
+    return *this;
+}
+Mystring& replace(iterator iter1,iterator iter2,iterator iter3,iterator iter4){
+   int len1=Mystring::get_length_from_pos(iter1,iter2);
+   int len2=Mystring::get_length_from_pos(iter3,iter4);
+   if(len2<=len1){
+       for(int i=0;i<len2;i++){
+           *(iter1+i)=*(iter3+i);
+       }
+   }
+   else{
+       for(int i=0;i<len1;i++){
+           *(iter1+i)=*(iter3+i);
+       }
+   }
+   return *this;
+}
+//to print out values on the screen.....
