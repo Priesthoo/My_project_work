@@ -148,8 +148,14 @@ class Mystring{
     char* begin(){
         return &str[0];
     }
+    char* begin() const {
+        return &str[0];
+    }
     
     char*end(){
+        return &str[strlen(str)];
+    }
+     char*end() const {
         return &str[strlen(str)];
     }
     const char* cbegin() const {
@@ -157,6 +163,18 @@ class Mystring{
     }
     const char* cend() const {
         return &str[strlen(str)];
+    }
+    char& front(){
+        return str[0];
+    }
+    char& back(){
+        return str[strlen(str)-1];
+    }
+    char& front() const {
+        return str[0];
+    }
+    char& back() const {
+        return str[strlen(str)-1];
     }
     bool empty_str(){
         if(strlen(str)==0){
@@ -1035,5 +1053,4 @@ vector<size_t> g_find(const char*ref) const {
         return h;
     }
  }
- 
-};
+ };
