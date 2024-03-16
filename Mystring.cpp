@@ -1,7 +1,7 @@
 #include<iostream>
 #include<cstring>
 #include<cctype>
-#include<algorithm>
+#include<vector>
 //only implement random access  iterator
 using namespace std;
 
@@ -733,6 +733,7 @@ Mystring& replace(iterator iter1,iterator iter2,iterator iter3,iterator iter4){
    }
    return *this;
 }
+//find functions..
 size_t find(const char c) const {
     int j=-1;
     for(int i=0;i<(*this).get_length();i++){
@@ -803,7 +804,7 @@ size_t find(const Mystring& mystr,int idx) const {
        return Mystring::no_pos;
        } 
 }
-size_t find(const Mystring& ref,int idx,int len){
+size_t find(const Mystring& ref,int idx,int len) const {
     Mystring my=ref.substring(idx,len);
     int p=-1;
     int y=(*this).get_length();
@@ -823,7 +824,7 @@ size_t find(const Mystring& ref,int idx,int len){
     }
     
 }
-size_t find(const char*ref){
+size_t find(const char*ref) const {
     Mystring mystr={ref};
     int p=-1;
     int y=(*this).get_length();
@@ -843,4 +844,199 @@ size_t find(const char*ref){
         return Mystring::no_pos;
     }
     }
+  size_t find(const char*ref,int idx) const{
+      Mystring mystr={ref,idx};
+      int p=-1;
+    int y=(*this).get_length();
+    int len1=mystr.get_length();
+    int k=y-len1;
+    ++k;
+    for(int i=0;i<k;i++){
+        if((*this).substring(i,len1)==mystr){
+            p=i;
+            break;
+        }
+    }
+    if(p<=(*this).get_length() and p>=0){
+        return p;
+    }
+    else{
+        return Mystring::no_pos;
+    }
+  }
+ size_t find(const char*ref,int idx,int len) const {
+     Mystring mystr={ref,idx,len};
+      int p=-1;
+    int y=(*this).get_length();
+    int k=y-len;
+    ++k;
+    for(int i=0;i<k;i++){
+        if((*this).substring(i,len)==mystr){
+            p=i;
+            break;
+        }
+    }
+    if(p<=(*this).get_length() and p>=0){
+        return p;
+    }
+    else if(p==-1){
+        return Mystring::no_pos;
+    }
+ }
+ vector<size_t> g_find(const char c) const{
+     vector<size_t> g;
+     for(int i=0;i<(*this).get_length();i++){
+         if(str[i]==c){
+             g.push_back(i);
+         }
+     }
+     if(!g.empty()){
+         return g;
+     }
+     else{
+         int y=Mystring::no_pos;
+         g.push_back(y);
+         return g;
+     }
+ }
+ vector<size_t> g_find(const char c,int idx) const {
+    vector<size_t>g;
+    for(int i=idx;i<(*this).get_length();i++){
+        if(str[i]==c){
+            g.push_back(i);
+          }
+     }
+     if(!g.empty()){
+         return g;
+     }
+     else {
+        int y=Mystring::no_pos;
+        g.push_back(y);
+        return g;
+     }
+}
+vector<size_t>g_find(const Mystring& mystr) const {
+    vector<size_t> h;
+    int g=mystr.get_length();
+    int j=(*this).get_length();
+    int k=j-g;
+    ++k;
+    for(int i=0;i<k;i++){
+        if((*this).substring(i,g)==mystr){
+            h.push_back(i);
+     }
+    }
+    if(!h.empty()){
+        return h;
+    }
+    else{
+        int y= Mystring::no_pos;
+        h.push_back(y);
+        return h;
+    }
+}
+vector<size_t>g_find(const Mystring& mystr,int idx) const {
+ Mystring mine=mystr.substring(idx);
+  vector<size_t> h;
+  int len1=mine.get_length();
+  int j=(*this).get_length();
+  int k=j-len1;
+  ++k;
+  for(int i=0;i<k;i++){
+       if((*this).substring(i,len1)==mine){
+           h.push_back(i);
+       }
+  }
+  if(!h.empty()){
+       return h;
+       } 
+    else{
+       int y=Mystring::no_pos;
+       h.push_back(y);
+       return h;
+    }
+}
+vector<size_t> g_find(const Mystring& ref,int idx,int len) const {
+    Mystring my=ref.substring(idx,len);
+    vector<size_t> h;
+    int y=(*this).get_length();
+    int k=y-len;
+    ++k;
+    for(int i=0;i<k;i++){
+        if((*this).substring(i,len)==my){
+            h.push_back(i);
+        }
+    }
+    if(!h.empty()){
+        return h;
+    }
+    else{
+        int y=Mystring::no_pos;
+        h.push_back(y);
+        return h;
+    }
+}
+vector<size_t> g_find(const char*ref) const {
+    Mystring mystr={ref};
+    vector<size_t> h;
+    int y=(*this).get_length();
+    int len1=mystr.get_length();
+    int k=y-len1;
+    ++k;
+    for(int i=0;i<k;i++){
+        if((*this).substring(i,len1)==mystr){
+            h.push_back(i);
+        }
+    }
+    if(!h.empty()){
+        return h;
+    }
+    else{
+        int y= Mystring::no_pos;
+        h.push_back(y);
+        return h;
+    }
+    }
+  vector<size_t> g_find(const char*ref,int idx) const{
+    Mystring mystr={ref,idx};
+    vector<size_t> h;
+    int y=(*this).get_length();
+    int len1=mystr.get_length();
+    int k=y-len1;
+    ++k;
+    for(int i=0;i<k;i++){
+        if((*this).substring(i,len1)==mystr){
+            h.push_back(i);
+        }
+    }
+    if(!h.empty()){
+        return h;
+    }
+    else{
+        int y=Mystring::no_pos;
+        h.push_back(y);
+        return h;
+    }
+  }
+  vector<size_t>g_find(const char*ref,int idx,int len) const {
+     Mystring mystr={ref,idx,len};
+      vector<size_t> h;
+    int y=(*this).get_length();
+    int k=y-len;
+    ++k;
+    for(int i=0;i<k;i++){
+        if((*this).substring(i,len)==mystr){
+            h.push_back(i);
+        }
+    }
+    if(!h.empty()){
+        return h;
+    }
+    else{
+        int y=Mystring::no_pos;
+        h.push_back(y);
+        return h;
+    }
+ }
+ 
 };
