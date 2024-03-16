@@ -2,6 +2,7 @@
 #include<cstring>
 #include<cctype>
 #include<algorithm>
+//only implement random access  iterator
 using namespace std;
 
 class Mystring{
@@ -71,6 +72,7 @@ class Mystring{
         strcpy(str,ref.str);
         str[b]='\0';
     }
+    
     Mystring(const Mystring& ref){
         int b=ref.get_length();
         str=new char[b+1];
@@ -145,13 +147,14 @@ class Mystring{
     char* begin(){
         return &str[0];
     }
+    
     char*end(){
         return &str[strlen(str)];
     }
-    const char* cbegin(){
+    const char* cbegin() const {
         return &str[0];
     }
-    const char* cend(){
+    const char* cend() const {
         return &str[strlen(str)];
     }
     bool empty_str(){
@@ -768,8 +771,8 @@ size_t find(const Mystring& mystr) const {
     ++k;
     for(int i=0;i<k;i++){
         if((*this).substring(i,g)==mystr){
-            p=i;   
-           break;
+            p=i;
+            break;
      }
     }
     if(p<=(*this).get_length() and p>=0){
@@ -779,7 +782,7 @@ size_t find(const Mystring& mystr) const {
         return Mystring::no_pos;
     }
 }
-
+// update find(const Mystring& mystr) const with break;
 size_t find(const Mystring& mystr,int idx) const {
  Mystring mine=mystr.substring(idx);
   int p=-1;
@@ -799,4 +802,45 @@ size_t find(const Mystring& mystr,int idx) const {
     else if(p==-1){
        return Mystring::no_pos;
        } 
-}};
+}
+size_t find(const Mystring& ref,int idx,int len){
+    Mystring my=ref.substring(idx,len);
+    int p=-1;
+    int y=(*this).get_length();
+    int k=y-len;
+    ++k;
+    for(int i=0;i<k;i++){
+        if((*this).substring(i,len)==my){
+            p=i;
+            break;
+        }
+    }
+    if(p<=(*this).get_length() and p>=0){
+        return p;
+    }
+    else if(p==-1){
+        return Mystring::no_pos;
+    }
+    
+}
+size_t find(const char*ref){
+    Mystring mystr={ref};
+    int p=-1;
+    int y=(*this).get_length();
+    int len1=mystr.get_length();
+    int k=y-len1;
+    ++k;
+    for(int i=0;i<k;i++){
+        if((*this).substring(i,len1)==mystr){
+            p=i;
+            break;
+        }
+    }
+    if(p<=(*this).get_length() and p>=0){
+        return p;
+    }
+    else{
+        return Mystring::no_pos;
+    }
+    }
+};
