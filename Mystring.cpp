@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstring>
 #include<cctype>
+#include<algorithm>
 #include<vector>
 //only implement random access  iterator
 using namespace std;
@@ -240,17 +241,7 @@ static void advance_by_1(iterator iter){
             return str[idx];
         }
     }
-    char& operator[ ](const int idx) const {
-        if(idx<strlen(str)){
-            return str[idx];
-        }
-        else if(idx==strlen(str)){
-            return str[idx];
-        }
-    }
-    
-  
- Mystring operator+(const Mystring& ref){
+   Mystring operator+(const Mystring& ref){
     int len=strlen(this->str)+strlen(ref.str);
     char* buffer=new char[len];
     strcpy(buffer,this->str);
@@ -261,13 +252,11 @@ static void advance_by_1(iterator iter){
     mystr.str[len]='\0';
     delete [ ] buffer;
     return mystr;
-    
-    }
+ }
     char& at(const int& idx){
         if(idx<strlen(str)){
             return str[idx];
         }
-       // meaning character not found
     }
     //assignment operation, it is still equivalent to =;
     Mystring& operator=(const Mystring& ref){
@@ -288,8 +277,7 @@ static void advance_by_1(iterator iter){
      else{
          return *this;
      }
-     
-    }
+       }
      Mystring& n_assign(const Mystring& ref){
             int y=ref.get_length();
             str=new char[y+1];
@@ -364,6 +352,15 @@ static void advance_by_1(iterator iter){
        else{
            return *this;
        }
+   }
+   Mystring& n_assign(iterator iter1,iterator iter2){
+       int m=Mystring::get_length_from_pos(iter1,iter2);
+           str=new char[m+1];
+           for(int i=0;i<m;i++){
+               str[i]=iter1[i];
+           }
+           str[m]='\0';
+           return *this;
    }
    Mystring& operator=(const char*ref){
        int len=strlen(ref);
