@@ -311,7 +311,7 @@ static bool any_of(T*begin,T*end,pred op){
   }
   return is_true;
 }
-bool none_of(T*begin,T*end,pred op){
+static bool none_of(T*begin,T*end,pred op){
     size_t sz=Algorithm<T>::count_n(begin,end);
     bool is_true=false;
     for(int i=0;i<sz;i++){
