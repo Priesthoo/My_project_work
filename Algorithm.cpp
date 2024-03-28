@@ -124,16 +124,16 @@ static bool is_equal(T*begin,T*end,T*cmp){
 }
 static bool is_sorted(T*begin,T*end){
     size_t sz=Algorithm<T>::count_n(begin,end);
-    bool is_true;
+    bool is_true=false;
     for(int i=1;i<sz;i++){
         if(*(begin+i-1)<*(begin+i) and i==sz-1){
             is_true=true;
         }
-        else{
+        else if(*(begin+i-1)>*(begin+i)){
             is_true=false;
             break;
         }
-    }
+   }
     return is_true;
 }
 static pair<T*,T*> mismatch(T*begin,T*end,T*cmp){
@@ -148,8 +148,53 @@ static pair<T*,T*> mismatch(T*begin,T*end,T*cmp){
     }
     return m;
 }
-
-};
+static T*copy(T*begin,T*end,T*dest){
+    size_t sz=Algorithm<T>::count_n(begin,end);
+    for(int i=0;i<sz;i++){
+        *(dest+i)=*(begin+i);
+    }
+    auto iter=dest+sz;
+    return iter;
+}
+static void swap_elements(T*begin,T*end){
+    size_t sz=Algorithm<T>::count_n(begin,end);
+    for(int i=1;i<sz;i++){
+        T result=*(begin+i-1);
+        *(begin+i-1)=*(begin+i);
+        *(begin+i)=result;
+    }
+}
+static T* swap_range(T*begin,T*end,T*beg){
+    size_t sz=Algorithm<T>::count_n(begin,end);
+    for(int i=0;i<sz;i++){
+        T result=*(begin+i);
+        *(begin+i)=*(beg+i);
+        *(beg+i)=result;
+    }
+    auto iter=beg+(sz-1);
+    return iter;
+}
+static void fill(T*begin,T*end,const T& val){// To fill the range [beg,end) with val.
+    size_t sz=Algorithm<T>::count_n(begin,end);
+    for(int i=0;i<sz;i++){
+        *(begin+i)=val;
+    }
+}
+static void sort_range(T*begin,T*end){//sort the range[beg,end)]
+    size_t sz=Algorithm<T>::count_n(begin,end);
+    bool is_true=false;
+    while(is_true!=true){
+        for(int i=1;i<sz;i++){
+            if(*(begin+i)<*(begin+i-1)){
+                T result=*(begin+i-1);
+                *(begin+i-1)=*(begin+i);
+                *(begin+i)=result;
+            }
+        }
+        is_true=Algorithm<T>::is_sorted(begin,end);
+      }
+  }
+}; //End of algorithm<T>
 template<class T,class pred>
 class Algorithm_if{
     public:
@@ -311,7 +356,7 @@ static bool any_of(T*begin,T*end,pred op){
   }
   return is_true;
 }
-static bool none_of(T*begin,T*end,pred op){
+bool none_of(T*begin,T*end,pred op){
     size_t sz=Algorithm<T>::count_n(begin,end);
     bool is_true=false;
     for(int i=0;i<sz;i++){
@@ -324,6 +369,37 @@ static bool none_of(T*begin,T*end,pred op){
         }
     }
     return is_true;
+}
+static T* copy_if(T*begin,T*end,T*dest,pred op){
+    size_t sz=Algorithm<T>::count_n(begin,end);
+    size_t y;
+    for(int i=0;i<sz;i++){
+        if(op(*(begin+i))==true){
+            *(dest+i)=*(begin+i);
+            ++y;
+        }
+    }
+    auto iter=dest+y;
+    return iter;
+}
+static T* transform(T*begin,T*end,T*dest,pred op){
+    size_t sz=Algorithm<T>::count_n(begin,end);
+    T result;
+    for(int i=0;i<sz;i++){
+        result=op(*begin+i);
+        *(dest+i)=result;
+    }
+    auto iter=dest+sz;
+    return iter;
+}
+static T* transform(T*begin,T*end,T*begin1,T*dest,pred op){
+    size_t sz=Algorithm<T>::count_n(begin,end);
+    for(int i=0;i<sz;i++){
+        T result=op(*(begin+i),*(begin1+i));
+        *(dest+i)=result;
+    }
+    auto iter=dest+sz;
+    return iter;
 }
 };
 bool greater_than_13(const int& ref){
