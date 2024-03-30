@@ -3,7 +3,30 @@
 #include<utility>
 //my target is a vector class..
 using namespace std;
-
+template<class T>
+class Negate{
+    public:
+    T operator()(const T& ref){
+        T result=-ref;
+        return result;
+    }
+};
+template<class T>
+class Plus{
+    public:
+    T operator()(const T& ref1,const T&  ref2){
+        T result=ref1+ref2;
+        return result;
+    }
+};
+template<class T>
+class Minus{
+    public:
+    T operator()(const T& ref,const T& ref2){
+        T result=ref-ref2;
+        return result;
+    }
+};
 template<class T>
 class Algorithm{
     public:
@@ -180,7 +203,7 @@ static void fill(T*begin,T*end,const T& val){// To fill the range [beg,end) with
         *(begin+i)=val;
     }
 }
-static void sort_range(T*begin,T*end){//sort the range[beg,end)]
+static void sort_range(T*begin,T*end){//sort the range[beg,end)
     size_t sz=Algorithm<T>::count_n(begin,end);
     bool is_true=false;
     while(is_true!=true){
@@ -313,7 +336,7 @@ static bool is_sorted_if(T*begin,T*end,pred op){
         if(op(*(begin+i-1),*(begin+i))==true and i==sz-1){
             is_true=true;
         }
-        else{
+        else if(op(*(begin+i-1),*(begin+i))==false){
             is_true=false;
             break;
         }
@@ -382,7 +405,7 @@ static T* copy_if(T*begin,T*end,T*dest,pred op){
     auto iter=dest+y;
     return iter;
 }
-static T* transform(T*begin,T*end,T*dest,pred op){
+static T* Transform_range1(T*begin,T*end,T*dest,pred op){
     size_t sz=Algorithm<T>::count_n(begin,end);
     T result;
     for(int i=0;i<sz;i++){
@@ -392,7 +415,7 @@ static T* transform(T*begin,T*end,T*dest,pred op){
     auto iter=dest+sz;
     return iter;
 }
-static T* transform(T*begin,T*end,T*begin1,T*dest,pred op){
+static T* Transform_range2(T*begin,T*end,T*begin1,T*dest,pred op){
     size_t sz=Algorithm<T>::count_n(begin,end);
     for(int i=0;i<sz;i++){
         T result=op(*(begin+i),*(begin1+i));
@@ -400,6 +423,20 @@ static T* transform(T*begin,T*end,T*begin1,T*dest,pred op){
     }
     auto iter=dest+sz;
     return iter;
+}
+static void sort_range_if(T*begin,T*end,pred op){
+    size_t sz=Algorithm<T>::count_n(begin,end);
+    bool is_true=false;
+    while(is_true!=true){
+        for(int i=1;i<sz;i++){
+            if(op(*(begin+i-1,*(begin+i)))==false){
+                   T result=*(begin+i-1);
+                *(begin+i-1)=*(begin+i);
+                *(begin+i)=result;
+            }
+        }
+        is_true=Algorithm_if<T,pred>::is_sorted_if(begin,end,op);
+    }
 }
 };
 bool greater_than_13(const int& ref){
@@ -417,4 +454,14 @@ bool less_than_12(const int& ref){
     else{
         return false;
     }
+}
+int main(int argc, char *argv[])
+{
+   using Comp=bool(*)(const int& ref);
+	Comp func=greater_than_13;
+	Vector<int>vec={1,2,1,3,5,4,7,6};
+	Vector<int>vec1;
+	vec1.set_size(vec.get_length());
+     Algorithm_if<int,Negate<int>>::Transform_range1(vec.begin(),vec.end(),vec1.begin(),Negate<int>());
+     vec1.print_out();
 }
