@@ -28,6 +28,103 @@ class Minus{
     }
 };
 template<class T>
+class Multiply{
+    public:
+    T operator()(const T& ref,const T& ref1){
+        T result=ref*ref1;
+        return result;
+    }
+};
+template<class T>
+class Divide{
+    public:
+    T operator()(const T& ref1,const T& ref2){
+        T result=ref1/ref2;
+        return result;
+    }
+};
+template<class T>
+class Modulus{
+    public:
+    size_t operator()(const T& ref1,const T& ref2){
+        size_t result=ref1%ref2;
+        return result;
+    }
+};
+template<class T>
+class Equal_to{
+    public:
+    bool operator()(const T& ref1,const T& ref2){
+        bool is_equal=(ref1==ref2);
+        return is_equal;
+    }
+};
+template<class T>
+class Not_equal_to{
+    public:
+    bool operator()(const T& ref,const T& ref2){
+        bool is_not_equal=(ref!=ref2);
+        return is_not_equal;
+    }
+};
+template<class T>
+class Less{
+    public:
+    bool operator()(const T& ref,const T& ref2){
+        bool is_less=(ref<ref2);
+        return is_less;
+    }
+};
+
+template<class T>
+class Greater{
+    public:
+    bool operator()(const T& ref,const T& ref2){
+        bool is_greater=(ref>ref2);
+        return is_greater;
+    }
+};
+template<class T>
+class Less_equal{
+    public:
+    bool operator()(const T& ref,const T& ref2){
+        bool is_less_equal=(ref<=ref2);
+        return is_less_equal;
+    }
+};
+template<class T>
+class Greater_equal{
+    public:
+    bool operator()(const T& ref,const T& ref2){
+        bool is_greater_equal=(ref>=ref2);
+        return is_greater_equal;
+    }
+};
+template<class T>
+class Logical_not{
+    public:
+    bool operator()(const T& ref){
+        bool logical_not=!ref;
+        return logical_not;
+    }
+};
+template<class T>
+class Logical_and{
+    public:
+    bool operator()(const T& ref,const T& ref1){
+        bool logical_and=(ref and ref1);
+        return logical_and;
+    }
+};
+template<class T>
+class Logical_or{
+    public:
+    bool operator()(const T& ref,const T& ref1){
+        bool logical_or=(ref or ref1);
+        return logical_or;
+    }
+};
+template<class T>
 class Algorithm{
     public:
     static size_t count_n(T* begin,T *end){
@@ -479,4 +576,3 @@ bool less_than_12(const int& ref){
     else{
         return false;
     }
-}
