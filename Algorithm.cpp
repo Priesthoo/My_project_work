@@ -217,6 +217,19 @@ static void sort_range(T*begin,T*end){//sort the range[beg,end)
         is_true=Algorithm<T>::is_sorted(begin,end);
       }
   }
+static  void fill_n(T*begin,size_t num,const T& val){
+     for(int i=0;i<num;i++){
+         *(begin+i)=val;
+     }
+ }
+ static void iota(T*begin,T* end,T* val){
+     size_t sz=Algorithm<T>::count_n(begin,end);
+     T val1=*val;
+     for(int i=0;i<sz;i++){
+         *(begin+i)=++val1;
+     }
+ }
+
 }; //End of algorithm<T>
 template<class T,class pred>
 class Algorithm_if{
@@ -438,6 +451,18 @@ static void sort_range_if(T*begin,T*end,pred op){
         is_true=Algorithm_if<T,pred>::is_sorted_if(begin,end,op);
     }
 }
+static void generate(T*begin,T* end,pred func){
+    size_t sz=Algorithm<T>::count_n(begin,end);
+    for(int i=0;i<sz;i++){
+        *(begin+i)=func;
+    }
+    
+}
+static void generate_n(T*begin,size_t num,pred func){
+    for(int i=0;i<num;i++){
+        *(begin+i)=func;
+    }
+}
 };
 bool greater_than_13(const int& ref){
     if(ref>13){
@@ -454,14 +479,4 @@ bool less_than_12(const int& ref){
     else{
         return false;
     }
-}
-int main(int argc, char *argv[])
-{
-   using Comp=bool(*)(const int& ref);
-	Comp func=greater_than_13;
-	Vector<int>vec={1,2,1,3,5,4,7,6};
-	Vector<int>vec1;
-	vec1.set_size(vec.get_length());
-     Algorithm_if<int,Negate<int>>::Transform_range1(vec.begin(),vec.end(),vec1.begin(),Negate<int>());
-     vec1.print_out();
 }
