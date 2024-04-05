@@ -12,6 +12,14 @@ class Vector{
      typedef unsigned int size_c;
      typedef T& reference;
      typedef const T& const_reference;
+     void set_size(size_t num){
+         size=num;
+         str=new T[size];
+     }
+     void set_size_const(const size_t num){
+         size=num;
+         str=new T[size];
+     }
   size_t get_length(){
       return (*this).size;
   }
@@ -38,6 +46,14 @@ class Vector{
  void print_out(){
      for(int i=0;i<size;i++){
          cout<<str[i]<<endl;
+     }
+ }
+ bool check_if_NULL(){
+     if(str==NULL){
+         return true;
+     }
+     else{
+         return false;
      }
  }
   explicit Vector(const size_t& value):size{value}
