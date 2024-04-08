@@ -110,6 +110,12 @@ class Vector3d{
             return z;
         }
     }
+    Vector3d& operator=(const Vector3d& vec){
+        x=vec[1];
+        y=vec[2];
+        z=vec[3];
+        return *this;
+    }
 };
 class Point4D:public Vector3d{ //single inheritance
     float w;
@@ -221,5 +227,97 @@ Vector3d operator*(const Vector3d& vec){// transforming the vector coordinate sy
      mat[6]=0;
      mat[7]=0;
      mat[8]=1;
-     }               
+     }
+     size_t get_mat_length() const {
+        return  mat.get_length();
+     }
+     Mat3x3& operator=(const Mat3x3& mat1){
+         for(int i=0;i<mat.get_length();i++){
+             mat[i]=mat1.mat[i];
+         }
+         return *this;
+     }
+                    
+};
+class Mat4x4{ // for both position and orientation,....
+    private:
+    Mat_elem V;
+    public:
+    Mat4x4(){
+        if(V.check_if_NULL()==true){
+            V.set_size(16);
+        }
+    }
+    float operator[ ](const int& idx){
+        return V[idx];
+    }
+    const float operator[ ](const int& idx) const {
+        return V[idx];
+    }
+    Mat4x4(const Mat3x3& mat,const Vector3d& trans){
+        if(V.check_if_NULL()==true){
+            V.set_size(16);
+        }
+        V[0]=mat[0];
+        V[1]=mat[1];
+        V[2]=mat[2];
+        V[3]=trans[0];
+        V[4]=mat[3];
+        V[5]=mat[4];
+         V[6]=mat[5];
+         V[7]=trans[1];
+         V[8]=mat[6];
+         V[9]=mat[7];
+         V[10]=mat[8];
+         V[11]=trans[2];
+         V[12]=0;
+         V[13]=0;
+         V[14]=0;
+         V[15]=1;
+    }
+    void set_translation(const Vector3d& trans){
+        V[3]=trans[0];
+        V[7]=trans[1];
+        V[11]=trans[2];
+    }
+    void set_matrix(const Mat3x3&  mat,const Vector3d& trans){
+          if(V.check_if_NULL()==true){
+            V.set_size(16);
+        }
+        V[0]=mat[0];
+        V[1]=mat[1];
+        V[2]=mat[2];
+        V[3]=trans[0];
+        V[4]=mat[3];
+        V[5]=mat[4];
+         V[6]=mat[5];
+         V[7]=trans[1];
+         V[8]=mat[6];
+         V[9]=mat[7];
+         V[10]=mat[8];
+         V[11]=trans[2];
+         V[12]=0;
+         V[13]=0;
+         V[14]=0;
+         V[15]=1;
+    }
+    static void print_out_mat(const Mat4x4&  mat){
+        cout<<"{"<<mat[0]<<","<<mat[1]<<","<<mat[2]<<","<<mat[3]<<endl;
+     cout<<","<<mat[4]<<","<<mat[5]<<","<<mat[6]<<","<<mat[7]<<endl;
+     cout<<","<<mat[8]<<","<<mat[9]<<","<<mat[10]<<","<<mat[11]<<endl;
+      cout<<","<<mat[12]<<","<<mat[13]<<","<<mat[14]<<","<<mat[15]<<"}"<<endl;
+    }
+    Mat3x3 get_Mat3x3_comp(){
+        Mat3x3 mat;
+        mat[0]=V[0];
+        mat[1]=V[1];
+        mat[2]=V[2];
+        mat[3]=V[4];
+        mat[4]=V[5];
+        mat[5]=V[6];
+        mat[6]=V[8];
+        mat[7]=V[9];
+        mat[8]=V[10];
+        return mat;
+     }
 };
