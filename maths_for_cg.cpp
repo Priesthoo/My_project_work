@@ -307,7 +307,7 @@ class Mat4x4{ // for both position and orientation,....
      cout<<","<<mat[8]<<","<<mat[9]<<","<<mat[10]<<","<<mat[11]<<endl;
       cout<<","<<mat[12]<<","<<mat[13]<<","<<mat[14]<<","<<mat[15]<<"}"<<endl;
     }
-    Mat3x3 get_Mat3x3_comp(){
+    Mat3x3 get_Mat3x3_comp()const {
         Mat3x3 mat;
         mat[0]=V[0];
         mat[1]=V[1];
