@@ -248,10 +248,10 @@ class Mat4x4{ // for both position and orientation,....
             V.set_size(16);
         }
     }
-    float operator[ ](const int& idx){
+    float& operator[ ](const int& idx){
         return V[idx];
     }
-    const float operator[ ](const int& idx) const {
+  const  float& operator[ ](const int& idx) const {
         return V[idx];
     }
     Mat4x4(const Mat3x3& mat,const Vector3d& trans){
@@ -275,6 +275,27 @@ class Mat4x4{ // for both position and orientation,....
          V[14]=0;
          V[15]=1;
     }
+    Mat4x4(const float&a,const float&b,const float& c,const float& d,const float& e,const float& f,const float& g,const float& h,const float& i,const float& j,const float& k,const float& l,const float& m,const float& n,const float& o,const float&p){
+        if(V.check_if_NULL()==true){
+            V.set_size(16);
+        }
+        V[0]=a;
+        V[1]=b;
+        V[2]=c;
+        V[3]=d;
+        V[4]=e;
+        V[5]=f;
+         V[6]=g;
+         V[7]=h;
+         V[8]=i;
+         V[9]=j;
+         V[10]=k;
+         V[11]=l;
+         V[12]=m;
+         V[13]=n;
+         V[14]=o;
+         V[15]=p;
+     }
     void set_translation(const Vector3d& trans){
         V[3]=trans[0];
         V[7]=trans[1];
@@ -307,7 +328,7 @@ class Mat4x4{ // for both position and orientation,....
      cout<<","<<mat[8]<<","<<mat[9]<<","<<mat[10]<<","<<mat[11]<<endl;
       cout<<","<<mat[12]<<","<<mat[13]<<","<<mat[14]<<","<<mat[15]<<"}"<<endl;
     }
-    Mat3x3 get_Mat3x3_comp()const {
+    Mat3x3 get_Mat3x3_comp() const {
         Mat3x3 mat;
         mat[0]=V[0];
         mat[1]=V[1];
@@ -320,4 +341,32 @@ class Mat4x4{ // for both position and orientation,....
         mat[8]=V[10];
         return mat;
      }
+     Vector3d get_translation() const{
+         Vector3d vec;
+         vec[0]=V[3];
+         vec[1]=V[7];
+         vec[2]=V[11];     
+         return vec;
+         }
+   Mat4x4 operator*(const Mat4x4& mat){
+       Mat4x4 op;
+       op[0]=V[0]*mat[0]+V[1]*mat[4]+V[2]*mat[8]+V[3]*mat[12];
+       op[1]=V[0]*mat[1]+V[1]*mat[5]+V[2]*mat[9]+V[3]*mat[13];
+       op[2]=V[0]*mat[2]+V[1]*mat[6]+V[2]*mat[10]+V[3]*mat[14];
+      op[3]=V[0]*mat[3]+V[1]*mat[7]+V[2]*mat[11]+V[3]*mat[15];
+      op[4]=V[4]*mat[0]+V[5]*mat[4]+V[6]*mat[8]+V[7]*mat[12];
+      op[5]=V[4]*mat[1]+V[5]*mat[5]+V[6]*mat[9]+V[7]*mat[13];
+      op[6]=V[4]*mat[2]+V[5]*mat[6]+V[6]*mat[10]+V[7]*mat[14];
+      op[7]=V[4]*mat[3]+V[5]*mat[7]+V[6]*mat[11]+V[7]*mat[15];
+     op[8]=V[8]*mat[0]+V[9]*mat[4]+V[10]*mat[8]+V[11]*mat[12];
+     op[9]=V[8]*mat[1]+V[9]*mat[5]+V[10]*mat[9]+V[11]*mat[13];
+     op[10]=V[8]*mat[2]+V[9]*mat[6]+V[10]*mat[10]+V[11]*mat[14];
+     op[11]=V[8]*mat[3]+V[9]*mat[7]+V[10]*mat[11]+V[11]*mat[15];
+     op[12]=V[12]*mat[0]+V[13]*mat[4]+V[14]*mat[8]+V[15]*mat[12];
+     op[13]=V[12]*mat[1]+V[13]*mat[5]+V[14]*mat[9]+V[15]*mat[13];
+     op[14]=V[12]*mat[2]+V[13]*mat[6]+V[14]*mat[10]+V[15]*mat[14];
+      op[15]=V[12]*mat[3]+V[13]*mat[7]+V[14]*mat[11]+V[15]*mat[15];
+     return op;
+   }
+ 
 };
