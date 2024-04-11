@@ -487,7 +487,7 @@ enum ROTATE{
  };
  class Cam_view{
      
- }
+ };
   
 class Camera{
     
