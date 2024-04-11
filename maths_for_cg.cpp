@@ -431,7 +431,7 @@ enum ROTATE{
       private:
       Vector3d vec;
       float w;
-     public:
+      public:
       Quat()=default;
       Quat(const Vector3d& vec1,const float& w1){
           vec=vec1;
@@ -487,9 +487,40 @@ enum ROTATE{
      PERSP
  };
  class Cam_view{
-     
+     private:
+     Mat4x4 view;
+     public:
+     Cam_view()=default;
+     void set_ortho(float r,float l,float b,float t,float f,float n){
+         view={2/(r-1),0,0,-(r+l)/(r-l)
+                      ,0,2/(b-t),0,-(b+t)/(b-t)
+                      ,0,0,1/(f-n),-n/f-n
+                      ,0,0,0,1
+                      };
+     }
+     void set_persp(float fovy,float s,float n,float f){
+         float g=1/tan(fovy*0.5);
+         view={ g/s ,0 ,0,0
+                     ,0, 0, 0 ,0
+                     ,0, 0,f/(f-n), -(n*f)/f-n
+                     ,0 ,0,1,0
+                 };
+     }
+     void set_persp_infinite(float fovy,float n, float e){
+         float g=1/tan(fovy*0.5)
+         view={ g/s,0, 0,0
+                        ,0 ,g, 0,0
+                        ,0,0,1-e,-n*(1-e)
+                        ,0,0,1,0};
+         
+     }
+     Mat4x4 get_view(){
+         return view;
+     }
  };
   
-class Camera{
-    
+class Camera{ //Camera consists of the view of the objects of the scene and transform responsible for storing the position and orientation of the camera...
+    Mat4x4 camT;
+    Cam_view cam_view;
+    public:
 };
