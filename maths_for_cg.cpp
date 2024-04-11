@@ -5,7 +5,7 @@
 typedef Vector<float> Mat_elem;
 using namespace std;
 class Render{
-};// this update the frame_buffer
+};// this updates the frame_buffer
 class Vector3d{
    protected:
    float x,y,z;
