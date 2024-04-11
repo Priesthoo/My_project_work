@@ -431,6 +431,7 @@ enum ROTATE{
       private:
       Vector3d vec;
       float w;
+     public:
       Quat()=default;
       Quat(const Vector3d& vec1,const float& w1){
           vec=vec1;
