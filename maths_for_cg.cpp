@@ -4,6 +4,8 @@
 #include"Vector.h"
 typedef Vector<float> Mat_elem;
 using namespace std;
+class Render{
+};// this update the frame_buffer
 class Vector3d{
    protected:
    float x,y,z;
@@ -20,35 +22,35 @@ class Vector3d{
         z=q;
     }
     //operations performed on vector3d type:
-    Vector3d operator+(const Vector3d& vec1){
+    Vector3d operator+(const Vector3d& vec1)const{
         Vector3d vec;
         vec.x=(this->x+vec1.x);
         vec.y=(this->y+vec1.y); //adding two vectors together
         vec.z=(this->z+vec1.z);
         return vec;
     }
-    Vector3d operator-(const Vector3d& vec1){
+    Vector3d operator-(const Vector3d& vec1)const {
         Vector3d vec;
          vec.x=(this->x-vec1.x);
         vec.y=(this->y-vec1.y); //subtracting a vector from the other
         vec.z=(this->z-vec1.z);
         return vec;
     }
-    Vector3d operator*(const float& s){
+    Vector3d operator*(const float& s) const {
         Vector3d vec;
         vec.x=this->x*s;  //multiplying a vector by a scalar
         vec.y=this->y*s;
         vec.z=this->z*s;
         return vec;
     }
-    Vector3d operator*(const Vector3d& f2){
+    Vector3d operator*(const Vector3d& f2) const {
         Vector3d vec;
         vec.x=(this->y*f2.z)-(this->z*f2.y);
         vec.y=(this->x*f2.z)-(this->z*f2.x);  //cross product.
         vec.z=(this->x*f2.y)-(this->y*f2.x);
         return vec;
     }
-    Vector3d operator/(const float& s){
+    Vector3d operator/(const float& s)const {
         Vector3d vec;
         vec.x=this->x/s;  // dividing a vector by a scalar
         vec.y=this->y/s;
@@ -115,6 +117,13 @@ class Vector3d{
         y=vec[2];
         z=vec[3];
         return *this;
+    }
+    Vector3d negate() const{
+        Vector3d vec1;
+        vec1.x=-this->x;
+        vec1.y=-this->y;
+        vec1.z=-this->z;
+        return vec1;
     }
 };
 class Point4D:public Vector3d{ //single inheritance
@@ -369,4 +378,117 @@ class Mat4x4{ // for both position and orientation,....
      return op;
    }
  
+};
+
+enum ROTATE{
+    ROTATE_X,
+    ROTATE_Y,
+    ROTATE_Z
+  };
+  class Transform{
+      public:
+      static Mat3x3 construct_rotation(float theta,ROTATE rot){
+          Mat3x3 mat;
+          float c=cos(theta);
+          float s=sin(theta);
+          if(rot==ROTATE_X){
+              mat={1 ,0 ,0
+                         ,0,c,-s
+                         ,0,s,c};
+          }
+          else if(rot==ROTATE_Y){
+              mat={c,0,s
+                        ,0,1,0
+                        ,-s,0,c};
+          }
+          else if(rot==ROTATE_Z){
+              mat={c,-s,0
+                       ,s,c,0
+                       ,0,0,1};
+              }
+         return mat;
+      }
+   static Mat3x3 construct_scale(float s){
+       Mat3x3 mat;
+       mat={s,0,0
+                 ,0,s,0
+                 ,0,0,s};
+       return mat;
+     }
+     static Mat4x4 construct_trans(const Vector3d& trans){
+         Mat4x4 mat={1 ,0,0, trans[0]
+                                  ,0,1,0,trans[1]
+                                  ,0,0,1,trans[2]
+                                  ,0,0,0,1};
+          return mat;
+        }
+     static Mat4x4 construct_trans(const Mat3x3& mat1,const Vector3d& trans){
+         Mat4x4 mat={mat1,trans};
+         return mat;
+     }
+  };
+  class Quat{
+      private:
+      Vector3d vec;
+      float w;
+      Quat()=default;
+      Quat(const Vector3d& vec1,const float& w1){
+          vec=vec1;
+          w=w1;   
+      }
+    
+      //operations performed on quaternions
+      Quat operator+(const Quat& q) const {
+         Quat q1;
+         q1.vec=this->vec+q.vec;
+         q1.w=this->w+q.w;
+         return q1;
+      }
+      Quat operator*(const Quat& q) const {
+          Vector3d v1=(this->vec*q.vec)+(q.vec*this->w)+(this->vec*q.w);
+          float w1=Vector3d::dot_product(this->vec,q.vec);
+          float w2=(this->w*q.w);
+          float w3=w2-w1;
+          Quat q1={v1,w3};
+    return q1;      
+      }
+  
+  Quat compute_conjugate() const {
+      Vector3d vec1=this->vec.negate();
+      Quat q1={vec1,this->w};
+      return q1;
+   }
+    Quat operator*(const float& s) const{
+        Vector3d vec1=this->vec* s;
+        float v=this->w*s;
+        Quat q={vec1,v};
+        return q;
+    }
+    float q_norm() const {
+        float q1=this->vec[0]*this->vec[0];
+        float q2=this->vec[1]*this->vec[1];
+        float q3=this->vec[2]*this->vec[2];
+        float q4=this->w*this->w;
+        float q5=sqrt(q1+q2+q3+q4);
+        return q5;
+    }
+   Quat compute_inverse()const {
+       Quat q=this->compute_conjugate();
+       float t=this->q_norm();
+       Vector3d vec1=q.vec/t;
+       float g=q.w/t;
+       Quat q1={vec1,g};
+       return q1;
+   }
+ };
+ enum VIEW{
+     ORTHO,
+     PERSP
+ };
+ class Cam_view{
+     
+ }
+  
+class Camera{
+    
 };
