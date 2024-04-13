@@ -5,7 +5,7 @@
 typedef Vector<float> Mat_elem;
 using namespace std;
 class Render{
-};// this updates the frame_buffer
+};// this update the frame_buffer
 class Vector3d{
    protected:
    float x,y,z;
@@ -331,6 +331,9 @@ class Mat4x4{ // for both position and orientation,....
          V[14]=0;
          V[15]=1;
     }
+    size_t get_matrix_length(){
+        return V.get_length();
+    }
     static void print_out_mat(const Mat4x4&  mat){
         cout<<"{"<<mat[0]<<","<<mat[1]<<","<<mat[2]<<","<<mat[3]<<endl;
      cout<<","<<mat[4]<<","<<mat[5]<<","<<mat[6]<<","<<mat[7]<<endl;
@@ -357,7 +360,7 @@ class Mat4x4{ // for both position and orientation,....
          vec[2]=V[11];     
          return vec;
          }
-   Mat4x4 operator*(const Mat4x4& mat){
+   Mat4x4 operator*(const Mat4x4& mat) const {
        Mat4x4 op;
        op[0]=V[0]*mat[0]+V[1]*mat[4]+V[2]*mat[8]+V[3]*mat[12];
        op[1]=V[0]*mat[1]+V[1]*mat[5]+V[2]*mat[9]+V[3]*mat[13];
@@ -377,8 +380,14 @@ class Mat4x4{ // for both position and orientation,....
       op[15]=V[12]*mat[3]+V[13]*mat[7]+V[14]*mat[11]+V[15]*mat[15];
      return op;
    }
+   Mat4x4& operator=(const Mat4x4& mat){
+       for(int i=0;i<16;i++){
+           this->V[i]=mat.V[i];
+          }
+          return *this;
+   }
  
-};
+ };
 
 enum ROTATE{
     ROTATE_X,
@@ -506,21 +515,112 @@ enum ROTATE{
                      ,0 ,0,1,0
                  };
      }
-     void set_persp_infinite(float fovy,float n, float e){
-         float g=1/tan(fovy*0.5)
+     void set_persp_infinite(float fovy,float s,float n, float e){
+         float g=1/tan(fovy*0.5);
          view={ g/s,0, 0,0
                         ,0 ,g, 0,0
                         ,0,0,1-e,-n*(1-e)
                         ,0,0,1,0};
          
      }
-     Mat4x4 get_view(){
+     Mat4x4 get_view() const{
          return view;
      }
+     Cam_view& operator=(const Cam_view& view1){
+         for(int i=0;i<16;i++){
+             this->view[i]=view1.view[i];
+         }
+     }
  };
+class Unit_Quat{
+    private:
+    Vector3d vec;
+    float w;
+    public:
+    Unit_Quat()=default;
+    Unit_Quat(const Vector3d& unit_vector,float theta){
+        vec=unit_vector*sin(theta);
+        w=cos(theta);
+    }
+    Unit_Quat(const Unit_Quat& unit){
+        vec=unit.vec;
+        w=unit.w;
+    }
+    Unit_Quat operator+(const Unit_Quat& q) const {
+         Unit_Quat q1;
+         q1.vec=this->vec+q.vec;
+         q1.w=this->w+q.w;
+         return q1;
+      }
+      Unit_Quat operator*(const Unit_Quat& q) const {
+          Vector3d v1=(this->vec*q.vec)+(q.vec*this->w)+(this->vec*q.w);
+          float w1=Vector3d::dot_product(this->vec,q.vec);
+          float w2=(this->w*q.w);
+          float w3=w2-w1;
+          Unit_Quat q1={v1,w3};
+    return q1;      
+      }
   
+  Unit_Quat compute_conjugate() const {
+      Vector3d vec1=this->vec.negate();
+      Unit_Quat q1={vec1,this->w};
+      return q1;
+   }
+    Unit_Quat operator*(const float& s) const{
+        Vector3d vec1=this->vec* s;
+        float v=this->w*s;
+       Unit_Quat q={vec1,v};
+        return q;
+    }
+    float q_norm() const {
+        float q1=this->vec[0]*this->vec[0];
+        float q2=this->vec[1]*this->vec[1];
+        float q3=this->vec[2]*this->vec[2];
+        float q4=this->w*this->w;
+        float q5=sqrt(q1+q2+q3+q4);
+        return q5;
+    }
+   Unit_Quat compute_inverse()const {
+       Unit_Quat q=this->compute_conjugate();
+       float t=this->q_norm();
+       Vector3d vec1=q.vec/t;
+       float g=q.w/t;
+       Unit_Quat q1={vec1,g};
+       return q1;
+   }
+    
+};
 class Camera{ //Camera consists of the view of the objects of the scene and transform responsible for storing the position and orientation of the camera...
     Mat4x4 camT;
     Cam_view cam_view;
     public:
+    Vector3d get_cam_pos() const {
+        return camT.get_translation();
+    }
+    Mat3x3 get_cam_orient() const {
+        return camT.get_Mat3x3_comp();
+    }
+    Mat4x4 get_cam_view() const {
+        return cam_view.get_view();
+    }
+    Mat4x4& set_cam_transform(){
+        return camT;
+     }
+     Cam_view& set_cam_view(){
+         return cam_view;
+     }
+};
+class Euler_angle{
+    Mat3x3 euler;
+    public:
+    Euler_angle()=default;
+    Euler_angle(float roll,float pitch,float head){
+        Mat3x3 mat=Transform::construct_rotation(roll,ROTATE_Z);
+        Mat3x3 mat1=Transform::construct_rotation(pitch,ROTATE_X);
+        Mat3x3 mat2=Transform::construct_rotation(head,ROTATE_Y);
+        euler=mat*mat1*mat2;
+    }
+    Mat3x3 get_euler_angle(){
+        return euler;
+    }
 };
