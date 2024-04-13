@@ -620,7 +620,7 @@ class Euler_angle{
         Mat3x3 mat2=Transform::construct_rotation(head,ROTATE_Y);
         euler=mat*mat1*mat2;
     }
-    Mat3x3 get_euler_angle(){
+    Mat3x3 get_euler_angle() const{
         return euler;
     }
 };
