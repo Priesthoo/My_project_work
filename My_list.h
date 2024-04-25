@@ -218,4 +218,24 @@ class My_list{
      pos->next=beg;
      return beg;
  }
+ static Node<T>* find_value(Node<T>* pos,T elem){
+     Node<T>* iter1=nullptr;
+     if(pos->data==elem){
+         iter1=pos;
+     }
+     return iter1;
+ }
+  static Node<T>* remove_value(Node<T>* mylist,T elem){
+    Node<T>* iter=mylist;
+    Node<T>*iter1=nullptr;
+    while(iter!=nullptr){
+        iter1=My_list<T>::find_value(iter,elem);
+        if(iter->data==elem){
+            break;
+        }
+        iter=iter->next;
+    }
+    iter=iter->next;
+    return iter;
+}
 };
