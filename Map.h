@@ -72,6 +72,13 @@ void create_node(Node<T,M>* node,Pair<T,M>myvalue){
     }
 }
 template<class T,class M>
+void print_node(Node<T,M>* node){
+    if(node!=nullptr){
+        cout<<node->value.first<<":"<<node->value.second<<endl;
+        print_node(node->next);
+    }
+}
+template<class T,class M>
 class Iterator{
     public:
     Node<T,M>* iter;
@@ -121,6 +128,50 @@ Node<T,M> *get_iter(){
 }
 };
 template<class T,class M>
+void sort_key(Node<T,M>* node){
+    Node<T,M>* iter=node;
+    while(iter!=nullptr){
+        if(iter->next!=nullptr){
+            if(iter->value.first>iter->next->value.first){
+                T obj={iter->value.first};
+                M obj1={iter->value.second};
+                iter->value.first=iter->next->value.first;
+                iter->value.second=iter->next->value.second;
+                iter->next->value.first=obj;
+                iter->next->value.second=obj1;
+            }
+        }
+        iter=iter->next;
+    }
+}
+template<class T,class M>
+bool node_is_sorted(Node<T,M>* node){
+    Node<T,M>* iter=node;
+    while(iter!=nullptr){
+        if(iter->next!=nullptr){
+                if(iter->value.first>iter->next->value.first){
+            return false;
+        }
+        }
+        iter=iter->next;
+    }
+    return true;
+}
+template<class T,class M>
+void sort_node_until(Node<T,M>* node){
+    Node<T,M>*iter=node;
+    bool is_sorted=false;
+      while(is_sorted!=true){
+          sort_key(iter);
+          is_sorted=node_is_sorted(node);
+          iter=node;
+      }
+}
+
+template<class T,class M>
+using Cmpfunc=void(*)(Node<T,M>*);
+
+template<class T,class M,Cmpfunc<T,M> cmp=sort_node_until>
 class Map{
     Node<T,M>* root;
     public:
@@ -130,23 +181,20 @@ class Map{
      }
       void add_pair(const Pair<T,M>& myvalue){
             create_node(this->root,myvalue);
-      }
-     
+            cmp(this->get_root());
+       }
      Map(){
          root=new Node<T,M>;
       }
-      Map(const Pair<T,M>& pair){
-          root=new Node<T,M>;
-          root->value=pair.value;
-          root->next=nullptr;
-      }
-      Map(const initializer_list<Pair<T,M>>& lst){
+   Map( initializer_list<Pair<T,M>> lst){
           root=new Node<T,M>;
           auto key=lst.begin();
-          this->add_at_begin(key[0]);
+          root->value=key[0];
+          root->next=nullptr;
           for(int i=1;i<lst.size();i++){
               this->add_pair(key[i]);
           }
+              cmp(this->get_root());
          }
     Map(Iterator<T,M> iter1,Iterator<T,M> iter2){
         root=new Node<T,M>;
@@ -155,11 +203,12 @@ class Map{
         while(iter1.get_iter()!=iter2.get_iter()){
             this->add_pair(iter1.get_pair());
             ++iter1;
-            }    
+            }
+            cmp(this->get_root());    
         }
  Iterator<T,M> begin_iter() const{
      return root;
-     }
+     }                                                   //each next refers to a new node.
  Iterator<T,M> end_iter() const {
          Iterator<T,M> iter1;
          iter1.iter=nullptr;
@@ -179,5 +228,47 @@ class Map{
      }
   }
   void assign();
-    
+   Node<T,M>* get_root() const {
+       return root;
+       }
+   Cmpfunc<T,M> get_cmp_func(){
+       return cmp;
+   }
+   
 };
+template<class T,class M> //remove 
+bool is_equal(Node<T,M>* node){
+    Node<T,M>*iter=node;
+    while(iter!=nullptr){
+        if(iter->next!=nullptr){
+        if(iter->value.first==iter->next->value.first){
+            return false;
+        }
+        }
+       iter=iter->next; 
+    }
+    return true;
+}
+template<class T,class M>
+void rem_duplicate(Node<T,M>*node){
+    Node<T,M>* iter=node;
+    while(iter!=nullptr){
+        if(iter->next!=nullptr){
+        if(iter->value.first==iter->next->value.first){
+            iter->next=iter->next->next;
+        }
+        }
+        iter=iter->next;
+    }
+}
+template<class T,class M>
+void rem_all(Node<T,M>*node){
+    Node<T,M>* iter=node;
+    bool is_all=false;
+    while(is_all!=true){
+        rem_duplicate(node);
+        is_all=is_equal(node);
+    }
+}
+typedef Pair<int,int> Psi;
+
