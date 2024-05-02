@@ -1,8 +1,6 @@
 #include<iostream>
 #include<string>
 #include<initializer_list>
-
-
 using namespace std;
 template<class T, class M>
 struct  Pair{
@@ -29,7 +27,42 @@ Pair& operator=(const Pair<T,M>& val){
     second=val.second;
     return *this;
 }
-    
+bool operator==(const Pair<T,M>& pair){
+    if(this->first ==pair.first and this->second ==pair.second){
+        return true;
+    }
+    return false;
+}
+bool operator!=(const Pair<T,M>& pair){
+    if(this->first!=pair.first and this->second !=pair.second){
+        return true;
+    }
+    return false;
+}
+bool operator<(const Pair<T,M>& pair){
+    if(this->first<pair.first and this->second<pair.second ){
+        return true;
+    }
+    return false;
+}
+bool operator>(const Pair<T,M>& pair){
+    if(this->first>pair.first and this->second >pair.second){
+        return true;
+    }
+    return false;
+    }
+bool operator>=(const Pair<T,M>& pair){
+    if(this->first>=pair.first and this->second>=pair.second){
+        return true;
+    }
+    return false;
+    }
+bool operator<=(const Pair<T,M>& pair){
+    if(this->first<=pair.first and this->first <=pair.second){
+        return true;
+    }
+    return false;
+    }   
 };
 template<class T,class M>
 struct Node{
@@ -421,7 +454,96 @@ void remove(const Iterator<T,M>& iter){
     Node<T,M>*node=iter.get_iter();
     node=node->next;
 }
-   
+Map& operator=(const Map& map){
+    this->root=map.root;
+    return *this;
+ }
+ bool operator==(const Map& map){
+     Node<T,M>* node=root;
+     Node<T,M>* iter=map.root;
+     if(Map<T,M>::get_map_length(*this)==Map<T,M>::get_map_length(map)){
+         while(node!=nullptr and iter!=nullptr){
+             if(node->value!=iter->value){
+                 return false;
+             }
+             node=node->next;
+             iter=iter->next;
+         }
+     }
+     return true;
+ }
+ bool operator!=(const Map& map){
+     Node<T,M>* node=root;
+     Node<T,M>* iter=map.root;
+     if(Map<T,M>::get_map_length(*this)==Map<T,M>::get_map_length(map)){
+         while(node!=nullptr and iter!=nullptr){
+             if(node->value==iter->value){
+                 return false;
+             }
+             node=node->next;
+             iter=iter->next;
+         }
+     }
+     return true;
+ }
+bool operator>(const Map& map){
+     Node<T,M>* node=root;
+     Node<T,M>* iter=map.root;
+     if(Map<T,M>::get_map_length(*this)==Map<T,M>::get_map_length(map)){
+         while(node!=nullptr and iter!=nullptr){
+             if(node->value<=iter->value){
+                 return false;
+             }
+             node=node->next;
+             iter=iter->next;
+         }
+     }
+     return true;
+ }
+bool operator<(const Map& map){
+     Node<T,M>* node=root;
+     Node<T,M>* iter=map.root;
+     if(Map<T,M>::get_map_length(*this)==Map<T,M>::get_map_length(map)){
+         while(node!=nullptr and iter!=nullptr){
+             if(node->value>=iter->value){
+                 return false;
+             }
+             node=node->next;
+             iter=iter->next;
+         }
+     }
+     return true;
+ }
+ bool operator>=(const Map& map){
+     Node<T,M>* node=root;
+     Node<T,M>* iter=map.root;
+     if(Map<T,M>::get_map_length(*this)==Map<T,M>::get_map_length(map)){
+         while(node!=nullptr and iter!=nullptr){
+             if(node->value<iter->value){
+                 return false;
+             }
+             node=node->next;
+             iter=iter->next;
+         }
+     }
+     return true;
+ }
+bool operator<=(const Map& map){
+     Node<T,M>* node=root;
+     Node<T,M>* iter=map.root;
+     if(Map<T,M>::get_map_length(*this)==Map<T,M>::get_map_length(map)){
+         while(node!=nullptr and iter!=nullptr){
+             if(node->value>iter->value){
+                 return false;
+             }
+             node=node->next;
+             iter=iter->next;
+         }
+     }
+     return true;
+ }
+    
+ 
 };
 typedef Pair<int,int> Psi;
 
