@@ -13,6 +13,8 @@ class Mystring{
      typedef char* iterator;
      typedef const char* const_iterator;
      typedef unsigned int size_c;
+     typedef char& reference;
+     typedef const char& const_reference;
      static  const unsigned int no_pos=4294967295;
      Mystring get_string(){
          return str;
@@ -1053,4 +1055,135 @@ vector<size_t> g_find(const char*ref) const {
         return h;
     }
  }
- };
+ bool operator!=(const Mystring& ref){
+     if(this->get_length()==ref.get_length()){
+         for(int i=0;i<ref.get_length();i++){
+             if(this->str[i]==ref.str[i]){
+                 return false;
+             }
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+ bool operator!=(const char* ref){
+     if(this->get_length()==strlen(ref)){
+         for(int i=0;i<strlen(ref);i++){
+             if(str[i]==ref[i]){
+                 return false;
+             }
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+ bool operator<(const Mystring& ref){
+     if(this->get_length()==ref.get_length()){
+         for(int i=0;i<this->get_length();i++){
+             if(str[i]>=ref.str[i]){
+                 return false;
+             }
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+ bool operator<(const char* ref){
+     if(this->get_length()==strlen(ref)){
+         for(int i=0;i<strlen(ref);i++){
+             if(str[i]>=ref[i]){
+                 return false;
+             }
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+ bool operator>(const Mystring& ref){
+     if(this->get_length()==ref.get_length()){
+         for(int i=0;i<this->get_length();i++){
+             if(str[i]<=ref.str[i]){
+                 return false;
+             }
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+ bool operator>(const char* ref){
+     if(this->get_length()==strlen(ref)){
+         for(int i=0;i<strlen(ref);i++){
+             if(str[i]<=ref[i]){
+                 return false;
+             }
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+bool operator>=(const Mystring& ref){
+     if(this->get_length()==ref.get_length()){
+         for(int i=0;i<this->get_length();i++){
+             if(str[i]<ref.str[i]){
+                 return false;
+             }
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+bool operator>=(const char* ref){
+     if(this->get_length()==strlen(ref)){
+         for(int i=0;i<strlen(ref);i++){
+             if(str[i]<ref[i]){
+                 return false;
+             }
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+  bool operator<=(const Mystring& ref){
+     if(this->get_length()==ref.get_length()){
+         for(int i=0;i<this->get_length();i++){
+             if(str[i]>ref.str[i]){
+                 return false;
+             }
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+bool operator<=(const char* ref){
+     if(this->get_length()==strlen(ref)){
+         for(int i=0;i<strlen(ref);i++){
+             if(str[i]>ref[i]){
+                 return false;
+             }
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ } 
+ 
+ }
