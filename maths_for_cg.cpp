@@ -2,6 +2,7 @@
 #include<cmath>
 #include<string>
 #include"Vector.h"
+#define PI 3.14159265359
 typedef Vector<float> Mat_elem;
 using namespace std;
 class Render{
@@ -61,6 +62,7 @@ class Vector3d{
        float dot=(vec1.x*vec2.x)+(vec1.y*vec2.y)+(vec1.z*vec2.z);
        return dot; //for performing dot product on the vector for the purpose of finding the angle between the vectors.,if dot_product(v1,v2) <0,theta is less than 90°,else if dot_product(v1,v2)==0, theta is 90°,else if dot_product(v1,v2)>0,theta is greater than 90°....
    }
+   
  static  float mag(const Vector3d& vec){
      float mag=sqrt(vec.x*vec.x+vec.y*vec.y+vec.z*vec.z);
      return mag;
@@ -78,7 +80,7 @@ class Vector3d{
          else if(enter=="Z"){
              return z;
          }
-    }
+    } //getting the component of a vector3d
     float&  get_comp(const string& enter)  {
         if(enter=="X"){
             return x;
@@ -115,15 +117,51 @@ class Vector3d{
     Vector3d& operator=(const Vector3d& vec){
         x=vec[1];
         y=vec[2];
-        z=vec[3];
+        z=vec[3];    //To assign a vector value to another vector
         return *this;
     }
     Vector3d negate() const{
         Vector3d vec1;
         vec1.x=-this->x;
         vec1.y=-this->y;
-        vec1.z=-this->z;
+        vec1.z=-this->z;     //applying a minus sign to all component 
         return vec1;
+    }
+    bool operator==(const Vector3d& vec){
+        if(this->x==vec.x and this->y==vec.y and this->z==vec.z){
+            return true;
+        }
+        return false;
+    }
+    bool operator!=(const Vector3d& vec){
+        if(this->x!=vec.x and this->y!=vec.y and this->z!= vec.z){
+            return true;
+        }
+        return false;
+    }
+    bool operator<(const Vector3d& vec){
+        if(this->x<vec.x and this->y < vec.y and this->z< vec.z){
+            return true;
+        }
+        return false;
+    }
+    bool operator>(const Vector3d& vec){
+        if(this->x>vec.x and this->y> vec.y and this->z> vec.z){
+            return true;
+        }
+        return false;
+    }
+    bool operator<=(const Vector3d& vec){
+        if(this->x<=vec.x and this->y <= vec.y and this->z <=vec.z){
+            return true;
+        }
+        return false;
+    }
+    bool operator>=(const Vector3d& vec){
+        if(this->x>=vec.x and this->y >=vec.y and this->z >= vec.z){
+            return true;
+        }
+        return false;
     }
 };
 class Point4D:public Vector3d{ //single inheritance
@@ -158,7 +196,7 @@ class Point4D:public Vector3d{ //single inheritance
   };
 class Mat3x3{//construct the coordinate system
     Mat_elem mat;
-    public:
+    public:     //it represents three vectors (mutually perpendicular to each other)
     Mat3x3(){
         mat.set_size(9);
         (*this).set_identity();
@@ -248,7 +286,7 @@ Vector3d operator*(const Vector3d& vec){// transforming the vector coordinate sy
      }
                     
 };
-class Mat4x4{ // for both position and orientation,....
+class Mat4x4{ // 
     private:
     Mat_elem V;
     public:
@@ -620,7 +658,18 @@ class Euler_angle{
         Mat3x3 mat2=Transform::construct_rotation(head,ROTATE_Y);
         euler=mat*mat1*mat2;
     }
-    Mat3x3 get_euler_angle() const{
+    Mat3x3 get_euler_angle(){
         return euler;
+    }
+};
+class Convert{
+    public:
+    static float rad_to_degree(float deg)  {
+        float rad=(PI/180)*deg;
+        return rad;
+    }
+   static float degree_to_rad(float rad) {
+        float deg=(180/PI)*rad;
+        return deg;
     }
 };
