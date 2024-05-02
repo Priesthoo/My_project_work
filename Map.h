@@ -470,6 +470,9 @@ Map& operator=(const Map& map){
              iter=iter->next;
          }
      }
+     else{
+         return false;
+     }
      return true;
  }
  bool operator!=(const Map& map){
@@ -483,6 +486,9 @@ Map& operator=(const Map& map){
              node=node->next;
              iter=iter->next;
          }
+     }
+     else{
+         return false;
      }
      return true;
  }
@@ -498,6 +504,9 @@ bool operator>(const Map& map){
              iter=iter->next;
          }
      }
+     else{
+         return false;
+     }
      return true;
  }
 bool operator<(const Map& map){
@@ -511,6 +520,9 @@ bool operator<(const Map& map){
              node=node->next;
              iter=iter->next;
          }
+     }
+     else{
+         return false;
      }
      return true;
  }
@@ -526,6 +538,9 @@ bool operator<(const Map& map){
              iter=iter->next;
          }
      }
+     else{
+         return false;
+     }
      return true;
  }
 bool operator<=(const Map& map){
@@ -540,11 +555,13 @@ bool operator<=(const Map& map){
              iter=iter->next;
          }
      }
+     else{
+         return false;
+     }
      return true;
  }
     
  
 };
 typedef Pair<int,int> Psi;
-
 
