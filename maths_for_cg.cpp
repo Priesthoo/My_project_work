@@ -163,6 +163,13 @@ class Vector3d{
         }
         return false;
     }
+Vector3d normalize(){
+Vector3d vec1=*this;
+Vector3d vec2;
+float mag1=Vector3d::mag(vec1);
+vec2=vec1/mag1;
+return vec2;
+}
 };
 class Point4D:public Vector3d{ //single inheritance
     float w;
