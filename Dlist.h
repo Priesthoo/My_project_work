@@ -1,5 +1,29 @@
 #include<iostream>
 #include<initializer_list>
+/*
+    My aim:
+    1).Insert_at_pos(),insert_after_pos(),insert_before_pos()
+    parameters to be passed:
+    1).value.
+    2).initializer_list.
+    3).iterators.
+*/
+enum OPERATOR{
+    LESS_THAN,// less than(<)...
+    GREATER_THAN,  // >
+    LESS_THAN_OR_EQUAL_TO,// <=
+    GREATER_THAN_OR_EQUAL_TO//>=
+    IS_EQUAL_TO,//==
+    IS_NOT_EQUAL_TO//!=
+};
+enum SORT{
+    ASCEND,
+    DESCEND
+};
+enum PRINT{
+    FORWARD,
+    REVERSE
+};
 using namespace std;
 template<class T>
 struct Node{
@@ -28,6 +52,7 @@ struct Node{
           create_node(node->next,val);
       }
   }
+  
 // Tranversal..
 template<class T>
 size_t get_node_length(Node<T>* node){
@@ -56,6 +81,82 @@ Node<T>* get_last_iter(Node<T>* node){
         iter=iter->next;
     }
     return iter1;
+}
+template<class T>
+bool is_sorted(Node<T>*node,OPERATOR state){
+    if(state==LESS_THAN){
+        Node<T>* iter=node;
+        while(iter!=nullptr){
+            if(iter->next!=nullptr){
+            if(iter->value>iter->next->value){
+                return false;
+            }
+            }
+            iter=iter->next;
+        }
+        
+        return true;
+    }
+    else if(state==GREATER_THAN){
+        Node<T>*iter=node;
+        while(iter!=nullptr){
+            if(iter->next!=nullptr){
+            if(iter->value<=iter->next->value){
+                return false;
+            }
+            }
+            iter=iter->next;
+        }
+        return true;
+    }
+    else if(state==LESS_THAN_OR_EQUAL_TO){
+        Node<T>*iter=node;
+        while(iter!=nullptr){
+            if(iter->next!=nullptr){
+            if(iter->value>iter->next->value){
+                return false;
+            }
+            }
+            iter=iter->next;
+        }
+        return true;
+    }
+    else if(state==GREATER_THAN_OR_EQUAL_TO){
+        Node<T>*iter=node;
+        while(iter!=nullptr){
+            if(iter->next!=nullptr){
+            if(iter->value<iter->next->value){
+                return false;
+            }
+            }
+            iter=iter->next;
+        }
+        return true;
+    }
+    else if(state==IS_EQUAL_TO){
+        Node<T>*iter=node;
+        while(iter!=nullptr){
+            if(iter->next!=nullptr){
+            if(iter->value!=iter->next->value){
+                return false;
+            }
+            }
+            iter=iter->next;
+        }
+        return true;
+    }
+    else if(state==IS_NOT_EQUAL_TO){
+        Node<T>*iter=node;
+        while(iter!=nullptr){
+            if(iter->next!=nullptr){
+            if(iter->value==iter->next->value){
+                return false;
+            }
+            }
+            iter=iter->next;
+        }
+        return true;
+    }
 }
 template<class T>
 class Iterator{
@@ -101,6 +202,12 @@ class Iterator{
     Node<T>& get(){
         return *iter;
     }
+   T get_value() const{
+       return iter->value;
+   }
+   T& get_value(){
+       return iter->value;
+   }
 };
 //a pointer can either  store address or a pointer to an allocated memory 
 template<class T>
@@ -141,4 +248,32 @@ class Dlist{
         T value1={};
         return value1;
     }
- }
+    Node<T>* begin(){
+        return head;
+    }
+    Node<T>* end() {
+        return nullptr;
+    }
+    Node<T>* begin() const{
+        return head;
+    }
+    Node<T>* end()const{
+        return nullptr;
+    }
+    
+    Node<T>* at_pos(const int& idx){
+        Node<T>* iter=this->head;
+        size_t y=0;
+        while(iter!=nullptr){
+            if(y==idx){
+                return iter;
+            }
+            ++y;
+            iter=iter->next;
+        }
+        return nullptr;
+    }
+    Node<T>* get_head(){
+        return head;
+    }
+ };
