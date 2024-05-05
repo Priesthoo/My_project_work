@@ -335,7 +335,7 @@ class Dlist{
     Node<T>* get_head(){
         return head;
     }
-    //this is the variants of Insert
+    /these are the variants of Insert
     Node<T>*insert_after_pos(Node<T>*iter1,const T& value){
        Node<T>*nNode=new Node<T>;
        nNode->value=value;
