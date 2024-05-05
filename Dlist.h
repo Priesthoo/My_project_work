@@ -278,7 +278,18 @@ void print_nodes(Node<T>* node,PRINT print){
     }
         
 }
-
+template<class T,class M=Node<T>*>//returns the first element that has value equal to val...
+Node<T>* return_pos_by_val(Node<T>*node,const T& val){
+    Pair<T,M>pair;
+    Node<T>*iter=node;
+    while(iter!=nullptr){
+        if(iter->value==val){
+            pair.second=iter;
+            return pair.second;
+        }
+        iter=iter->next;
+    }
+}
 template<class T>
 class Iterator{
     private:
@@ -329,6 +340,7 @@ class Iterator{
    T& get_value(){
        return iter->value;
    }
+   
 };
 //a pointer can either  store address or a pointer to an allocated memory 
 template<class T>
@@ -453,6 +465,67 @@ class Dlist{
       iter->prev->next=nNode;
       return nNode;
 }
-
- };
-
+Node<T>*insert_before_pos(Node<T>*iter,const initializer_list<int>& lst){
+    auto key=lst.begin();
+      Node<T>*nNode=new Node<T>;
+      nNode->value=key[0];
+      nNode->next=nullptr;
+      nNode->prev=nullptr;
+      for(int i=1;i<lst.size();i++){
+          create_node(nNode,key[i]);
+      }
+      nNode->prev=iter->prev;
+      Node<T>*iter1=get_last_iter(nNode);
+      iter1->next=iter;
+      iter->prev->next=nNode;
+      return nNode;
+      }
+Node<T>*insert_after_pos(Node<T>*iter,Node<T>*iter1,Node<T>*iter2){
+    Node<T>*iter4=new Node<T>;
+    iter4->value=iter1->value;
+    iter4->next=nullptr;
+    iter4->prev=nullptr;
+    iter1=iter1->next;
+    while(iter1!=iter2){
+        create_node(iter4,iter1->value);
+        iter1=iter1->next;
+    }
+    iter4->prev=iter;
+    Node<T>*iter5=get_last_iter(iter4);
+    iter5->next=iter->next;
+    iter->next=iter4;
+    return iter4;
+}
+Node<T>*insert_at_pos(Node<T>*iter,Node<T>*iter1,Node<T>*iter2){
+    Node<T>*iter4=new Node<T>;
+    iter4->value=iter1->value;
+    iter4->next=nullptr;
+    iter4->prev=nullptr;
+    iter1=iter1->next;
+    while(iter1!=iter2){
+        create_node(iter4,iter1->value);
+        iter1=iter1->next;
+    }
+    iter4->prev=iter->prev;
+    Node<T>*iter5=get_last_iter(iter4);
+    iter5->next=iter->next;
+    iter=iter4;
+    return iter4;
+}
+Node<T>*insert_before_pos(Node<T>*iter,Node<T>*iter1,Node<T>*iter2){
+    Node<T>*iter4=new Node<T>;
+    iter4->value=iter1->value;
+    iter4->next=nullptr;
+    iter4->prev=nullptr;
+    iter1=iter1->next;
+    while(iter1!=iter2){
+        create_node(iter4,iter1->value);
+        iter1=iter1->next;
+    }
+    iter4->prev=iter->prev;
+    Node<T>*iter5=get_last_iter(iter4);
+    iter5->next=iter;
+    iter->prev->next=iter4;
+    return iter4;
+}
+};
