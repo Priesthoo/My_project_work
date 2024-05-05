@@ -12,7 +12,7 @@ enum OPERATOR{
     LESS_THAN,// less than(<)...
     GREATER_THAN,  // >
     LESS_THAN_OR_EQUAL_TO,// <=
-    GREATER_THAN_OR_EQUAL_TO//>=
+    GREATER_THAN_OR_EQUAL_TO,//>=
     IS_EQUAL_TO,//==
     IS_NOT_EQUAL_TO//!=
 };
@@ -158,6 +158,54 @@ bool is_sorted(Node<T>*node,OPERATOR state){
         return true;
     }
 }
+template<class T>
+void sort_nodes(Node<T>* node,SORT sort){
+    if(sort==ASCEND){
+    Node<T>*iter=node;
+    while(iter!=nullptr){
+        if(iter->next!=nullptr){
+            if(iter->value>iter->next->value){
+                T value1=iter->value;
+                iter->value=iter->next->value;
+                iter->next->value=value1;
+            }
+        }
+        iter=iter->next;
+    }
+    }
+    if(sort==DESCEND){
+    Node<T>*iter=node;
+    while(iter!=nullptr){
+        if(iter->next!=nullptr){
+            if(iter->value<iter->next->value){
+                T value1=iter->value;
+                iter->value=iter->next->value;
+                iter->next->value=value1;
+            }
+        }
+        iter=iter->next;
+    }
+}
+}
+template<class T>
+void sort_nodes_until(Node<T>*node,SORT sort,OPERATOR state){
+    bool is_sorting=false;
+    
+}
+template<class T> 
+void print_nodes(Node<T>* node,PRINT print){
+    Node<T>* iter=nullptr;
+    Node<T>*iter1=nullptr;
+    iter=node;
+    iter1=get_last_iter(node);
+    if(print==FORWARD){
+        while(iter!=nullptr){
+            cout<<iter->value<<endl;
+        }
+        iter=iter->next;
+    }
+}
+
 template<class T>
 class Iterator{
     private:
