@@ -24,6 +24,68 @@ enum PRINT{
     FORWARD,
     REVERSE
 };
+template<class T, class M>
+struct  Pair{
+    T first;
+    M second;
+    Pair()=default;
+    Pair(T f, M sec){
+        first=f;
+        second=sec;
+    }
+ 
+M& operator[ ](const T key) const{
+    if(key==first){
+        return second;
+    }
+ }
+ M& operator[ ](const T key){
+     if(key==first){
+         return second;
+     }
+ }
+Pair& operator=(const Pair<T,M>& val){
+    first=val.first;
+    second=val.second;
+    return *this;
+}
+bool operator==(const Pair<T,M>& pair){
+    if(this->first ==pair.first and this->second ==pair.second){
+        return true;
+    }
+    return false;
+}
+bool operator!=(const Pair<T,M>& pair){
+    if(this->first!=pair.first and this->second !=pair.second){
+        return true;
+    }
+    return false;
+}
+bool operator<(const Pair<T,M>& pair){
+    if(this->first<pair.first and this->second<pair.second ){
+        return true;
+    }
+    return false;
+}
+bool operator>(const Pair<T,M>& pair){
+    if(this->first>pair.first and this->second >pair.second){
+        return true;
+    }
+    return false;
+    }
+bool operator>=(const Pair<T,M>& pair){
+    if(this->first>=pair.first and this->second>=pair.second){
+        return true;
+    }
+    return false;
+    }
+bool operator<=(const Pair<T,M>& pair){
+    if(this->first<=pair.first and this->first <=pair.second){
+        return true;
+    }
+    return false;
+    }   
+};
 using namespace std;
 template<class T>
 struct Node{
@@ -335,15 +397,62 @@ class Dlist{
     Node<T>* get_head(){
         return head;
     }
-    /these are the variants of Insert
-    Node<T>*insert_after_pos(Node<T>*iter1,const T& value){
+    //this is the variants of Insert,for value,initializer_list,iterators......
+    Node<T>*insert_after_pos(Node<T>*iter1,const T& value1){
        Node<T>*nNode=new Node<T>;
-       nNode->value=value;
+       nNode->value=value1;
        nNode->next=iter1->next;
        nNode->prev=iter1->next->prev;
        iter1->next->prev=nNode;
        iter1->next=nNode;
        return nNode;
      }
-     
+     Node<T>*insert_at_pos(Node<T>*iter,const T& value1){
+        Node<T>*nNode=new Node<T>;
+        nNode->value=value1;
+        nNode->next=iter->next;
+        nNode->prev=iter->prev;
+        iter->prev->next=nNode;
+        return nNode;
+     }
+     Node<T>*insert_before_pos(Node<T>*iter,const T& value1){
+         Node<T>* nNode=new Node<T>;
+         nNode->value=value1;
+         nNode->next=iter;
+         nNode->prev=iter->prev;
+         iter->prev->next=nNode;
+         return nNode;
+      }
+  Node<T>* insert_after_pos(Node<T>*iter,const initializer_list<int>& lst){
+      auto key=lst.begin();
+      Node<T>*nNode=new Node<T>;
+      nNode->value=key[0];
+      nNode->next=nullptr;
+      nNode->prev=nullptr;
+      for(int i=1;i<lst.size();i++){
+          create_node(nNode,key[i]);
+      }
+      nNode->prev=iter;
+      Node<T>*iter1=get_last_iter(nNode);
+      iter1->next=iter->next;
+      iter->next=nNode;
+      return nNode;
+  }
+  Node<T>* insert_at_pos(Node<T>*iter,const initializer_list<int>& lst){
+      auto key=lst.begin();
+      Node<T>*nNode=new Node<T>;
+      nNode->value=key[0];
+      nNode->next=nullptr;
+      nNode->prev=nullptr;
+      for(int i=1;i<lst.size();i++){
+          create_node(nNode,key[i]);
+      }
+      nNode->prev=iter->prev;
+      Node<T>*iter1=get_last_iter(nNode);
+      iter1->next=iter->next;
+      iter->prev->next=nNode;
+      return nNode;
+}
+
  };
+
