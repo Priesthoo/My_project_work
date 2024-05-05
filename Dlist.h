@@ -17,8 +17,8 @@ enum OPERATOR{
     IS_NOT_EQUAL_TO//!=
 };
 enum SORT{
-    ASCEND,
-    DESCEND
+    ASCEND,// <
+    DESCEND//>
 };
 enum PRINT{
     FORWARD,
@@ -187,10 +187,14 @@ void sort_nodes(Node<T>* node,SORT sort){
     }
 }
 }
+// NB: sort must be equal to state..
 template<class T>
 void sort_nodes_until(Node<T>*node,SORT sort,OPERATOR state){
     bool is_sorting=false;
-    
+     while(is_sorting!=true){
+         sort_nodes(node,sort);
+         is_sorting=is_sorted(node,state);
+     }
 }
 template<class T> 
 void print_nodes(Node<T>* node,PRINT print){
@@ -331,5 +335,15 @@ class Dlist{
     Node<T>* get_head(){
         return head;
     }
+    //this is the variants of Insert
+    Node<T>*insert_after_pos(Node<T>*iter1,const T& value){
+       Node<T>*nNode=new Node<T>;
+       nNode->value=value;
+       nNode->next=iter1->next;
+       nNode->prev=iter1->next->prev;
+       iter1->next->prev=nNode;
+       iter1->next=nNode;
+       return nNode;
+     }
+     
  };
-
