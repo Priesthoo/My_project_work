@@ -201,9 +201,16 @@ void print_nodes(Node<T>* node,PRINT print){
     if(print==FORWARD){
         while(iter!=nullptr){
             cout<<iter->value<<endl;
+          iter=iter->next;
         }
-        iter=iter->next;
     }
+    else if(print==REVERSE){
+        while(iter1!=nullptr){
+            cout<<iter1->value<<endl;
+             iter1=iter1->prev;
+        }
+    }
+        
 }
 
 template<class T>
@@ -325,3 +332,4 @@ class Dlist{
         return head;
     }
  };
+
