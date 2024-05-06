@@ -289,6 +289,16 @@ Node<T>* return_pos_by_val(Node<T>*node,const T& val){
         }
         iter=iter->next;
     }
+    return nullptr;
+}
+template<class T>
+Node<T>* remove_before_pos(Node<T>*node){
+    if(node!=nullptr and node->prev->prev!=nullptr){
+        node->prev=node->prev->prev;
+        node->prev->next=node;
+    }
+    Node<T>*iter=node->prev->next;
+    return iter;
 }
 template<class T>
 class Iterator{
@@ -527,5 +537,24 @@ Node<T>*insert_before_pos(Node<T>*iter,Node<T>*iter1,Node<T>*iter2){
     iter5->next=iter;
     iter->prev->next=iter4;
     return iter4;
+}//done with insertion...
+//now we move to removing elements
+void clear(){
+    head=nullptr;
 }
-};
+void push_back(const T& elem){
+    Node<T>* iter=get_last_iter(this->head);
+    Node<T>*node=new Node<T>;
+    node->value=elem;
+    node->next=nullptr;
+    node->prev=iter;
+    iter->next=node;
+   }
+   void push_front(const T& elem){
+       Node<T>*node=new Node<T>;
+       node->value=elem;
+       node->next=head;
+       node->prev=head;
+       head=node;
+       head->prev=nullptr;// head->prev still  points to nullptr;
+   }
