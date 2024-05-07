@@ -1,5 +1,6 @@
 #include<iostream>
 #include<initializer_list>
+#define null nullptr
 /*
     My aim:
     1).Insert_at_pos(),insert_after_pos(),insert_before_pos()
@@ -23,6 +24,78 @@ enum SORT{
 enum PRINT{
     FORWARD,
     REVERSE
+};
+template<class T>
+class Negate{
+    public:
+    T operator()(const T& ref){
+        T result=-ref;
+        return result;
+    }
+};
+template<class T>
+class Plus{
+    public:
+    T operator()(const T& ref1,const T&  ref2){
+        T result=ref1+ref2;
+        return result;
+    }
+};
+template<class T>
+class Minus{
+    public:
+    T operator()(const T& ref,const T& ref2){
+        T result=ref-ref2;
+        return result;
+    }
+};
+template<class T>
+class Multiply{
+    public:
+    T operator()(const T& ref,const T& ref1){
+        T result=ref*ref1;
+        return result;
+    }
+};
+template<class T>
+class Divide{
+    public:
+    T operator()(const T& ref1,const T& ref2){
+        T result=ref1/ref2;
+        return result;
+    }
+};
+template<class T>
+class Modulus{
+    public:
+    size_t operator()(const T& ref1,const T& ref2){
+        size_t result=ref1%ref2;
+        return result;
+    }
+};
+template<class T>
+class Equal_to{
+    public:
+    bool operator()(const T& ref1,const T& ref2){
+        bool is_equal=(ref1==ref2);
+        return is_equal;
+    }
+};
+template<class T>
+class Not_equal_to{
+    public:
+    bool operator()(const T& ref,const T& ref2){
+        bool is_not_equal=(ref!=ref2);
+        return is_not_equal;
+    }
+};
+template<class T>
+class Less{
+    public:
+    bool operator()(const T& ref,const T& ref2){
+        bool is_less=(ref<ref2);
+        return is_less;
+    }
 };
 template<class T, class M>
 struct  Pair{
@@ -301,6 +374,23 @@ Node<T>* remove_before_pos(Node<T>*node){
     return iter;
 }
 template<class T>
+Node<T>*remove_at_pos(Node<T>*node){
+    if(node!=nullptr){
+        node->next->prev=node->prev;
+        node->prev->next=node->next;
+    }
+    return node->prev->next;
+}
+template<class T>
+Node<T>* remove_after_pos(Node<T>*node){
+    if(node!=nullptr){
+         node->next->next->prev=node;
+        node->next=node->next->next;
+    }
+    return node->next;
+}
+
+template<class T>
 class Iterator{
     private:
     Node<T>* iter;
@@ -378,6 +468,9 @@ class Dlist{
         head=iter1.get_head();
         iter2.get()->next=nullptr;
     }
+    Dlist(const Dlist& list){
+        head=list.head;
+    }
     T& operator[ ](const int& idx){
         Node<T>* iter=this->head;
         size_t y=0;
@@ -419,6 +512,16 @@ class Dlist{
     Node<T>* get_head(){
         return head;
     }
+    //length of a Dlist...
+   size_t get_length(){
+       Node<T>* iter2=this->head;
+       size_t y=0;
+       while(head!=nullptr){
+           ++y;
+           head=head->next;
+       }
+       head=iter2;
+   }
     //this is the variants of Insert,for value,initializer_list,iterators......
     Node<T>*insert_after_pos(Node<T>*iter1,const T& value1){
        Node<T>*nNode=new Node<T>;
@@ -554,7 +657,83 @@ void push_back(const T& elem){
        Node<T>*node=new Node<T>;
        node->value=elem;
        node->next=head;
-       node->prev=head;
+       head->prev=node;
+       node->prev=nullptr;
        head=node;
-       head->prev=nullptr;// head->prev still  points to nullptr;
+       // head->prev still  points to nullptr;
    }
+   void remove_val(const T& val){
+    Node<T>* node1=new Node<T>;
+      while(head!=nullptr){
+        if(head->value!=val){
+            create_node(node1,head->value);
+            }
+        head=head->next;
+    }
+    head=node1->next;
+ }//assignment operation......
+ Dlist& operator=(const Dlist& dlist){
+     *this={dlist};
+ }
+ void assign(const initializer_list<T>&list){
+     *this={list};
+ }
+ void assign(Node<T>*iter,Node<T>* iter1){
+     *this={iter,iter1};
+ }
+ //operators >,<,>=,<=,!=,==...
+ bool operator==(const Dlist& dlist){
+     Node<T>*iter=this->head;
+     Node<T>*iter1=dlist.head;
+     if(this->get_length()==dlist.get_length()){
+         while(iter!=nullptr and iter1!=nullptr){
+             if(iter->value!=iter1->value){
+                 return false;
+             }
+             iter=iter->next;
+             iter1=iter1->next;
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+  bool operator!=(const Dlist& dlist){
+     Node<T>*iter=this->head;
+     Node<T>*iter1=dlist.head;
+     if(this->get_length()==dlist.get_length()){
+         while(iter!=nullptr and iter1!=nullptr){
+             if(iter->value==iter1->value){
+                 return false;
+             }
+             iter=iter->next;
+             iter1=iter1->next;
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+  bool operator<=(const Dlist& dlist){
+     Node<T>*iter=this->head;
+     Node<T>*iter1=dlist.head;
+     if(this->get_length()==dlist.get_length()){
+         while(iter!=nullptr and iter1!=nullptr){
+             if(iter->value>iter1->value){
+                 return false;
+             }
+             iter=iter->next;
+             iter1=iter1->next;
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+ 
+   
+   
+};
