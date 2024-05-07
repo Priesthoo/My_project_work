@@ -442,7 +442,7 @@ class Iterator{
    }
    
 };
-//a pointer can either  store address or a pointer to an allocated memory 
+//a pointer can either store address or a pointer to an allocated memory 
 template<class T>
 class Dlist{
     private:
@@ -683,6 +683,15 @@ void push_back(const T& elem){
  }
  void assign(Node<T>*iter,Node<T>* iter1){
      *this={iter,iter1};
+ }
+ //adding list together.
+ Dlist operator+(const Dlist& dlist){
+     Dlist dlist1;
+     Node<T>*iter=get_last_iter(this->head);
+     iter->next=dlist.head;
+     dlist.head->prev=iter;
+     dlist1=this->head;
+     return dlist1;
  }
  //operators >,<,>=,<=,!=,==...
  bool operator==(const Dlist& dlist){
