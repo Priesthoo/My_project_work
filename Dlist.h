@@ -818,7 +818,31 @@ void push_back(const T& elem){
      *this+=iter;
      return *this;
  }
- 
+ Dlist& append(Node<T>*iter1,Node<T>*iter2){
+     Node<T>*iter=get_last_iter(this->head);
+     iter->next=iter1;
+     iter1->prev=iter;
+     iter2->next=null;
+     return *this;
+ }
+ Dlist& append(const initializer_list<T>& list){
+     Node<T>*iter=get_last_iter(this->head);
+     Node<T>*nNode=new Node<T>;
+     auto key=list.begin();
+     nNode->value=key[0];
+     nNode->next=null;
+     nNode->prev=null;
+     for(int i=1;i<list.size();i++){
+         create_node(nNode,key[i]);
+     }
+     iter->next=nNode;
+     nNode->prev=iter;
+     return *this;
+ }
+ Dlist& operator+=(const initializer_list<int>& list){
+     this->append(list);
+     return *this;
+}
 };
 // Algorithm for Double linked list...
 template<class T>
