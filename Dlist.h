@@ -733,7 +733,57 @@ void push_back(const T& elem){
      }
      return true;
  }
- 
+ bool operator>=(const Dlist& dlist){
+     Node<T>*iter=this->head;
+     Node<T>*iter1=dlist.head;
+     if(this->get_length()==dlist.get_length()){
+         while(iter!=nullptr and iter1!=nullptr){
+             if(iter->value<iter1->value){
+                 return false;
+             }
+             iter=iter->next;
+             iter1=iter1->next;
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+ bool operator<(const Dlist& dlist){
+     Node<T>*iter=this->head;
+     Node<T>*iter1=dlist.head;
+     if(this->get_length()==dlist.get_length()){
+         while(iter!=nullptr and iter1!=nullptr){
+             if(iter->value>=iter1->value){
+                 return false;
+             }
+             iter=iter->next;
+             iter1=iter1->next;
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
+ bool operator>(const Dlist& dlist){
+     Node<T>*iter=this->head;
+     Node<T>*iter1=dlist.head;
+     if(this->get_length()==dlist.get_length()){
+         while(iter!=nullptr and iter1!=nullptr){
+             if(iter->value<=iter1->value){
+                 return false;
+             }
+             iter=iter->next;
+             iter1=iter1->next;
+         }
+     }
+     else{
+         return false;
+     }
+     return true;
+ }
    
    
 };
