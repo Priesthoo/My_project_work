@@ -496,7 +496,9 @@ class Dlist{
     Node<T>* end()const{
         return nullptr;
     }
-    
+    Dlist(Node<T>*iter){
+        head=iter;
+    }
     Node<T>* at_pos(const int& idx){
         Node<T>* iter=this->head;
         size_t y=0;
@@ -521,6 +523,7 @@ class Dlist{
            head=head->next;
        }
        head=iter2;
+       return y;
    }
     //this is the variants of Insert,for value,initializer_list,iterators......
     Node<T>*insert_after_pos(Node<T>*iter1,const T& value1){
@@ -784,6 +787,95 @@ void push_back(const T& elem){
      }
      return true;
  }
-   
-   
+ //append operations
+ Dlist& operator+=(const Dlist& dlist){
+     Node<T>* iter=get_last_iter(this->head);
+     iter->next=dlist.head;
+     dlist.head->prev=iter;
+     return *this;
+ }
+ Dlist& operator+=(Node<T>*iter){
+     Node<T>*iter1=get_last_iter(this->head);
+     iter1->next=iter;
+     iter->prev=iter1;
+     return *this;
+ }
+ 
+ Dlist& append(const Dlist& dlist){
+     *this+=dlist;
+     return *this;
+ }
+ Dlist& append(Node<T>* iter){
+     *this+=iter;
+     return *this;
+ }
+ 
 };
+// Algorithm for Double linked list...
+template<class T>
+class Algorithm_for_dlist{
+    public:
+    static  size_t count(T* begin,T* end){
+        size_t sz=0;
+        while(begin!=end){
+            ++sz;
+            begin=begin->next;
+        }
+        return sz;
+    }
+    static T* min_value(T* begin,T* end){
+        T* nNode=new T;
+        nNode->value=begin->value;
+        while(begin!=end){
+            if(begin->value<nNode->value){
+                nNode->value=begin->value;
+            }
+            begin=begin->next;
+        }
+        return nNode;
+    }
+    static T* max_value(T* begin,T* end){
+        T* nNode=new T;
+        nNode->value=begin->value;
+        while(begin!=end){
+            if(begin->value>nNode->value){
+                 nNode->value=begin->value;
+            }
+            begin=begin->next;
+        }
+        return nNode;
+    }
+};
+template<class T,class pred>
+class Algorithm_if{
+    public:
+    static size_t count_if(T* begin,T* end,pred op){
+        size_t sz=0;
+        while(begin!=end){
+            if(op(begin->value)==true){
+                ++sz;
+            }
+            begin=begin->next;
+        }
+        return sz;
+    }
+    static T* test(T* begin,T* end, pred op){
+        T* nNode=new T;
+        while(begin!=end){
+            if(op(begin->value)==true){
+                nNode->value=begin->value;
+            }
+            begin=begin->next;
+        }
+        return nNode;
+    }
+    
+};
+template<class T>
+ Node<T>* merge_two_list(Node<T>*iter,Node<T>*iter2,Node<T>*iter3,Node<T>*iter4){
+     iter->prev=null;
+     iter2->next=iter3;
+     iter3->prev=iter2;
+     iter4->next=null;
+     return iter;
+}
