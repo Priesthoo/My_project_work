@@ -365,6 +365,19 @@ Node<T>* return_pos_by_val(Node<T>*node,const T& val){
     return nullptr;
 }
 template<class T>
+size_t return_index_by_pos(Node<T>*nNode,Node<T>*pos){
+    Node<T>*iter=nNode;
+    size_t y=0;
+    while(iter!=null){
+        if(iter==pos){
+            return y;
+        }
+        ++y;
+        iter=iter->next;
+    }
+    return y;
+}
+template<class T>
 Node<T>* remove_before_pos(Node<T>*node){
     if(node!=nullptr and node->prev->prev!=nullptr){
         node->prev=node->prev->prev;
@@ -467,6 +480,7 @@ class Dlist{
     Dlist(Iterator<T> iter1,Iterator<T> iter2){
         head=iter1.get_head();
         iter2.get()->next=nullptr;
+        head->prev=null;
     }
     Dlist(const Dlist& list){
         head=list.head;
