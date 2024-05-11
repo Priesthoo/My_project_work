@@ -10,16 +10,17 @@ int main(int argc, char *argv[])
       cout<<bnode->value<<endl;
      cout<<bnode->right->value<<endl;
      cout<<bnode->left->right->value;
-                  /*
-                                                                
+     /*
                  67
-                                                        /   \
-                                                      /      \
-                                                     /         \
-           17          70                      
-            \
-             \
-              18                            
-                                            
-                                              
+                / \                                                     
+               /   \                          
+              /     \                      
+             /       \
+            17       70
+             \ 
+              \
+               \
+               18
+
+*/                                         
   }
