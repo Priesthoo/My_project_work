@@ -7,7 +7,8 @@ int main(int argc, char *argv[])
      create_node(bnode,70);
      insert_new_node(bnode,17);
      insert_new_node(bnode,18);
-      cout<<bnode->value<<endl;
+     insert_new_node(bnode,26);
+     cout<<bnode->value<<endl;
      cout<<bnode->right->value<<endl;
      cout<<bnode->left->right->value;
      /*
@@ -17,10 +18,9 @@ int main(int argc, char *argv[])
               /     \                      
              /       \
             17       70
-             \ 
-              \
-               \
-               18
-
+           / \ 
+          /   \
+         /     \
+       26       18
 */                                         
   }
