@@ -21,6 +21,6 @@ int main(int argc, char *argv[])
            / \ 
           /   \
          /     \
-       26       18
+        18     26
 */                                         
   }
