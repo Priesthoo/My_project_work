@@ -80,3 +80,4 @@ void insert_new_node(Bnode<T>*bnode,const T& value){
         bnode->left=null;
     }
 }
+#define null nullptr
