@@ -239,3 +239,39 @@ class My_list{
     return iter;
 }
 };
+template<class T>
+Node<T>* get_at_pos(Node<T>*node,const size_t&  idx){
+    Node<T>* iter=node;
+    size_t y=0;
+    while(iter!=null){
+        if(y==idx){
+            return iter;
+        }
+        ++y;
+        iter=iter->next;
+    }
+    return null;
+}
+/*
+iter represents a list
+iter2 represents a different list of same type.
+
+*/
+template<class T>
+Node<T>* merge_list(Node<T>*iter,Node<T>*iter1){
+    Node<T>*node=null;
+    Node<T>*iter2=get_last_iter(iter);
+    iter2->next=iter1;
+    node=iter;
+    return node;
+ }
+template<class T>
+Node<T>*merge_at_head(Node<T>*iter,Node<T>*iter1){
+    Node<T>*node=null;
+    Node<T>*iter2=get_last_iter(iter1);
+    iter2->next=iter;
+    iter=iter1;
+    node=iter;
+    return node;
+}
+
