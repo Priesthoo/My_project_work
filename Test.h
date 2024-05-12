@@ -8,6 +8,7 @@ using namespace std;
 #endif
 enum ORDER{
     IN_ORDER=10,
+    IN_ORDER_RIGHT=18,
     POST_ORDER=12,
     PRE_ORDER=14,
     ALL_ORDER=16
@@ -123,6 +124,15 @@ void print_in_order(Bnode<T>* node)
 cout << node->value << " ";
  print_in_order(node->right);
 }
+template<class T>
+void print_in_order_right(Bnode<T>*bnode){
+    if(bnode==null){
+        return;
+    }
+    print_in_order_right(bnode->right);
+    cout<<bnode->value<<" ";
+    print_in_order_right(bnode->left);
+}
 
 template<class T>
 void print_pre_order(Bnode<T>*bnode){
@@ -151,6 +161,11 @@ void print_tree(Bnode<T>*bnode,ORDER state){
         cout<<"]"<<endl;
         
     }
+    else if(state==IN_ORDER_RIGHT){
+        cout<<"IN_ORDER_RIGHT:"<<"[";
+        print_in_order_right(bnode);
+        cout<<"]"<<endl;
+    }
     else if(state==POST_ORDER){
         cout<<"POST_ORDER:"<<"[";
         print_post_order(bnode);
@@ -164,10 +179,13 @@ void print_tree(Bnode<T>*bnode,ORDER state){
        else if(state==ALL_ORDER){
         cout<<"IN_ORDER:"<<"[";
         print_in_order(bnode);
-        cout<<"]"<<"  ";
+        cout<<"]"<<" ";
+        cout<<"IN_ORDER_RIGHT:"<<"[";
+        print_in_order_right(bnode);
+        cout<<"]"<<" ";
         cout<<"POST_ORDER:"<<"[";
         print_post_order(bnode);
-        cout<<"]"<<"   ";
+        cout<<"]"<<" ";
         cout<<"PRE_ORDER:"<<"[";
         print_pre_order(bnode);
         cout<<"]"<<endl;
