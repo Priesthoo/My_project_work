@@ -6,6 +6,12 @@ using namespace std;
 #ifndef null
 #define null nullptr
 #endif
+enum ORDER{
+    IN_ORDER=10,
+    POST_ORDER=12,
+    PRE_ORDER=14,
+    ALL_ORDER=16
+};
 template<class T>
 struct Bnode{
     T value;
@@ -80,4 +86,91 @@ void insert_new_node(Bnode<T>*bnode,const T& value){
         bnode->left=null;
     }
 }
-#define null nullptr
+template<class T>
+Bnode<T>* Find_max_value(Bnode<T>* bnode){
+    Bnode<T>*iter;
+    iter=bnode;
+    while(iter!=null){
+        if(iter->right==null){
+            return iter;
+        }
+        iter=iter->right;
+    }
+    return iter;
+ }
+ template<class T>
+ Bnode<T>*Find_min_value(Bnode<T>*bnode){
+     Bnode<T>*iter;
+     iter=bnode;
+     while(iter!=null){
+         if(iter->left==null){
+             return iter;
+         }
+         iter=iter->left;
+     }
+     return iter;
+ }
+ /*
+    The tranversal operation searches until.it encounters a leaf node
+ */
+template<class T>
+void print_in_order(Bnode<T>* node)
+{
+    if (node == null){
+    return;
+}
+ print_in_order(node->left);
+cout << node->value << " ";
+ print_in_order(node->right);
+}
+
+template<class T>
+void print_pre_order(Bnode<T>*bnode){
+    if(bnode==null){
+        return ;
+    }
+    cout<<bnode->value<<" ";
+    print_pre_order(bnode->left);
+    print_pre_order(bnode->right);
+}
+template<class T>
+void print_post_order(Bnode<T>*bnode){
+    if(bnode==null){
+        return ;
+    }
+    print_post_order(bnode->left);
+    print_post_order(bnode->right);
+    cout<<bnode->value<<" ";
+}
+template<class T>
+void print_tree(Bnode<T>*bnode,ORDER state){
+    if(bnode!=null){
+    if(state==IN_ORDER){
+        cout<<"IN_ORDER:"<<"[";
+        print_in_order(bnode);
+        cout<<"]"<<endl;
+        
+    }
+    else if(state==POST_ORDER){
+        cout<<"POST_ORDER:"<<"[";
+        print_post_order(bnode);
+        cout<<"]"<<endl;
+      }
+     else if(state==PRE_ORDER){
+        cout<<"PRE_ORDER:"<<"[";
+        print_pre_order(bnode);
+        cout<<"]"<<endl;
+      }  
+       else if(state==ALL_ORDER){
+        cout<<"IN_ORDER:"<<"[";
+        print_in_order(bnode);
+        cout<<"]"<<"  ";
+        cout<<"POST_ORDER:"<<"[";
+        print_post_order(bnode);
+        cout<<"]"<<"   ";
+        cout<<"PRE_ORDER:"<<"[";
+        print_pre_order(bnode);
+        cout<<"]"<<endl;
+       }
+ }
+}
