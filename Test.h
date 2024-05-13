@@ -13,6 +13,19 @@ enum ORDER{
     PRE_ORDER=14,
     ALL_ORDER=16
 };
+enum BOOL_STATE{
+    LEAF_NODE,
+    SINGLE_CHILD,
+    TWO_CHILD,
+     IS_NULL
+};
+struct Boolean{
+    bool is_leaf_node;
+    bool contains_single_child;
+    bool contains_two_child;
+    bool is_null;
+};
+
 template<class T>
 struct Bnode{
     T value;
@@ -25,9 +38,38 @@ struct Bnode{
         left=l;
     }
 };
+template<class T>
+void set_boolean_values(Boolean*boolean,Bnode<T>*bnode){
+    if(bnode->right==null and bnode->left==null){
+        boolean->is_leaf_node=true;
+    }
+    else if(bnode->left==null or bnode->right==null){
+        boolean->contains_single_child=true;
+    }
+    else if(bnode->left!=null and bnode->right!=null){
+        boolean->contains_two_child=true;
+    }
+    else if(bnode==null){
+        boolean->is_null=true;
+    }
+}
 /*
 we assume  that bnode is pointing an allocated memory..
 */
+BOOL_STATE return_state(const Boolean*boolean){
+    if(boolean->is_leaf_node==true){
+        return LEAF_NODE;
+    }
+    else if(boolean->contains_single_child==true){
+        return SINGLE_CHILD;
+    }
+    else if(boolean->contains_two_child==true){
+        return TWO_CHILD;
+    }
+    else if(boolean->is_null==true){
+        return IS_NULL;
+    }
+}
 
 template<class T>
 void create_node(Bnode<T>* bnode,const T& val){
@@ -192,3 +234,4 @@ void print_tree(Bnode<T>*bnode,ORDER state){
        }
  }
 }
+
