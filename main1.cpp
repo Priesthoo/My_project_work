@@ -20,16 +20,12 @@ int add_unique1(const vector<int>& vec){
     for(int i=1;i<vec.size();i++){
        if(vec[i-1]==vec[i]){
            v=vec[i];
-           continue;
-       }
-       if(vec[i-1]==v){
-           continue;
-       }
+           continue;}
+       if(vec[i-1]==v){ continue;}
       var+=vec[i-1];
     }
     if(vec[vec.size()-1]!=vec[vec.size()-2]){
-        var+=vec[vec.size()-1];
-}
+        var+=vec[vec.size()-1];}
   return var;
 }
 int main(int argc, char *argv[])
