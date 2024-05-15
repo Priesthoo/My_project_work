@@ -1,9 +1,12 @@
 #include<iostream>
 #include"Vector.h"
+#ifndef null
+#define null nullptr
+#endif
 using namespace std;
 template<class T>
 struct Node{
-    public:    // it is no t actually necessary,since by default it is public
+    public:    // it is not actually necessary,since by default it is public
     T data;
     Node* next;
     Node():data{},next{nullptr}{}
@@ -16,7 +19,7 @@ struct Node{
 template<class T>
     void print_node(Node<T>* node){
         if(node!=nullptr){
-            cout<<node->data<<",";
+            cout<<node->data<<"->";
             print_node(node->next);
         }
      }
@@ -31,7 +34,16 @@ void add_value1(Node<T>* node,T val){
         add_value1(node->next,val);
     }
 }
-
+template<class T>
+size_t get_node_cnt(Node<T>*node){
+    size_t y=0;
+    Node<T>*iter=node;
+    while(iter!=null){
+        ++y;
+        iter=iter->next;
+    }
+    return y;
+}
  template<class T>
  Node<T>* add_new_node(Node<T>* node,T value) {
     Node<T>* nNode=new Node<T>;
@@ -63,6 +75,9 @@ class My_list{
     private:
     Node<T>* head;
     public:
+    ~My_list(){
+        this->head=nullptr;
+    }
     class Iterator{
     public:
     Node<T>* iter;
@@ -227,15 +242,13 @@ class My_list{
  }
   static Node<T>* remove_value(Node<T>* mylist,T elem){
     Node<T>* iter=mylist;
-    Node<T>*iter1=nullptr;
     while(iter!=nullptr){
-        iter1=My_list<T>::find_value(iter,elem);
         if(iter->data==elem){
+            iter=iter->next;
             break;
         }
         iter=iter->next;
     }
-    iter=iter->next;
     return iter;
 }
 };
@@ -274,4 +287,28 @@ Node<T>*merge_at_head(Node<T>*iter,Node<T>*iter1){
     node=iter;
     return node;
 }
-
+template<class T>
+Node<T>* delete_middle_node(Node<T>*node){
+    Node<T>*iter=null;
+    Node<T>*nNode=node;
+    size_t sz=get_node_cnt(node);
+    node=new Node<T>;
+    if((sz-1)%2!=0){
+        size_t sz1=(sz-1)/2;
+        ++sz1;
+        iter=get_at_pos(nNode,sz1);
+        for(int i=0;i<sz;i++){
+            if(iter->data!=get_at_pos(nNode,i)->data){
+                add_value1(node,get_at_pos(nNode,i)->data);}
+        }
+        }
+      else if((sz-1)%2==0){
+          size_t sz1=(sz-1)/2;
+          iter=get_at_pos(nNode,sz1);
+          for(int i=0;i<sz;i++){
+            if(iter->data!=get_at_pos(nNode,i)->data){
+                add_value1(node,get_at_pos(nNode,i)->data);}
+   }
+ }
+     return node->next;
+}
