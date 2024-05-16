@@ -113,7 +113,7 @@ size_t get_length(Node<T>*head)  {
        }
        return y;
    }
-//to get a node at a particular position..
+//to get a node at a particular position..,such that position is less that get_length(head);
 template<class T>
  Node<T>*get_pos_for_clist(Node<T>*head,const int& idx)  {
        if(idx==0){
@@ -132,12 +132,30 @@ template<class T>
            iter=iter->next;
        }
    }
+template<class T>
+Node<T>* get_Nth_node_position(Node<T>*node,const size_t& size){
+    if(size==0 or size>get_length(node)){
+        return null;
+    }
+    if(size==1){
+        return node;
+    }
+    size_t y=1;
+    Node<T>*iter=node->next;
+    while(iter!=node){
+        ++y;
+        if(y==size){
+            return iter;
+       }
+       iter=iter->next;
+    }
+}
    /*
-     insertion: I will create four insertion, and they are:
-     1).insert_at_pos()->iterators,value,initializer_list.
-     2).insert_after_pos()->iterators,value,initializer_list.
-     3).push_back()->iterators,value,initializer_list.
-     4).push_front()->iterators,value,initializer_list;
+     insertion: I will create 5  insertion, and they are:
+     1).insert_at_pos()->value,initializer_list.
+     2).insert_after_pos()->value,initializer_list.
+     3).push_back()->value,initializer_list.
+     4).push_front()->value,initializer_list;
      5).insert_at_Nth_node().
    */
    /*
@@ -255,6 +273,67 @@ void push_front(Node<T>*node,const int& val){
         iter->next=node->next;
         node->next=nNode;
  }
+template<class T>
+Node<T>* insert_at_Nth_node(Node<T>*node,const size_t& sz,const T& val){
+    Node<T>*iter=get_Nth_node_position(node,sz);
+    change_value(iter)=val;
+    return iter;
+}
+template<class T>
+Node<T>*insert_at_Nth_node(Node<T>*node,const size_t& sz,const initializer_list<T>& list){
+       auto key=list.begin();
+       Node<T>* nNode=new Node<T>;
+        nNode->value=key[0];
+        nNode->next=null;
+        for(int i=1;i<list.size();i++){
+            create_node(nNode,key[i]);
+        }
+        Node<T>*iter=get_last_iter(nNode);
+        Node<T>*iter1=get_Nth_node_position(node,sz);
+        iter->next=iter1->next;
+        *iter1=*nNode;
+        return nNode;
+}
+template<class T>
+Node<T>*insert_after_Nth_node(Node<T>*node,const size_t& sz,const T& value){
+     Node<T>*iter1=get_Nth_node_position(node,sz);
+    Node<T>* nNode=new Node<T>;
+    nNode->value=value;
+    nNode->next=iter1->next;
+    iter1->next=nNode;
+    return nNode;
+}
+template<class T>
+Node<T>* insert_after_Nth_node(Node<T>*node,const size_t& sz,const initializer_list<T>& list){
+    auto key=list.begin();
+   Node<T>* nNode=new Node<T>;
+   nNode->value=key[0];
+   nNode->next=null;
+   for(int i=1;i<list.size();i++){
+        create_node(nNode,key[i]);
+        }
+     Node<T>*iter=get_last_iter(nNode);
+    Node<T>*iter1=get_Nth_node_position(node,sz);
+     iter->next=iter1->next;
+     iter1->next=nNode;
+       return nNode;
+ }
+//done with Insertion...
+//deletion
+//it deletes the Nth node and return the node after the Nth node.
+template<class T>
+Node<T>* delete_Nth_node(Node<T>*node,const size_t& sz){
+    Node<T>*iter=get_Nth_node_position(node,sz);
+    *iter=*iter->next;
+    return iter;
+}
+template<class T>
+Node<T>*delete_after_Nth_node(Node<T>*node,const size_t& sz){
+    Node<T>*iter=get_Nth_node_position(node,sz);
+    *iter->next=*iter->next->next;
+    return iter->next;
+}
+
 
 
 /*
@@ -345,8 +424,39 @@ class Circular_list{
        Node<T>*iter=get_pos_for_clist(head,idx);
        return iter->value;
    }
-
+//print the content of the node.
    void print_clist(){
        print_node(head);
    }
-}
+   //get node before head.
+   Node<T>*get_node_before_head_for_clist(){
+       Node<T>*iter=get_node_before_head(head);
+       return iter;
+   }
+   //get Nth node for  clist
+   Node<T>* get_Nth_node_for_clist(const size_t& size){
+       Node<T>*iter=get_Nth_node_position(head,size);
+       return iter;
+   }
+   //get the position of a particular node
+ Node<T>* get_pos(const size_t& sz){
+     Node<T>*iter=get_pos_for_clist(head,sz);
+     return iter;
+ }
+   /*
+     insertion: I will create 5  insertion, and they are:
+     1).insert_at_pos()->value,initializer_list.
+     2).insert_after_pos()->value,initializer_list.
+     3).push_back()->value,initializer_list.
+     4).push_front()->value,initializer_list;
+     5).insert_at_Nth_node().
+   */
+ Node<T>*insert_at_pos_for_clist(Node<T>*pos,const T& value){
+     Node<T>*iter=insert_at_pos(pos,iter);
+     return iter;
+ }
+ Node<T>*insert_at_pos_for_clist(Node<T>*pos,const initializer_list<T>& list){
+     Node<T>*iter=insert_at_pos(pos,list);
+     return iter;
+ }
+ 
