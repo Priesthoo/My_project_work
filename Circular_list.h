@@ -221,6 +221,27 @@ void  push_back(Node<T>*node,const T& value){
     nNode->next=iter->next;
     iter->next=nNode;
 }
+template<class T>
+void push_back(Node<T>*node,const initializer_list<T>& list){
+    auto key=list.begin();
+       Node<T>* nNode=new Node<T>;
+        nNode->value=key[0];
+        nNode->next=null;
+        for(int i=1;i<list.size();i++){
+            create_node(nNode,key[i]);
+        }
+        Node<T>*iter=get_last_iter(nNode);
+        Node<T>*iter1=get_before_last_head(node);
+        iter->next=iter1->next;
+        iter1->next=nNode;
+}
+template<class T>
+void push_front(Node<T>*node,const int& val){
+     Node<T>*nNode=new Node<T>;
+    nNode->value=val;
+    nNode->next=node->next;
+    node->next=nNode;
+  }
 
 
 /*
