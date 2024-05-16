@@ -223,7 +223,7 @@ void  push_back(Node<T>*node,const T& value){
 }
 template<class T>
 void push_back(Node<T>*node,const initializer_list<T>& list){
-    auto key=list.begin();
+       auto key=list.begin();
        Node<T>* nNode=new Node<T>;
         nNode->value=key[0];
         nNode->next=null;
@@ -242,6 +242,19 @@ void push_front(Node<T>*node,const int& val){
     nNode->next=node->next;
     node->next=nNode;
   }
+ template<class T>
+ void push_front(Node<T>*node,const initializer_list<int>& list){
+       auto key=list.begin();
+       Node<T>* nNode=new Node<T>;
+        nNode->value=key[0];
+        nNode->next=null;
+        for(int i=1;i<list.size();i++){
+            create_node(nNode,key[i]);
+        }
+        Node<T>*iter=get_last_iter(nNode);
+        iter->next=node->next;
+        node->next=nNode;
+ }
 
 
 /*
@@ -336,4 +349,4 @@ class Circular_list{
    void print_clist(){
        print_node(head);
    }
-};
+}
