@@ -94,7 +94,8 @@ void print_node(Node<T>*node){
     if(node!=null){
     cout<<node->value<<" ";
     Node<T>*iter=node->next;
-    while(iter!=node){
+    while(iter!=null){
+        if(iter==node){ break;}
         cout<<iter->value<<" ";
         iter=iter->next;
     }
@@ -162,6 +163,16 @@ Node<T>* get_last_head(Node<T>*head){
            iter=iter->next;
        }
    }
+template<class T>
+Node<T>*get_before_last_head(Node<T>*node){
+    Node<T>*iter=node->next;
+    while(iter!=null){
+        if(iter->next==node){
+            return iter;
+        }
+        iter=iter->next;
+    }
+}
   template<class T>
    Node<T>*insert_at_pos(Node<T>*pos,const initializer_list<T>&list){
       auto key=list.begin();
@@ -177,7 +188,41 @@ Node<T>* get_last_head(Node<T>*head){
         change_node(iter2)=*nNode;
         return nNode;
   }
-   
+
+  //insert_after_pos
+  template<class T>
+  Node<T>*insert_after_pos(Node<T>*pos,const T& value){
+       Node<T>*nNode=new Node<T>;
+       nNode->value=value;
+       nNode->next=pos->next;
+       pos->next=nNode;
+       return nNode;
+  }
+  template<class T>
+  Node<T>*insert_after_pos(Node<T>*pos,const initializer_list<T>& list){
+      auto key=list.begin();
+      Node<T>*iter2=pos;
+       Node<T>* nNode=new Node<T>;
+        nNode->value=key[0];
+        nNode->next=null;
+        for(int i=1;i<list.size();i++){
+            create_node(nNode,key[i]);
+        }
+        Node<T>*iter=get_last_iter(nNode);
+        iter->next=pos->next;
+        pos->next=nNode;
+        return nNode;
+  }
+ template<class T>
+void  push_back(Node<T>*node,const T& value){
+    Node<T>*iter=get_before_last_head(node);
+    Node<T>*nNode=new Node<T>;
+    nNode->value=value;
+    nNode->next=iter->next;
+    iter->next=nNode;
+}
+
+
 /*
 For the constructors, it accepts an initializer list,iterators...
 */
