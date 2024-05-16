@@ -1,26 +1,27 @@
-int main(int argc, char *argv[])
-{    int val=67;
-     Bnode<int>*bnode=new Bnode<int>;
-     bnode->value=val;
-     bnode->right=null;
-     bnode->left=null;
-     create_node(bnode,70);
-     insert_new_node(bnode,17);
-     insert_new_node(bnode,18);
-     insert_new_node(bnode,26);
-     cout<<bnode->value<<endl;
-     cout<<bnode->right->value<<endl;
-     cout<<bnode->left->right->value;
-     /*
-                 67
-                / \                                                     
-               /   \                          
-              /     \                      
-             /       \
-            17       70
-           / \ 
-          /   \
-         /     \
-        18     26
-*/                                         
-  }
+#include<iostream>
+using namespace std;
+#ifndef CHAR_CONVERT
+#define CHAR_CONVERT  32
+#endif
+//the distance between the upper case letter and the lower case letter in the ascii table is 32...
+//we are here to implement our 4 basic function.
+char to_upper_case(const char val){
+    char c;
+    if(val>='a' and val<='z'){
+        int v=(int)val-CHAR_CONVERT;
+        c=(char)v;
+        return c;
+    }
+    c=val;
+    return c;
+ }
+char to_lower_case(const char val){
+    char c;
+    if(val>='A' and val<='Z'){
+        int v=(int)val+CHAR_CONVERT;
+        c=(char)v;
+        return c;
+    }
+    c=val;
+    return c;
+}
