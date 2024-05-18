@@ -135,6 +135,7 @@ template<class T>
            iter=iter->next;
        }
    }
+   //To get the Nth node of list,N must be 1<=N<=length of the list.
 template<class T>
 Node<T>* get_Nth_node_position(Node<T>*node,const size_t& size){
     if(size==0 or size>get_length(node)){
@@ -376,6 +377,9 @@ class Circular_list{
     Circular_list(Node<T>*root){
         head=root;
     }
+    Circular_list(const Circular_list& clist){
+        head=clist.head;
+    }
     Node<T>* begin() const {
        return head;
     }
@@ -433,7 +437,7 @@ class Circular_list{
    }
    //get node before head.
    Node<T>*get_node_before_head_for_clist() const {
-       Node<T>*iter=get_node_before_head(head);
+       Node<T>*iter=get_before_last_head(head);
        return iter;
    }
    //get Nth node for  clist
@@ -512,4 +516,13 @@ Node<T>*delete_after_Nth_node_for_clist(const size_t& sz){
 ~Circular_list(){
     clear();
 }
+Circular_list& operator=(const Circular_list& clist){
+    *this={clist};
+    return *this;
+}
+Circular_list& operator=(const Node<T>* iter){
+    *this={iter};
+    return *this;
+}
+
 };
