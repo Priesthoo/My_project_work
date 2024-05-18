@@ -4,6 +4,9 @@ using namespace std;
 #ifndef null
 #define null nullptr
 #endif
+#ifdef VECTOR
+#include<vector>
+#endif
 /*
 circular linked list is an extension of linked list in which the last node points to the beginning of the list, There is no null unlike linked_list.
 There will be a lot of modification of the functions of linked list,The functions are listed below:
@@ -429,17 +432,17 @@ class Circular_list{
        print_node(head);
    }
    //get node before head.
-   Node<T>*get_node_before_head_for_clist(){
+   Node<T>*get_node_before_head_for_clist() const {
        Node<T>*iter=get_node_before_head(head);
        return iter;
    }
    //get Nth node for  clist
-   Node<T>* get_Nth_node_for_clist(const size_t& size){
+   Node<T>* get_Nth_node_for_clist(const size_t& size) const {
        Node<T>*iter=get_Nth_node_position(head,size);
        return iter;
    }
    //get the position of a particular node
- Node<T>* get_pos(const size_t& sz){
+ Node<T>* get_pos(const size_t& sz) const {
      Node<T>*iter=get_pos_for_clist(head,sz);
      return iter;
  }
@@ -451,12 +454,62 @@ class Circular_list{
      4).push_front()->value,initializer_list;
      5).insert_at_Nth_node().
    */
- Node<T>*insert_at_pos_for_clist(Node<T>*pos,const T& value){
+ Node<T>*insert_at_pos_for_clist(Node<T>*pos,const T& value) const {
      Node<T>*iter=insert_at_pos(pos,iter);
      return iter;
  }
- Node<T>*insert_at_pos_for_clist(Node<T>*pos,const initializer_list<T>& list){
+ Node<T>*insert_at_pos_for_clist(Node<T>*pos,const initializer_list<T>& list) const {
      Node<T>*iter=insert_at_pos(pos,list);
      return iter;
  }
- };
+ Node<T>*insert_after_pos_for_clist(Node<T>*pos,const T& value) const{
+     Node<T>*iter=insert_after_pos(pos,value);
+     return iter;
+ }
+ Node<T>*insert_after_pos_for_clist(Node<T>*pos,const initializer_list<T>& list ) const {
+     Node<T>*iter=insert_after_pos(pos,list);
+     return iter;
+ }
+ void push_back_for_clist(const T& value){
+     push_back(head,value);
+ }
+ void push_back_for_clist(const initializer_list<T>& list){
+     push_back(head,list);
+ }
+ void push_front_for_clist(const T& value){
+     push_front(head,value);
+ }
+ void push_front_for_clist(const initializer_list<T>& list){
+     push_front(head,list);
+ }
+ Node<T>* insert_at_Nth_node_for_clist(const size_t& sz,const T& value)const{
+    Node<T>*iter= insert_at_Nth_node(head,sz,value);
+    return iter;
+  }
+Node<T>* insert_at_Nth_node_for_clist(const size_t& sz,const initializer_list<T>& list) const {
+    Node<T>*iter=insert_at_Nth_node(head,sz,list);
+    return iter;
+}
+Node<T>*insert_after_Nth_node_for_clist(const size_t& sz,const T& value) const {
+    Node<T>*iter=insert_after_Nth_node(head,sz,value);
+    return iter;
+}
+Node<T>*insert_after_Nth_node_for_clist(const size_t& sz,const initializer_list<T>& list){
+    Node<T>*iter=insert_after_Nth_node(head,sz,list);
+    return iter;
+}
+void clear(){
+    head=null;
+}
+Node<T>*delete_Nth_node_for_clist(const size_t& sz){
+    Node<T>*iter=delete_Nth_node(head,sz);
+    return iter;
+}
+Node<T>*delete_after_Nth_node_for_clist(const size_t& sz){
+    Node<T>*iter=delete_after_Nth_node(head,sz);
+    return iter;
+}
+~Circular_list(){
+    clear();
+}
+};
