@@ -604,3 +604,10 @@ bool operator<=(const Circular_list& clist){
     return false;
 }
 };
+void print_fn(const char* str){
+    cout<<str<<endl;
+}
+template<class T>
+void print_value(const T& value){
+    cout<<value<<endl;
+}
