@@ -524,5 +524,83 @@ Circular_list& operator=(const Node<T>* iter){
     *this={iter};
     return *this;
 }
-
+//== operator for clist(it returns true if compared list are equal)
+bool operator==(const Circular_list& clist){
+    if(head!=null){
+        if(this->get_length()==clist.get_length()){
+            for(int i=0;i<get_length();++i){
+                if((*this)[i]!=clist[i]){
+                    return false;
+            }
+        }
+        return true;
+       }
+    }
+    return false;
+}
+bool operator!=(const Circular_list& clist){
+    if(head!=null){
+        if(this->get_length()==clist.get_length()){
+            for(int i=0;i<get_length();++i){
+                if((*this)[i]==clist[i]){
+                    return false;
+            }
+        }
+        return true;
+       }
+    }
+    return false;
+}
+bool operator<(const Circular_list& clist){
+    if(head!=null){
+        if(this->get_length()==clist.get_length()){
+            for(int i=0;i<get_length();++i){
+                if((*this)[i]>=clist[i]){
+                    return false;
+            }
+        }
+        return true;
+       }
+    }
+    return false;
+}
+bool operator>(const Circular_list& clist){
+    if(head!=null){
+        if(this->get_length()==clist.get_length()){
+            for(int i=0;i<get_length();++i){
+                if((*this)[i]<=clist[i]){
+                    return false;
+            }
+        }
+        return true;
+       }
+    }
+    return false;
+}
+bool operator>=(const Circular_list& clist){
+    if(head!=null){
+        if(this->get_length()==clist.get_length()){
+            for(int i=0;i<get_length();++i){
+                if((*this)[i]<clist[i]){
+                    return false;
+            }
+        }
+        return true;
+       }
+    }
+    return false;
+}
+bool operator<=(const Circular_list& clist){
+    if(head!=null){
+        if(this->get_length()==clist.get_length()){
+            for(int i=0;i<get_length();++i){
+                if((*this)[i]>clist[i]){
+                    return false;
+            }
+        }
+        return true;
+       }
+    }
+    return false;
+}
 };
