@@ -123,3 +123,4 @@ const char* few_vowel(const vector<const char*>few){
     return few_con;
     
 }
+cout<<"Happy Sunday,God bless us all"<<endl;
