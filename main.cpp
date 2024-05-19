@@ -8,6 +8,15 @@ using namespace std;
 #ifndef null 
 #define null nullptr
 #endif
+#define SSTREAM
+#ifdef SSTREAM
+#include<sstream>
+#endif
+#define STRING
+#ifdef STRING
+#include<string>
+#endif
+
 //the distance between the upper case letter and the lower case letter in the ascii table is 32...
 //we are here to implement our 4 basic function.
 //A,E,I,O,U..
@@ -123,4 +132,153 @@ const char* few_vowel(const vector<const char*>few){
     return few_con;
     
 }
-cout<<"Happy Sunday,God bless us all"<<endl;
+const char* More_consonant(const vector<const char*> more){
+    const char* few_con;
+    for(int i=1;i<more.size();i++){
+        if(get_consonant_cnt(more[i-1])>get_consonant_cnt(more[i])){
+            few_con=more[i-1];
+        }
+    }
+    if(get_consonant_cnt(more[more.size()-1])>get_consonant_cnt(few_con)){
+        few_con=more[more.size()-1];
+    }
+    return few_con;
+}
+const char* More_vowel(const vector<const char*>more){
+    const char* few_con;
+    for(int i=1;i<more.size();i++){
+        if(get_vowel_cnt(more[i-1])>get_vowel_cnt(more[i])){
+            few_con=more[i-1];
+        }
+    }
+    if(get_vowel_cnt(more[more.size()-1])>get_vowel_cnt(few_con)){
+        few_con=more[more.size()-1];
+    }
+    return few_con;
+    
+}
+bool is_consonant(const char&  c){
+    int sz=0;
+    sz=consonant_cnt(c);
+    if(sz==1){
+        return true;
+    }
+    else if(sz==0){
+        return false;
+    }
+}
+bool is_vowel(const char& c){
+    int sz=0;
+    sz=vowel_cnt(c);
+    if(sz==1){
+        return true;
+    }
+    else if(sz==0){
+        return false;
+    }
+}
+bool is_alphanumeric(const char& c){
+    if((int)c>=65 and (int)c<=90){
+        return true;
+    }
+    else if((int)c>=97 and (int)c<=122){
+        return true;
+    }
+    else if((int)c>=48 and (int)c<=57){
+        return true;
+    }
+    return false;
+}
+bool is_space(const char& c){
+    if((int)c==32){
+         return true;
+    }
+    return false;
+}
+bool is_digit(const char& c){
+    if((int)c>=48 and (int)c<=57){
+        return true;
+    }
+    return false;
+}
+bool is_ctrl(const char& c){
+    if((int)c>=0 and(int)c<=31){
+        return true;
+    }
+    return false;
+}
+unsigned int string_to_unsigned_int(const string& str){
+    stringstream ss;
+    unsigned int num;
+    ss<<str;
+    ss>>num;
+    return num;
+}
+int string_to_int(const string& str){
+    stringstream ss;
+    int num;
+    ss<<str;
+    ss>>num;
+    return num;
+}
+long long string_to_long_long(const string& str){
+    stringstream ss;
+    long long num;
+    ss<<str;
+    ss>>num;
+    return num;
+}
+unsigned long long string_to_unsigned_long_long(const string& str){
+    stringstream ss;
+    unsigned long long num;
+    ss<<str;
+    ss>>num;
+    return num;
+}
+short string_to_short(const string& str){
+    stringstream ss;
+    short num;
+    ss<<str;
+    ss>>num;
+    return num;
+}
+float string_to_float(const string& str){
+    stringstream ss;
+    float num;
+    ss<<str;
+    ss>>num;
+    return num;
+}
+double string_to_double(const string& str){
+    stringstream ss;
+    double num;
+    ss<<str;
+    ss>>num;
+    return num;
+}
+template<class T>
+string value_to_string(const T& value){
+    stringstream os;
+    os<<value;
+    string num=os.str();
+    return num;
+}
+bool string_to_bool(const string& str){
+    if(str=="true" or str=="TRUE" or str=="True"){
+        return true;
+    }
+    else if(str=="false" or str=="FALSE" or str=="False"){
+        return false;
+    }
+}
+string Reverse_string(const string& str){
+    string rstr={" ",str.size()};
+    int i=0;
+    int z=str.size()-1;
+    while(i<str.size() and z>=0){
+        rstr[i]=str[z];
+        ++i;
+        --z;
+    }
+    return rstr;
+}
