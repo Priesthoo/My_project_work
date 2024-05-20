@@ -6,7 +6,7 @@ int main(){
  cout<<"Printing values::"<<endl;
 Map<string,int> mine={{"string",17},{"string",67},{"int",78}}; 
 
-mine.print_map();
+mine.print_map(); //print values in mine.
 cout<<endl;
 
 cout<<"After adding new elements by array:"<<endl;
@@ -17,5 +17,5 @@ cout<<"After adding new elements by array:"<<endl;
  mine["University"]=68;
  mine["Great"]=700;
  mine["67"]=89;
- mine.print_map();
+ mine.print_map(); //print all values in mine.
 }	
