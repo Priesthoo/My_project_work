@@ -3,11 +3,19 @@ using namespace std;
 //Tutorial session...
 int main(){	
 
- Circular_list<int>clist={12,13,14,15,16,17,18,19};
-	print_nl("clist:");
-	clist.print_clist();
-	print_fn("first value of clist:");
-	print_value(clist[0]);
-	print_fn("second value of clist:");
-	print_value(clist[1]);
+ cout<<"Printing values::"<<endl;
+Map<string,int> mine={{"string",17},{"string",67},{"int",78}}; 
+
+mine.print_map();
+cout<<endl;
+
+cout<<"After adding new elements by array:"<<endl;
+/*adding elements by subscript operator,I overloaded it to work that way. The more u add, The more the Map object expands.
+*/
+ mine["float"]=5;
+ mine["day"]=56;
+ mine["University"]=68;
+ mine["Great"]=700;
+ mine["67"]=89;
+ mine.print_map();
 }	
