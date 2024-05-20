@@ -1,6 +1,9 @@
 #include<iostream>
 #include<string>
 #include<initializer_list>
+#ifndef null
+#define null nullptr
+#endif
 using namespace std;
 template<class T, class M>
 struct  Pair{
@@ -270,6 +273,17 @@ Node<T,M>* search_key(Node<T,M>* node,const T& key){
     }
     return nullptr;
 }
+template<class T,class M>
+bool is_found(Node<T,M>*node,const T& idx){
+    Node<T,M>*iter=node;
+    while(iter!=null){
+        if(iter->value.first==idx){
+            return true;
+        }
+        iter=iter->next;
+    }
+    return false;
+}
 
 template<class T,class M>
 using Cmpfunc=void(*)(Node<T,M>*);
@@ -338,6 +352,19 @@ class Map{
          ++iter;
      }
   }
+M& operator[ ](const T& idx){
+    bool found=is_found(root,idx);
+    Node<T,M>*iter=null;
+    Node<T,M>*nNode=new Node<T,M>;
+    nNode->value.first=idx;
+    nNode->next=null;
+    if(found==false){
+        iter=get_last_iter(root);
+        iter->next=nNode;
+        return nNode->value.second;
+        }
+        
+}
   void assign_elem(Iterator<T,M> iter,Iterator<T,M> iter1){
       *this={iter,iter1};
   }
@@ -351,8 +378,15 @@ class Map{
        return cmp;
    }
    void print_map(){
+       if(node_is_sorted(root)==true){
        print_node(this->get_root());
+       }
+       else if(node_is_sorted(root)==false){
+           cmp(root);
+           print_node(this->get_root());
+       }
    }
+   
    //Insertion....
  Iterator<T,M> insert_after_pos(const Iterator<T,M>& pos,const Pair<T,M>& val)  {
      Node<T,M>*iter=pos.get_iter();
@@ -560,7 +594,29 @@ bool operator<=(const Map& map){
      }
      return true;
  }
-    
+ Map& operator+=(const Map& map){
+     Node<T,M>*iter=get_last_iter(this->root);
+     iter->next=map.root;
+     cmp(this->root);
+     rem_all(this->root);
+     return *this;
+ }
+ Map& operator+=(Node<T,M>* iter1){
+     Node<T,M>*iter=get_last_iter(this->root);
+     iter->next=iter1;
+     cmp(this->root);
+     rem_all(this->root);
+     return *this;
+  }
+ 
+  Map& append(const Map& map){
+      *this+=map;
+      return *this;
+  }
+ Map& append(Node<T,M>* iter){
+     *this+=iter;
+     return *this;
+ }
  
 };
 typedef Pair<int,int> Psi;
