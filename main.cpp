@@ -2,6 +2,7 @@
 using namespace std;
 #include<string>
 #include<vector>
+#define power pow
 #ifndef CHAR_CONVERT
 #define CHAR_CONVERT  32
 #endif
@@ -16,11 +17,103 @@ using namespace std;
 #ifdef STRING
 #include<string>
 #endif
+#define MATH_INCLUDE
+#ifdef MATH_INCUDE
+#include<cmath>
+#endif
+#ifndef INT_MAX 
+#define INT_MAX 2147483648
+#endif
+#ifndef INT_MIN 
+#define INT_MIN -2147483647
+#endif
+#ifndef S_SHORT_MAX
+#define S_SHORT_MAX 32767
+#endif
+#ifndef S_SHORT_MIN
+#define S_SHORT MIN -32768
+#endif
+#ifndef SHORT_MAX 
+#define SHORT_MAX 65535
+#endif
+#ifndef SHORT_MIN 
+#define SHORT_MIN 0
+#endif
+#ifndef U_INT_MAX
+#define U_INT_MAX 4294967295
+#endif
+#ifndef U_INT_MIN
+#define U_INT_MIN 0
+#endif
+#ifndef LONG_INT_MAX 
+#define LONG_INT_MAX  power(2,63)-1
+#endif
+#ifndef LONG_INT_MIN
+#define LONG_INT_MIN  -power(2,63)
+#endif
+#ifndef U_LONG_LONG_INT_MAX
+#define U_LONG_LONG_INT_MAX 18446744073709551
+#endif 
+#ifndef U_LONG_LONG_INT_MIN 
+#define U_LONG_LONG_INT_MIN 0
+#endif
+#ifndef S_CHAR_MAX
+#define S_CHAR_MAX 127
+#endif
+#ifndef S_CHAR_MIN
+#define S_CHAR_MIN -128
+#endif
+#ifndef U_CHAR_MAX 
+#define U_CHAR_MAX 255
+#endif
+#ifndef U_CHAR_MIN
+#define U_CHAR_MIN 0
+#endif
+#ifndef FLOAT_MAX 
+#define FLOAT_MAX 3.4*power(10,38)
+#endif
+#ifndef FLOAT_MIN
+#define FLOAT_MIN -3.4*power(10,38)
+#endif
+#ifndef DOUBLE_MAX
+#define DOUBLE_MAX 1.7*power(10,308)
+#endif
+#ifndef DOUBLE_MIN
+#define DOUBLE_MIN -1.7*power(10,308)
+#endif
+#ifndef LONG_DOUBLE_MAX 
+#define LONG_DOUBLE_MAX 1.1*power(10,4932)
+#endif
+#ifndef LONG_DOUBLE_MIN 
+#define LONG_DOUBLE_MIN -1.1*power(10,4932)
+#endif
 
 //the distance between the upper case letter and the lower case letter in the ascii table is 32...
 //we are here to implement our 4 basic function.
 //A,E,I,O,U..
 //a,e,i,o,u..
+/*
+max value of short int 32,767
+min value of short int -32,768
+max value of short 65,535
+min value of short 0
+max value of unsigned  int 4,294,967,295
+min value of unsigned int 0
+max value of int 2,147,483,647
+min value of int 2,147,483,648
+max value of long int( same as int)
+long long max and min :-2^63 to 2^63-1
+unsigned long long max:18,446,744,073,709,551
+min of long long:0
+max of signed char:127
+min of   signed char:-128
+max of unsigned char:255
+min of unsigned char:0
+max and min of float: -3.4*10^38 to 3.4*10^38
+max and min of double:-1.7*10^308 to  1.7*10^308
+max and min of  long double:-1.1*10^4932  to  1.1*10^4932
+
+*/
 char to_upper_case(const char val){
     char c;
     if(val>='a' and val<='z'){
@@ -281,4 +374,3 @@ string Reverse_string(const string& str){
         --z;
     }
     return rstr;
-}
