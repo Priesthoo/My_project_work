@@ -3,19 +3,17 @@ using namespace std;
 //Tutorial session...
 int main(){	
 
- cout<<"Printing values::"<<endl;
-Map<string,int> mine={{"string",17},{"string",67},{"int",78}}; 
+ //Tutorial session 
+print_nl(" values in the cicular list:");
+Circular_list<int>clist={12,13,14,15,16,17,18,19,20};
+clist.print_clist();
 
-mine.print_map(); //print values in mine.
+Node<int>*iter=clist.get_Nth_node_for_clist(1);
+print_fn("the first element accessed by inserting 1 as an argument:");
+print_value(iter->value);
 cout<<endl;
+print_fn("the second element accessed by inserting 2 as an argument");
+iter=clist.get_Nth_node_for_clist(2);
+print_value(iter->value);
 
-cout<<"After adding new elements by array:"<<endl;
-/*adding elements by subscript operator,I overloaded it to work that way. The more u add, The more the Map object expands.
-*/
- mine["float"]=5;
- mine["day"]=56;
- mine["University"]=68;
- mine["Great"]=700;
- mine["67"]=89;
- mine.print_map(); //print all values in mine.
 }	
