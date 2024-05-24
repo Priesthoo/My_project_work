@@ -7,6 +7,16 @@ using namespace std;
 #ifndef MOD
 #define MOD %
 #endif
+#ifndef VECTOR
+#define VECTOR
+#endif
+#ifdef VECTOR
+#include<vector>
+#endif
+#define STRING
+#ifdef STRING
+#include<string>
+#endif
 //hash function,I use modulo operator 
 /*
 Firstly work with hash function that converts int key to int hash_value.
@@ -92,6 +102,14 @@ int Hash_function(int key,int Entry_size)
     int hash_value=key MOD Entry_size;
     return hash_value;
 }
+int Hash_function(const string key,int Entry_size){
+    int Hash_value=0;
+    for(auto ch:key){
+        Hash_value+=(int)ch;
+}
+int result=Hash_value MOD Entry_size;
+return result;
+}
 template<class T>
 class Hash_map{
     Hash_entry<T>*hash_entry;
@@ -122,4 +140,36 @@ class Hash_map{
         int hash=Hash_function(key,size);
         print_node(hash_entry[hash].head);
     }
- };
+    void clear_head(const int&  key){
+        int hash_value=Hash_function(key,size);
+        hash_entry[hash_value].head=null;
+    }
+    void insert_value_by_key(int key,const T& value){
+        add_value(key,value);
+    }
+    size_t get_used_entry() const {
+        size_t z=0;
+        for(int i=0;i<size;i++){
+            if(hash_entry[i].head==null){
+                continue;
+            }
+            ++z;
+        }
+        return z;
+    }
+ //return set of indices that were used.
+ vector<int> get_set_of_used_index() const {
+     vector<int> get;
+     for(int i=0;i<this->size;i++){
+         if(hash_entry[i].head==null){
+             continue;
+         }
+         get.push_back(i);
+     }
+     return get;
+ }
+ void insert(int key,Hash_node<T>*node){
+     int Hash_value=Hash_function(key,size);
+     hash_entry[Hash_value].head=node;
+ }
+};
