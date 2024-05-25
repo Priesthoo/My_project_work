@@ -175,6 +175,7 @@ struct Node{
           node->prev=nullptr;
      
   }
+  
   template<class T>
   void create_node(Node<T>* node,const T& val){
       if(node->next==nullptr){
@@ -187,7 +188,18 @@ struct Node{
           create_node(node->next,val);
       }
   }
-  
+template<class T>
+void init(Node<T>*node,const initializer_list<T>& list){
+    if(node!=nullptr){
+    Node<T>*iter=node;
+    auto k=list.begin();
+    for(int i=0;i<list.size();++i){
+        create_node(iter,k[i]);
+    }
+    *node=*iter->next;
+    node->prev=nullptr;
+    }
+}
 // Tranversal..
 template<class T>
 size_t get_node_length(Node<T>* node){
@@ -216,6 +228,21 @@ Node<T>* get_last_iter(Node<T>* node){
         iter=iter->next;
     }
     return iter1;
+}
+template<class T>
+Node<T>*get_nth_node(Node<T>*node,const size_t& sz ){
+    if(sz>=1 and sz<=get_node_length(node)){
+    Node<T>* iter=node;
+    size_t y=1; 
+    while(iter!=nullptr){
+        if(sz==y){
+            return iter;
+        }
+        ++y;
+        iter=iter->next;
+    }
+    }
+    return nullptr;
 }
 template<class T>
 bool is_sorted(Node<T>*node,OPERATOR state){
@@ -339,7 +366,12 @@ void print_nodes(Node<T>* node,PRINT print){
     iter1=get_last_iter(node);
     if(print==FORWARD){
         while(iter!=nullptr){
-            cout<<iter->value<<endl;
+            if(iter->next!=nullptr){
+            cout<<iter->value<<"->";
+            }
+            else if(iter->next==nullptr){
+                cout<<iter->value<<endl;
+            }
           iter=iter->next;
         }
     }
@@ -485,6 +517,9 @@ class Dlist{
     Dlist(const Dlist& list){
         head=list.head;
     }
+    Dlist(Node<T>* node){
+        head=node;
+    }
     T& operator[ ](const int& idx){
         Node<T>* iter=this->head;
         size_t y=0;
@@ -509,9 +544,6 @@ class Dlist{
     }
     Node<T>* end()const{
         return nullptr;
-    }
-    Dlist(Node<T>*iter){
-        head=iter;
     }
     Node<T>* at_pos(const int& idx){
         Node<T>* iter=this->head;
@@ -857,6 +889,13 @@ void push_back(const T& elem){
      this->append(list);
      return *this;
 }
+void print_dlist_forward(){
+    print_nodes(this->head,FORWARD);
+}
+Node<T>*Get_nth_node(const size_t& sz){
+    Node<T>*iter=get_nth_node(head,sz);
+    return iter;
+}
 };
 // Algorithm for Double linked list...
 template<class T>
@@ -925,4 +964,8 @@ template<class T>
      iter3->prev=iter2;
      iter4->next=null;
      return iter;
+}
+template<class T>
+void print(Node<T>*node){
+    cout<<node->value<<endl;
 }
