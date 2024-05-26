@@ -512,7 +512,8 @@ void Resize(const size_t& sz){
     }
     //it returns the load  factor 
  float load_balance()const {
-    size_t s=get_used_entry();
+    float s=(float)get_used_entry();
+    float sz=(float)size;
     float load=(float)s/size;
     return load;
  }
@@ -565,6 +566,7 @@ void insert_key_pair(const Pair<T,M>& pair){
   }
 }
 void insert_key_pairs(const initializer_list<Pair<T,M>>& list){
+    
 }
 };
 typedef int(*String_hash)(const string,int);
