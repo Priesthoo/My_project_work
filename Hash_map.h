@@ -435,5 +435,18 @@ class Hash_table{
 void Resize(const size_t& sz){
     Rehash(sz);
 }
-    
+ void push(const Pair<T,M>& pair){
+     int hash_value=hash_func(pair.first,size);
+     if(hash_entry[hash_value].head!=null){
+         Hash_node<Pair<T,M>>*iter=get_last_iter(hash_entry[hash_value].head);
+         iter->next=new Hash_node<Pair<T,M>>;
+         iter->next->value=pair;
+     }
+     else if(hash_entry[hash_value].head==null){
+      Hash_node<Pair<T,M>>*iter=null;
+      iter=new Hash_node<Pair<T,M>>;
+      iter->value=pair;
+      hash_entry[hash_value].head=iter;
+     }
+ }
 };
