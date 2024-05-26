@@ -17,6 +17,7 @@ using namespace std;
 #ifdef STRING
 #include<string>
 #endif
+#include<initializer_list>
 //hash function,I use modulo operator 
 /*
 Firstly work with hash function that converts int key to int hash_value.
@@ -24,7 +25,68 @@ why do i need the hash node,Incase I encountered the same key
 load factor=number of filled slots/total number of slots..
 i have to handle collision by seperate chaining.
 */
-
+template<class T, class M>
+struct  Pair{
+    T first;
+    M second;
+    Pair()=default;
+    Pair(T f, M sec){
+        first=f;
+        second=sec;
+    }
+ 
+M& operator[ ](const T key) const{
+    if(key==first){
+        return second;
+    }
+ }
+ M& operator[ ](const T key){
+     if(key==first){
+         return second;
+     }
+ }
+Pair& operator=(const Pair<T,M>& val){
+    first=val.first;
+    second=val.second;
+    return *this;
+}
+bool operator==(const Pair<T,M>& pair){
+    if(this->first ==pair.first and this->second ==pair.second){
+        return true;
+    }
+    return false;
+}
+bool operator!=(const Pair<T,M>& pair){
+    if(this->first!=pair.first and this->second !=pair.second){
+        return true;
+    }
+    return false;
+}
+bool operator<(const Pair<T,M>& pair){
+    if(this->first<pair.first and this->second<pair.second ){
+        return true;
+    }
+    return false;
+}
+bool operator>(const Pair<T,M>& pair){
+    if(this->first>pair.first and this->second >pair.second){
+        return true;
+    }
+    return false;
+    }
+bool operator>=(const Pair<T,M>& pair){
+    if(this->first>=pair.first and this->second>=pair.second){
+        return true;
+    }
+    return false;
+    }
+bool operator<=(const Pair<T,M>& pair){
+    if(this->first<=pair.first and this->first <=pair.second){
+        return true;
+    }
+    return false;
+    }   
+};
 enum HASH{
     INT_MOD,
     STRING_MOD
@@ -74,8 +136,26 @@ template<class T>
 void print_node(Hash_node<T>*node){
     Hash_node<T>*iter=node;
     while(iter!=null){
+        if(iter->next!=null){
         cout<<iter->value<<"->";
-        iter=iter->next;
+     }
+    else if(iter->next==null){
+        cout<<iter->value<<endl;
+    }
+    iter=iter->next;
+    }
+}
+template<class T,class M>
+void print_nodes(Hash_node<Pair<T,M>>* node){
+    Hash_node<Pair<T,M>>* iter=node;
+    while(iter!=null){
+        if(iter->next!=null){
+        cout<<"["<<iter->value.first<<":"<<iter->value.second<<"]"<<"->";
+     }
+    else if(iter->next==null){
+        cout<<"["<<iter->value.first<<":"<<iter->value.second<<"]"<<endl;
+     }
+     iter=iter->next;
     }
 }
 template<class T>
@@ -168,8 +248,146 @@ class Hash_map{
      }
      return get;
  }
- void insert(int key,Hash_node<T>*node){
+  void insert(int key,Hash_node<T>*node){
      int Hash_value=Hash_function(key,size);
      hash_entry[Hash_value].head=node;
  }
 };
+template<class T>
+bool is_less_than(Hash_node<T>*node){
+    Hash_node<T>*iter=node;
+    while(iter!=null){
+        if(iter->next!=null){
+        if(iter->value>iter->next->value){
+            return false;
+        }    
+    }
+    iter=iter->next;
+    }
+    return true;
+}
+template<class T>
+void less_than(Hash_node<T>*node){
+    Hash_node<T>*iter=node;
+    while(iter!=null){
+        if(iter->next!=null){
+            if(iter->value>iter->next->value){
+                T val=iter->value;
+                change_value(iter)=iter->next->value;
+                change_value(iter->next)=val;
+            }
+        }
+        iter=iter->next;
+    }
+}
+template<class T>
+void sort_node(Hash_node<T>*node){
+    Hash_node<T>*iter=node;
+    bool is_sorted=false;
+    while(is_sorted!=true){
+        less_than(iter);
+        is_sorted=is_less_than(iter);
+    }
+    
+}
+ 
+typedef int(*hash_function)(int,int);
+
+template<class T,class M>
+void sort_key(Hash_node<Pair<T,M>>* node){
+    Hash_node<Pair<T,M>>* iter=node;
+    while(iter!=nullptr){
+        if(iter->next!=nullptr){
+            if(iter->value.first>iter->next->value.first){
+                T obj={iter->value.first};
+                M obj1={iter->value.second};
+                iter->value.first=iter->next->value.first;
+                iter->value.second=iter->next->value.second;
+                iter->next->value.first=obj;
+                iter->next->value.second=obj1;
+            }
+        }
+        iter=iter->next;
+    }
+}
+template<class T,class M>
+bool node_is_sorted(Hash_node<Pair<T,M>>* node){
+    Hash_node<Pair<T,M>>* iter=node;
+    while(iter!=nullptr){
+        if(iter->next!=nullptr){
+                if(iter->value.first>iter->next->value.first){
+            return false;
+        }
+        }
+        iter=iter->next;
+    }
+    return true;
+}
+template<class T,class M>
+void sort_node_until(Hash_node<Pair<T,M>>* node){
+    Hash_node<Pair<T,M>>*iter=node;
+    bool is_sorted=false;
+      while(is_sorted!=true){
+          sort_key(iter);
+          is_sorted=node_is_sorted(node);
+          iter=node;
+      }
+}
+
+
+
+
+template<class T,class M>
+using Cmp=void(*)(Hash_node<Pair<T,M>>*);
+
+template<class T,class M,Cmp<T,M> cmp=sort_node_until,   hash_function hash_func=Hash_function>
+class Hash_table{
+    private:
+    Hash_entry<Pair<T,M>> *hash_entry;
+    size_t size;
+    
+    public:
+    Hash_table():hash_entry{null},size{}{}
+    Hash_table(Hash_entry<Pair<T,M>>*hash_en,const size_t& sz){
+        hash_entry=hash_en;
+        size=sz;
+    }
+    explicit Hash_table(const size_t& sz){
+        size=sz;
+    }
+    Hash_table(const initializer_list<Pair<T,M>>& list){
+        size=list.size();
+        auto k=list.begin();
+        hash_entry=new Hash_entry<Pair<T,M>>[size];
+        for(int i=0;i<size;i++){
+            int  hash_value=hash_func(k[i].first,size);
+            if(hash_entry[hash_value].head==null){
+                hash_entry[hash_value].head=new Hash_node<Pair<T,M>>;
+                hash_entry[hash_value].head->value=k[i];
+                hash_entry[hash_value].head->next=null;
+           }
+         else if(hash_entry[hash_value].head!=null){
+             add_node(hash_entry[hash_value].head,k[i]);
+         }
+        }
+        for(int i=0;i<size;i++){
+            if(hash_entry[i].head==null){
+                continue;
+            }
+            cmp(hash_entry[i].head);
+        }
+    }
+  void print_table(){
+      for(int i=0;i<size;i++){
+          if(hash_entry[i].head==null){
+              cout<<"index "<<i<<":"<<"empty"<<endl;
+          }
+          else if(hash_entry[i].head!=null){
+           cout<<"index "<<i<<":";
+           print_nodes(hash_entry[i].head);
+          }
+      }
+  }
+    
+};
+
