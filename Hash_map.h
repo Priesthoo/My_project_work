@@ -18,6 +18,8 @@ using namespace std;
 #include<string>
 #endif
 #include<initializer_list>
+//bucket interface
+//Table interface.
 //hash function,I use modulo operator 
 /*
 Firstly work with hash function that converts int key to int hash_value.
@@ -87,10 +89,12 @@ bool operator<=(const Pair<T,M>& pair){
     return false;
     }   
 };
+//Hash enumeration
 enum HASH{
     INT_MOD,
     STRING_MOD
 };
+//nodes that will work for hash_table.
 template<class T>
 struct Hash_node{
     T value;
@@ -191,6 +195,16 @@ int result=Hash_value MOD Entry_size;
 return result;
 }
 template<class T>
+size_t get_no_of_element(Hash_node<T>*node){
+    size_t sz=0;
+    Hash_node<T>*iter=node;
+    while(iter!=null){
+        ++sz;
+        iter=iter->next;
+    }
+    return sz;
+}
+template<class T>
 class Hash_map{
     Hash_entry<T>*hash_entry;
     size_t size;
@@ -237,7 +251,8 @@ class Hash_map{
         }
         return z;
     }
- //return set of indices that were used.
+    
+ //returns set of indices that were used.
  vector<int> get_set_of_used_index() const {
      vector<int> get;
      for(int i=0;i<this->size;i++){
@@ -266,6 +281,7 @@ bool is_less_than(Hash_node<T>*node){
     }
     return true;
 }
+
 template<class T>
 void less_than(Hash_node<T>*node){
     Hash_node<T>*iter=node;
@@ -280,6 +296,7 @@ void less_than(Hash_node<T>*node){
         iter=iter->next;
     }
 }
+//it sorts nodes
 template<class T>
 void sort_node(Hash_node<T>*node){
     Hash_node<T>*iter=node;
@@ -290,10 +307,10 @@ void sort_node(Hash_node<T>*node){
     }
     
 }
- 
+ //Function pointers
 typedef int(*hash_function)(int,int);
 
-
+//it sorts according key.
 template<class T,class M>
 void sort_key(Hash_node<Pair<T,M>>* node){
     Hash_node<Pair<T,M>>* iter=node;
@@ -311,6 +328,7 @@ void sort_key(Hash_node<Pair<T,M>>* node){
         iter=iter->next;
     }
 }
+// it returns true if all values are in ascemding order
 template<class T,class M>
 bool node_is_sorted(Hash_node<Pair<T,M>>* node){
     Hash_node<Pair<T,M>>* iter=node;
@@ -324,6 +342,7 @@ bool node_is_sorted(Hash_node<Pair<T,M>>* node){
     }
     return true;
 }
+//it sorts the values of node until they are in ascending order.
 template<class T,class M>
 void sort_node_until(Hash_node<Pair<T,M>>* node){
     Hash_node<Pair<T,M>>*iter=node;
@@ -356,9 +375,13 @@ class Hash_table{
         hash_entry=hash_en;
         size=sz;
     }
+    //constructor that accepts a size parameter
     explicit Hash_table(const size_t& sz){
         size=sz;
+        hash_entry=new Hash_entry<Pair<T,M>>[size];
+        
     }
+    //constructor that accepts initializer lais as an argument 
     Hash_table(const initializer_list<Pair<T,M>>& list){
         size=list.size();
         auto k=list.begin();
@@ -381,6 +404,7 @@ class Hash_table{
             cmp(hash_entry[i].head);
         }
     }
+    //it prints the table.
   void print_table(){
       for(int i=0;i<size;i++){
           if(hash_entry[i].head==null){
@@ -392,6 +416,7 @@ class Hash_table{
           }
       }
   }
+  //copy constructor 
   Hash_table(const Hash_table& htable){
       size=htable.size;
       hash_entry=new Hash_entry<Pair<T,M>>[size];
@@ -399,14 +424,17 @@ class Hash_table{
           hash_entry[i].head=htable.hash_entry[i].head;
       }
   }
+  //our assignment operator.
   Hash_table& operator=(const initializer_list<Pair<T,M>>& list){
       *this={list};
       return *this;
   }
+  // our assignment operator(=).
   Hash_table& operator=(const Hash_table& htable){
       *this={htable};
       return *this;
   }
+  //it changes the size of the table and rehashes all the element of the previous table to fit the new size of the table.
   void Rehash(const size_t& sz){
       Hash_table htable=*this;
       hash_entry=new Hash_entry<Pair<T,M>>[sz];
@@ -430,11 +458,19 @@ class Hash_table{
 }
   }
  }
- size=sz;
-  }
+        size=sz;
+       for(int i=0;i<size;i++){
+            if(hash_entry[i].head==null){
+                continue;
+            }
+            cmp(hash_entry[i].head);
+        }
+    }
+  //works like Rehash function.
 void Resize(const size_t& sz){
     Rehash(sz);
 }
+//it pushes the element at the head node or at the last node
  void push(const Pair<T,M>& pair){
      int hash_value=hash_func(pair.first,size);
      if(hash_entry[hash_value].head!=null){
@@ -448,5 +484,93 @@ void Resize(const size_t& sz){
       iter->value=pair;
       hash_entry[hash_value].head=iter;
      }
+    cmp(hash_entry[hash_value].head);
  }
+ //it returns element in each entry.
+ size_t get_count_of_element() const {
+     size_t y=0;
+     for(int i=0;i<size;i++){
+         if(hash_entry[i].head==null){
+             continue;
+         }
+         else if(hash_entry[i].head!=null){
+             y+=get_no_of_element(hash_entry[i].head);
+         }
+     }
+     return y;
+ }
+ //it returns the number of used index
+ size_t get_used_entry() const {
+        size_t z=0;
+        for(int i=0;i<size;i++){
+            if(hash_entry[i].head==null){
+                continue;
+            }
+            ++z;
+        }
+        return z;
+    }
+    //it returns the load  factor 
+ float load_balance()const {
+    size_t s=get_used_entry();
+    float load=(float)s/size;
+    return load;
+ }
+ //it returns size
+size_t get_size() const{
+    return size;
+}
+//Hash_table interface
+Hash_entry<Pair<T,M>>& operator[ ](const T& idx) const {
+    int hash_value=hash_func(idx,size);
+    return hash_entry[hash_value];
+}
+//it returns the compare function
+Cmp<T,M> get_cmp() const{
+    return cmp;
+}
+//it returns  the hash function in use.
+hash_function get_hashfunc() const{
+    return hash_func;
+}
+//it returns the node that has value as pair in the hash_table.
+Hash_node<Pair<T,M>> find_value_by_key(const Pair<T,M>& pair){
+    int hash_value=hash_func(pair.first,size);
+    if(hash_entry[hash_value].head!=null){
+        Hash_node<Pair<T,M>>*iter=hash_entry[hash_value].head;
+        while(iter!=null){
+            if(iter->value.first==pair.first and iter->value.second==pair.second){
+                return iter;
+            }
+            iter=iter->next;
+        }
+    }
+    return null;
+}
+size_t return_hash_index(const Pair<T,M>& pair){
+    size_t hash_value=(size_t)hash_func(pair.first,size);
+    return hash_value;
+}
+void insert_key_pair(const Pair<T,M>& pair){
+    int hash_value=hash_func(pair.first,size);
+    Hash_node<Pair<T,M>>*iter=null;
+    if(hash_entry[hash_value].head==null){
+        hash_entry[hash_value].head=new Hash_node<Pair<T,M>>;
+        hash_entry[hash_value].head->value=pair;
+    }
+  else if(hash_entry[hash_value].head!=null){
+      iter=get_last_iter(hash_entry[hash_value].head);
+      iter->next=new Hash_node<Pair<T,M>>;
+      iter->next->value=pair;
+  }
+}
+void insert_key_pairs(const initializer_list<Pair<T,M>>& list){
+}
+};
+typedef int(*String_hash)(const string,int);
+template<class T,class M,Cmp<T,M> cmp=sort_node_until,String_hash hash_func=Hash_function>
+class String_map{
+    private:
+    Hash_entry<Pair<T,M>>* hash_entry;
+    size_t size;
 };
