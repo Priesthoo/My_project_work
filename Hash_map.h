@@ -293,6 +293,7 @@ void sort_node(Hash_node<T>*node){
  
 typedef int(*hash_function)(int,int);
 
+
 template<class T,class M>
 void sort_key(Hash_node<Pair<T,M>>* node){
     Hash_node<Pair<T,M>>* iter=node;
@@ -335,7 +336,10 @@ void sort_node_until(Hash_node<Pair<T,M>>* node){
 }
 
 
-
+//insertion, delete, tranversal,
+/*
+Insertion at a particular node,insertion 
+*/
 
 template<class T,class M>
 using Cmp=void(*)(Hash_node<Pair<T,M>>*);
@@ -388,6 +392,48 @@ class Hash_table{
           }
       }
   }
+  Hash_table(const Hash_table& htable){
+      size=htable.size;
+      hash_entry=new Hash_entry<Pair<T,M>>[size];
+      for(int i=0;i<size;i++){
+          hash_entry[i].head=htable.hash_entry[i].head;
+      }
+  }
+  Hash_table& operator=(const initializer_list<Pair<T,M>>& list){
+      *this={list};
+      return *this;
+  }
+  Hash_table& operator=(const Hash_table& htable){
+      *this={htable};
+      return *this;
+  }
+  void Rehash(const size_t& sz){
+      Hash_table htable=*this;
+      hash_entry=new Hash_entry<Pair<T,M>>[sz];
+      for(int i=0;i<htable.size;i++){
+      if(htable.hash_entry[i].head==null){
+          continue;
+      }
+   else if(htable.hash_entry[i].head!=null){
+           Hash_node<Pair<T,M>>*iter=htable.hash_entry[i].head;
+           while(iter!=null){
+            int hash_value=hash_func(iter->value.first,sz);
+            if(hash_entry[hash_value].head==null){
+                hash_entry[hash_value].head=new Hash_node<Pair<T,M>>;
+                hash_entry[hash_value].head->value=iter->value;
+                hash_entry[hash_value].head->next=null;
+           }
+         else if(hash_entry[hash_value].head!=null){
+             add_node(hash_entry[hash_value].head,iter->value);
+         }
+           iter=iter->next;     
+}
+  }
+ }
+ size=sz;
+  }
+void Resize(const size_t& sz){
+    Rehash(sz);
+}
     
 };
-
