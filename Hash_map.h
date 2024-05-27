@@ -1,4 +1,3 @@
-
 #include<iostream>
 using namespace std;
 #define TABLE_SIZE 567
@@ -149,6 +148,18 @@ void print_node(Hash_node<T>*node){
     }
     iter=iter->next;
     }
+}
+Hash_node<Pair<T,M>>* get_nth_node(Hash_node<Pair<T,M>>*node,const size_t& size){
+    Hash_node<Pair<T,M>>*iter=node;
+    size_t sz=1;
+    while(iter!=null){
+       if(size==sz){
+           return sz;
+       }
+       ++sz;
+       iter=iter->next;
+    }
+    return null;
 }
 template<class T,class M>
 void print_nodes(Hash_node<Pair<T,M>>* node){
@@ -605,7 +616,45 @@ void insert_key_pairs(const initializer_list<Pair<T,M>>& list){
       }
    }
   }
-  
+  void erase_by_index(const T& pair){
+      int hash_value=hash_func(pair,size);
+      hash_entry[hash_value].head=null;
+  }
+  void clear(){
+      for(int i=0;i<size;i++){
+          if(hash_entry[i].head==null){
+              continue;
+          }
+          hash_entry[i].head=null;
+      }
+  }
+    //,it clears  all elements of the array of linked lis
+  void clear(){
+      for(int i=0;i<size;i++){
+          if(hash_entry[i].head==null){
+              continue;
+          }
+          hash_entry[i].head=null;
+      }
+  }
+//hash index operations.
+Hash_node<Pair<T,M>> get_hash_index_head(const T& key){
+    int hash_value=hash_func(key,size);
+    return hash_entry[hash_value].head;
+}
+//it returns the no of element per head.
+size_t get_no_of_element_per_head(const T& key){
+    int hash_value=hash_func(key,size);
+   Hash_node<Pair<T,M>>*iter=hash_entry[hash_value].head;
+   size_t sz=get_no_of_element(iter);
+   return sz;
+}
+  //it returns the nth node for a particular head.
+  Hash_node<Pair<T,M>>*get_nth_node_for_head(const T& key, const size_t& sz){
+      int hash_value=hash_func(key,size);
+      Hash_node<Pair<T,M>>*iter=get_nth_node(hash_entry[hash_value].head,sz);
+      return iter;
+  }
 };
 typedef int(*String_hash)(const string,int);
 template<class T,class M,Cmp<T,M> cmp=sort_node_until,String_hash hash_func=Hash_string>
@@ -774,7 +823,10 @@ Hash_entry<Pair<T,M>>& operator[ ](const T& idx) const {
 Cmp<T,M> get_cmp() const{
     return cmp;
 }
-
+String_hash get_hash_function(){
+    String_hash hf=hash_func;
+    return hf;
+}
 
 //it returns the node that has value as pair in the hash_table.
 Hash_node<Pair<T,M>> find_value_by_key(const Pair<T,M>& pair){
@@ -832,6 +884,7 @@ void insert_key_pairs(const initializer_list<Pair<T,M>>& list){
             cmp(hash_entry[i].head);
         }
   }
+  //it prints nodes associated with hashindex.
   void print_nodes_attached_to_index(const T& idx){
       int hash_value=hash_func(idx,size);
       if(hash_entry[hash_value].head!=null){
@@ -847,5 +900,36 @@ void insert_key_pairs(const initializer_list<Pair<T,M>>& list){
       }
    }
   }
-  
+  //it erases the element by key
+  void erase_by_index(const T& pair){
+      int hash_value=hash_func(pair,size);
+      hash_entry[hash_value].head=null;
+  }
+  //,it clears  all elements of the array of linked lis
+  void clear(){
+      for(int i=0;i<size;i++){
+          if(hash_entry[i].head==null){
+              continue;
+          }
+          hash_entry[i].head=null;
+      }
+  }
+//hash index operations.
+Hash_node<Pair<T,M>> get_hash_index_head(const T& key){
+    int hash_value=hash_func(key,size);
+    return hash_entry[hash_value].head;
+}
+//it returns the number of elements per head
+size_t get_no_of_element_per_head(const T& key){
+    int hash_value=hash_func(key,size);
+   Hash_node<Pair<T,M>>*iter=hash_entry[hash_value].head;
+   size_t sz=get_no_of_element(iter);
+   return sz;
+}
+//it returns the nth node for a particular head chosen 
+ Hash_node<Pair<T,M>>*get_nth_node_for_head(const T& key, const size_t& sz){
+      int hash_value=hash_func(key,size);
+      Hash_node<Pair<T,M>>*iter=get_nth_node(hash_entry[hash_value].head,sz);
+      return iter;
+  }
 };
