@@ -1,3 +1,4 @@
+
 #include<iostream>
 using namespace std;
 #define TABLE_SIZE 567
@@ -186,7 +187,7 @@ int Hash_function(int key,int Entry_size)
     int hash_value=key MOD Entry_size;
     return hash_value;
 }
-int Hash_function(const string key,int Entry_size){
+int Hash_string(const string key,int Entry_size){
     int Hash_value=0;
     for(auto ch:key){
         Hash_value+=(int)ch;
@@ -368,7 +369,6 @@ class Hash_table{
     private:
     Hash_entry<Pair<T,M>> *hash_entry;
     size_t size;
-    
     public:
     Hash_table():hash_entry{null},size{}{}
     Hash_table(Hash_entry<Pair<T,M>>*hash_en,const size_t& sz){
@@ -548,10 +548,12 @@ Hash_node<Pair<T,M>> find_value_by_key(const Pair<T,M>& pair){
     }
     return null;
 }
+//it returns the hash_index of the value.
 size_t return_hash_index(const Pair<T,M>& pair){
     size_t hash_value=(size_t)hash_func(pair.first,size);
     return hash_value;
 }
+//it inserts pair of value into the internal state of the object.to which it is attached.
 void insert_key_pair(const Pair<T,M>& pair){
     int hash_value=hash_func(pair.first,size);
     Hash_node<Pair<T,M>>*iter=null;
@@ -565,14 +567,285 @@ void insert_key_pair(const Pair<T,M>& pair){
       iter->next->value=pair;
   }
 }
+// it inserts the initializer list into the internal structure of the object to which it is attached.
 void insert_key_pairs(const initializer_list<Pair<T,M>>& list){
-    
-}
+    auto key=list.begin();
+    Hash_node<Pair<T,M>>*iter=null;
+    for(int i=0;i<list.size();++i){
+        int hash_value=hash_func(key[i].first,size);
+        if(hash_entry[hash_value].head==null){
+            hash_entry[hash_value].head=new Hash_node<Pair<T,M>>;
+            hash_entry[hash_value].head->value=key[i];
+         }
+         else if(hash_entry[hash_value].head!=null){
+             iter=get_last_iter(hash_entry[hash_value].head);
+             iter->next=new Hash_node<Pair<T,M>>;
+             iter->next->value=key[i];
+         }
+    }
+    for(int i=0;i<size;i++){
+            if(hash_entry[i].head==null){
+                continue;
+            }
+            cmp(hash_entry[i].head);
+        }
+  }
+  void print_nodes_attached_to_index(const T& idx){
+      int hash_value=hash_func(idx,size);
+      if(hash_entry[hash_value].head!=null){
+      Hash_node<Pair<T,M>>*iter=hash_entry[hash_value].head;
+      while(iter!=null){
+          if(iter->next!=null){
+          cout<<iter->value.second<<"->";
+          }
+          else {
+              cout<<iter->value.second<<endl;
+          }
+          iter=iter->next;
+      }
+   }
+  }
+  
 };
 typedef int(*String_hash)(const string,int);
-template<class T,class M,Cmp<T,M> cmp=sort_node_until,String_hash hash_func=Hash_function>
+template<class T,class M,Cmp<T,M> cmp=sort_node_until,String_hash hash_func=Hash_string>
 class String_map{
     private:
     Hash_entry<Pair<T,M>>* hash_entry;
     size_t size;
+    public:
+    String_map():hash_entry{null},size{}{}
+    String_map(Hash_entry<Pair<T,M>>*hash_en,const size_t& sz){
+        hash_entry=hash_en;
+        size=sz;
+    }
+    //constructor that accepts a size parameter
+    explicit String_map(const size_t& sz){
+        size=sz;
+        hash_entry=new Hash_entry<Pair<T,M>>[size];
+        
+    }
+    //constructor that accepts initializer lais as an argument 
+    String_map(const initializer_list<Pair<T,M>>& list){
+        size=list.size();
+        auto k=list.begin();
+        hash_entry=new Hash_entry<Pair<T,M>>[size];
+        for(int i=0;i<size;i++){
+            int  hash_value=hash_func(k[i].first,size);
+            if(hash_entry[hash_value].head==null){
+                hash_entry[hash_value].head=new Hash_node<Pair<T,M>>;
+                hash_entry[hash_value].head->value=k[i];
+                hash_entry[hash_value].head->next=null;
+           }
+         else if(hash_entry[hash_value].head!=null){
+             add_node(hash_entry[hash_value].head,k[i]);
+         }
+        }
+        for(int i=0;i<size;i++){
+            if(hash_entry[i].head==null){
+                continue;
+            }
+            cmp(hash_entry[i].head);
+        }
+    }
+    //it prints the table.
+  void print_table(){
+      for(int i=0;i<size;i++){
+          if(hash_entry[i].head==null){
+              cout<<"index "<<i<<":"<<"empty"<<endl;
+          }
+          else if(hash_entry[i].head!=null){
+           cout<<"index "<<i<<":";
+           print_nodes(hash_entry[i].head);
+          }
+      }
+  }
+  //copy constructor 
+  String_map(const String_map& htable){
+      size=htable.size;
+      hash_entry=new Hash_entry<Pair<T,M>>[size];
+      for(int i=0;i<size;i++){
+          hash_entry[i].head=htable.hash_entry[i].head;
+      }
+  }
+  //our assignment operator.
+  String_map& operator=(const initializer_list<Pair<T,M>>& list){
+      *this={list};
+      return *this;
+  }
+  // our assignment operator(=).
+  String_map& operator=(const String_map& htable){
+      *this={htable};
+      return *this;
+  }
+  //it changes the size of the table and rehashes all the element of the previous table to fit the new size of the table.
+  void Rehash(const size_t& sz){
+      String_map htable=*this;
+      hash_entry=new Hash_entry<Pair<T,M>>[sz];
+      for(int i=0;i<htable.size;i++){
+      if(htable.hash_entry[i].head==null){
+          continue;
+      }
+   else if(htable.hash_entry[i].head!=null){
+           Hash_node<Pair<T,M>>*iter=htable.hash_entry[i].head;
+           while(iter!=null){
+            int hash_value=hash_func(iter->value.first,sz);
+            if(hash_entry[hash_value].head==null){
+                hash_entry[hash_value].head=new Hash_node<Pair<T,M>>;
+                hash_entry[hash_value].head->value=iter->value;
+                hash_entry[hash_value].head->next=null;
+           }
+         else if(hash_entry[hash_value].head!=null){
+             add_node(hash_entry[hash_value].head,iter->value);
+         }
+           iter=iter->next;     
+}
+  }
+ }
+        size=sz;
+       for(int i=0;i<size;i++){
+            if(hash_entry[i].head==null){
+                continue;
+            }
+            cmp(hash_entry[i].head);
+        }
+    }
+  //works like Rehash function.
+void Resize(const size_t& sz){
+    Rehash(sz);
+}
+//it pushes the element at the head node or at the last node
+ void push(const Pair<T,M>& pair){
+     int hash_value=hash_func(pair.first,size);
+     if(hash_entry[hash_value].head!=null){
+         Hash_node<Pair<T,M>>*iter=get_last_iter(hash_entry[hash_value].head);
+         iter->next=new Hash_node<Pair<T,M>>;
+         iter->next->value=pair;
+     }
+     else if(hash_entry[hash_value].head==null){
+      Hash_node<Pair<T,M>>*iter=null;
+      iter=new Hash_node<Pair<T,M>>;
+      iter->value=pair;
+      hash_entry[hash_value].head=iter;
+     }
+    cmp(hash_entry[hash_value].head);
+ }
+ //it returns element in each entry.
+ size_t get_count_of_element() const {
+     size_t y=0;
+     for(int i=0;i<size;i++){
+         if(hash_entry[i].head==null){
+             continue;
+         }
+         else if(hash_entry[i].head!=null){
+             y+=get_no_of_element(hash_entry[i].head);
+         }
+     }
+     return y;
+ }
+ //it returns the number of used index
+ size_t get_used_entry() const {
+        size_t z=0;
+        for(int i=0;i<size;i++){
+            if(hash_entry[i].head==null){
+                continue;
+            }
+            ++z;
+        }
+        return z;
+    }
+    //it returns the load  factor 
+ float load_balance()const {
+    float s=(float)get_used_entry();
+    float sz=(float)size;
+    float load=(float)s/size;
+    return load;
+ }
+ //it returns size
+size_t get_size() const{
+    return size;
+}
+//Hash_table interface
+Hash_entry<Pair<T,M>>& operator[ ](const T& idx) const {
+    int hash_value=hash_func(idx,size);
+    return hash_entry[hash_value];
+}
+//it returns the compare function
+Cmp<T,M> get_cmp() const{
+    return cmp;
+}
+
+
+//it returns the node that has value as pair in the hash_table.
+Hash_node<Pair<T,M>> find_value_by_key(const Pair<T,M>& pair){
+    int hash_value=hash_func(pair.first,size);
+    if(hash_entry[hash_value].head!=null){
+        Hash_node<Pair<T,M>>*iter=hash_entry[hash_value].head;
+        while(iter!=null){
+            if(iter->value.first==pair.first and iter->value.second==pair.second){
+                return iter;
+            }
+            iter=iter->next;
+        }
+    }
+    return null;
+}
+//it returns the hash_index of the value.
+int return_hash_index(const Pair<T,M>& pair){
+    int hash_value=hash_func(pair.first,size);
+    return hash_value;
+}
+//it inserts pair of value into the internal state of the object.to which it is attached.
+void insert_key_pair(const Pair<T,M>& pair){
+    int hash_value=hash_func(pair.first,size);
+    Hash_node<Pair<T,M>>*iter=null;
+    if(hash_entry[hash_value].head==null){
+        hash_entry[hash_value].head=new Hash_node<Pair<T,M>>;
+        hash_entry[hash_value].head->value=pair;
+    }
+  else if(hash_entry[hash_value].head!=null){
+      iter=get_last_iter(hash_entry[hash_value].head);
+      iter->next=new Hash_node<Pair<T,M>>;
+      iter->next->value=pair;
+  }
+}
+// it inserts the initializer list into the internal structure of the object to which it is attached.
+void insert_key_pairs(const initializer_list<Pair<T,M>>& list){
+    auto key=list.begin();
+    Hash_node<Pair<T,M>>*iter=null;
+    for(int i=0;i<list.size();++i){
+        int hash_value=hash_func(key[i].first,size);
+        if(hash_entry[hash_value].head==null){
+            hash_entry[hash_value].head=new Hash_node<Pair<T,M>>;
+            hash_entry[hash_value].head->value=key[i];
+         }
+         else if(hash_entry[hash_value].head!=null){
+             iter=get_last_iter(hash_entry[hash_value].head);
+             iter->next=new Hash_node<Pair<T,M>>;
+             iter->next->value=key[i];
+         }
+    }
+    for(int i=0;i<size;i++){
+            if(hash_entry[i].head==null){
+                continue;
+            }
+            cmp(hash_entry[i].head);
+        }
+  }
+  void print_nodes_attached_to_index(const T& idx){
+      int hash_value=hash_func(idx,size);
+      if(hash_entry[hash_value].head!=null){
+      Hash_node<Pair<T,M>>*iter=hash_entry[hash_value].head;
+      while(iter!=null){
+          if(iter->next!=null){
+          cout<<iter->value.second<<"->";
+          }
+          else {
+              cout<<iter->value.second<<endl;
+          }
+          iter=iter->next;
+      }
+   }
+  }
+  
 };
