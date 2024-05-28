@@ -149,6 +149,7 @@ void print_node(Hash_node<T>*node){
     iter=iter->next;
     }
 }
+template<class T,class M>
 Hash_node<Pair<T,M>>* get_nth_node(Hash_node<Pair<T,M>>*node,const size_t& size){
     Hash_node<Pair<T,M>>*iter=node;
     size_t sz=1;
@@ -628,15 +629,7 @@ void insert_key_pairs(const initializer_list<Pair<T,M>>& list){
           hash_entry[i].head=null;
       }
   }
-    //,it clears  all elements of the array of linked lis
-  void clear(){
-      for(int i=0;i<size;i++){
-          if(hash_entry[i].head==null){
-              continue;
-          }
-          hash_entry[i].head=null;
-      }
-  }
+  
 //hash index operations.
 Hash_node<Pair<T,M>> get_hash_index_head(const T& key){
     int hash_value=hash_func(key,size);
@@ -931,5 +924,13 @@ size_t get_no_of_element_per_head(const T& key){
       int hash_value=hash_func(key,size);
       Hash_node<Pair<T,M>>*iter=get_nth_node(hash_entry[hash_value].head,sz);
       return iter;
+  }
+  void print_synonyms(const T& val){
+      int hash_value=hash_func(val,size);
+      Hash_node<Pair<T,M>>*iter=hash_entry[hash_value].head;
+      while(iter!=null){
+          cout<<iter->value.second<<endl;
+          iter=iter->next;
+      }
   }
 };
