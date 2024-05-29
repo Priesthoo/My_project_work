@@ -378,7 +378,7 @@ using Cmp=void(*)(Hash_node<Pair<T,M>>*);
 
 template<class T,class M,Cmp<T,M> cmp=sort_node_until,   hash_function hash_func=Hash_function>
 class Hash_table{
-    private:
+    public:
     Hash_entry<Pair<T,M>> *hash_entry;
     size_t size;
     public:
@@ -652,7 +652,7 @@ size_t get_no_of_element_per_head(const T& key){
 typedef int(*String_hash)(const string,int);
 template<class T,class M,Cmp<T,M> cmp=sort_node_until,String_hash hash_func=Hash_string>
 class String_map{
-    private:
+    public:
     Hash_entry<Pair<T,M>>* hash_entry;
     size_t size;
     public:
@@ -925,6 +925,7 @@ size_t get_no_of_element_per_head(const T& key){
       Hash_node<Pair<T,M>>*iter=get_nth_node(hash_entry[hash_value].head,sz);
       return iter;
   }
+  
   void print_synonyms(const T& val){
       int hash_value=hash_func(val,size);
       Hash_node<Pair<T,M>>*iter=hash_entry[hash_value].head;
@@ -934,3 +935,12 @@ size_t get_no_of_element_per_head(const T& key){
       }
   }
 };
+template<class T,class M>
+void print_synonym(const String_map<T,M>& smap,const T& value){
+    int hash_value=Hash_string(value,smap.size);
+   Hash_node<Pair<T,M>>*iter=smap.hash_entry[hash_value].head;
+    while(iter!=null){
+        cout<<iter->value.second<<endl;
+        iter=iter->next;
+    }
+}
