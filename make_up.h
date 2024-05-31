@@ -76,6 +76,56 @@ long long convert_hex_to_binary(long long hex){
     long long  v=convert_to_binary(hex,2);
     return v;
 }
-void print(const long long& value,const int& v){
+void print(const long long& value,const string& v){
     cout<<value<<"     |    "<<v<<endl;
+}
+char convert_to_hex(const int& hex){
+    int arr[]={48,49,50,51,52,53,54,55,56,57}; 
+     int sz=sizeof(arr)/sizeof(arr[0]); 
+     if(hex>=0 and hex<=9){
+    for(int i=0;i<sz;++i){
+        if(hex==(arr[i]-arr[0])){
+            return (char)arr[i];
+            }
+        }
+     }
+  else if(hex>=10 and hex<=15){
+      char c[]={"ABCDEF"};
+      int f[]={10,11,12,13,14,15};
+      for(int i=0;i<6;i++){
+          if(hex==f[i]){
+              return c[i];
+          }
+      }
+  }
+}
+string  convert_decimal_to_hex(const long long& decimal,const int& divide,BASE base=BASE_SIXTEEN){
+    long long value=decimal;
+    string str={};
+    if(value<divide){
+        char v=convert_to_hex(value);
+        str.push_back(v);
+        return str;
+    }
+    while(value<=decimal and value>=divide){
+        long long v=value/divide;
+        int v1=value%divide;
+        char c=convert_to_hex(v1);
+        str.push_back(c);
+        value=v;
+    }
+    char g=convert_to_hex(value);
+    str.push_back(g);
+    string str1=Reverse_string(str);
+    return str;
+ }
+ 
+ string binary_to_hex(const long long& bin){
+    long long value=convert_to_decimal(bin);
+    string str=convert_decimal_to_hex(value,16);
+    return str;
+}
+
+void print_for_fun(){
+    cout<<"decimal"<<" |   "<<"Base 16"<<endl;
 }
