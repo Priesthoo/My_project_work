@@ -117,7 +117,7 @@ string  convert_decimal_to_hex(const long long& decimal,const int& divide,BASE b
     char g=convert_to_hex(value);
     str.push_back(g);
     string str1=Reverse_string(str);
-    return str;
+    return str1;
  }
  
  string binary_to_hex(const long long& bin){
