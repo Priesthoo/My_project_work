@@ -76,8 +76,8 @@ long long convert_hex_to_binary(long long hex){
     long long  v=convert_to_binary(hex,2);
     return v;
 }
-void print(const long long& value,const string& v){
-    cout<<value<<"     |    "<<v<<endl;
+void print(const long long& value,const long long& v1,const string& v){
+    cout<<value<<"        |    "<<v1<< "    |  "<<v<<endl;
 }
 char convert_to_hex(const int& hex){
     int arr[]={48,49,50,51,52,53,54,55,56,57}; 
@@ -127,5 +127,5 @@ string  convert_decimal_to_hex(const long long& decimal,const int& divide,BASE b
 }
 
 void print_for_fun(){
-    cout<<"decimal"<<" |   "<<"Base 16"<<endl;
+    cout<<"decimal"<<"  |   "<<"Base 2"<<"|  "<<"Base 16"<<endl;
 }
