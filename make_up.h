@@ -129,3 +129,31 @@ string  convert_decimal_to_hex(const long long& decimal,const int& divide,BASE b
 void print_for_fun(){
     cout<<"decimal"<<"  |   "<<"Base 2"<<"|  "<<"Base 16"<<endl;
 }
+int convert_to_number(const char c){
+    int v[ ]={48,49,50,51,52,53,54,55,56,57};
+    if(c>=(char)v[0] and c<=(char)v[9]){
+        for(int i=0;i<10;++i){
+            if(c==(char)v[i]){
+                return i;
+            }
+        }
+    }
+  int f[ ]={10,11,12,13,14,15};
+  char j[ ]={"ABCDEF"};
+  for(int i=0;i<6;++i){
+      if(c==j[i]){
+          return f[i];
+      }
+  }
+}
+long long convert_hex_to_decimal(const string& str){
+    long long add=0;
+    string str1=Reverse_string(str);
+     string str2={str1,0,str1.size()-2};
+     for(int i=0;i<str2.size();i++){
+         int v=convert_to_number(str2[i]);
+         v*=pow(16,i);
+         add+=v;
+         }
+     return add;
+}
