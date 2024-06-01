@@ -63,15 +63,17 @@ const char& back(const char*c){
     const int len=strlen(c);
     return c[len-1];
 }
-//it returns a string that is initialized with variable of const char* starting with index idx
+//it returns an object that is initialized with variable of const char* starting with index idx
 const char* substring(const char* ch,int idx){
     const char* ch1=init(ch,idx);
     return ch1;
 }
+//it returns an object that is initialized with a variable of const char* starting with index idx to length len
 const char*substring(const char*ch,int idx,int len){
     const char*ch1=init(ch,idx,len);
     return ch1;
 }
+//it returns a modified variable of const char*(it adds the value of variable c to the end of ch of const char* type)
 const char* push_back(const char* ch,const char c){
     int len=strlen(ch);
     char*ch1=new char[len+1];
