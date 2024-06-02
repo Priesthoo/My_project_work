@@ -100,4 +100,21 @@ const char* insert_before(const char*c,int idx,const char j){
     }
     return ch;
 }
-}    
+}
+const char*insert(const char*c,int idx,const char k){
+    char*ch=new char[strlen(c)+1];
+    int n=strlen(c)+1;
+    int i=0;
+    int j=0;
+    while(i<strlen(c) and j<n){
+        if(j==idx+1){
+            ch[j]=k;
+            j+=1;
+            continue;
+        }
+        ch[j]=c[i];
+        ++j;
+        ++i;
+    }
+    return ch;
+}  
