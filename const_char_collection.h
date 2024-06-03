@@ -6,6 +6,8 @@
 #ifdef CCTYPE 
 #include<cctype>// for strcpy(),strlen()...
 #endif
+#define null ((void*)0)
+#define _PROTOTYPE(name,params) name##params
 /*
     Writing for both pointer to const char type , pointer to a char type. 
  This is a container class for C c style character array.
@@ -100,7 +102,7 @@ const char* insert_before(const char*c,int idx,const char j){
     }
     return ch;
 }
-}
+
 const char*insert(const char*c,int idx,const char k){
     char*ch=new char[strlen(c)+1];
     int n=strlen(c)+1;
@@ -117,4 +119,36 @@ const char*insert(const char*c,int idx,const char k){
         ++i;
     }
     return ch;
-}  
+}
+const char*insert_at_idx(const char*c,int idx,const char ch1){
+    char*ch=new char[strlen(c)];
+    int len=strlen(c);
+    for(int i=0;i<len;++i){
+        if(i==idx){
+            ch[i]=ch1;
+            continue;
+        }
+        ch[i]=c[i];
+    }
+    return ch;
+}
+const char*insert_after(const char*c,int idx,const char*ch1){
+    char*ch=new char[strlen(c)+strlen(ch1)];
+    int len=strlen(c);
+    int len1=strlen(c)+strlen(ch1);
+    int i=0;
+    int j=0;
+    while(i<len and j<len1){
+        if(j==idx+1){
+            j=idx+1+strlen(ch1);
+            for(int k=0;k<strlen(ch1);k++){
+                ch[idx+1+k]=ch1[k];
+            }
+        }
+        ch[j]=c[i];
+        ++i;
+        ++j;
+    }
+    return ch;
+}
+}
