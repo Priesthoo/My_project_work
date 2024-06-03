@@ -151,4 +151,43 @@ const char*insert_after(const char*c,int idx,const char*ch1){
     }
     return ch;
 }
+const char*insert_at_idx(const char*c,int idx,const char*ch1){
+    char*ch=new char[strlen(c)+strlen(ch1)-1];
+    int len=strlen(c);
+    int len1=strlen(c)+strlen(ch1)-1;
+    int i=0;
+    int j=0;
+    while(i<len and j<len1){
+        if(j==idx){
+            j=idx+strlen(ch1);
+            i+=1;
+            for(int k=0;k<strlen(ch1);k++){
+                ch[idx+k]=ch1[k];
+            }
+        }
+        ch[j]=c[i];
+        ++i;
+        ++j;
+    }
+    return ch;
+}
+const char*insert_before_idx(const char*c,int idx,const char*ch1){
+    char*ch=new char[strlen(c)+strlen(ch1)];
+    int len=strlen(c);
+    int len1=strlen(c)+strlen(ch1);
+    int i=0;
+    int j=0;
+    while(i<len and j<len1){
+        if(j==idx){
+            j=idx+strlen(ch1);
+            for(int k=0;k<strlen(ch1);k++){
+                ch[k+idx]=ch1[k];
+            }
+        }
+        ch[j]=c[i];
+        ++i;
+        ++j;
+    }
+    return ch;
+}
 }
