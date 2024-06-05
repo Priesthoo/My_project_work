@@ -190,4 +190,72 @@ const char*insert_before_idx(const char*c,int idx,const char*ch1){
     }
     return ch;
 }
+const char*insert_after(const char*c,int idx,int len,const char*ch1,int idx1){
+    char*ch=new char[strlen(c)+len];
+    int len1=strlen(c);
+    int len2=strlen(c)+len;
+    int i=0;
+    int j=0;
+    while(i<len1 and j<len2){
+        if(j==idx+1){
+            j=idx+1+len;
+            for(int k=0;k<len;k++){
+                ch[idx+1+k]=ch1[idx1+k];
+            }
+        }
+        ch[j]=c[i];
+        ++i;
+        ++j;
+    }
+    return ch;
+}
+const char*pop_back(const char*c){
+    char*ch=new char[strlen(c)-1];
+    int i=0;
+    while(i<(strlen(c)-1)){
+        ch[i]=c[i];
+        ++i;
+    }
+    return ch;
+}
+const char*insert_at_idx(const char*c,int len,int idx,const char*ch1,int idx2){
+    char*ch=new char[strlen(c)+len-1];
+    int len1=strlen(c);
+    int len2=strlen(c)+strlen(ch1)-1;
+    int i=0;
+    int j=0;
+    while(i<len1 and j<len2){
+        if(j==idx){
+            j=idx+len;
+            i+=1;
+            for(int k=0;k<len;k++){
+                ch[idx+k]=ch1[k+idx2];
+            }
+        }
+        ch[j]=c[i];
+        ++i;
+        ++j;
+    }
+    return ch;
+ }
+ const char* insert_before(const char*c,int idx,int len, const char*ch1,int idx2){
+     char*ch=new char[strlen(c)+len];
+    int len1=strlen(c);
+    int len2=strlen(c)+len;
+    int i=0;
+    int j=0;
+    while(i<len1 and j<len2){
+        if(j==idx){
+            j=idx+len;
+            for(int k=0;k<strlen(ch1);k++){
+                ch[k+idx]=ch1[k+idx2];
+            }
+        }
+        ch[j]=c[i];
+        ++i;
+        ++j;
+    }
+    return ch;
+     
+ }
 }
