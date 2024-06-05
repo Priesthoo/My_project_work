@@ -12,6 +12,7 @@
 #ifdef CSTRING
 #include<cstring>
 #endif
+#define MAX 4294967295
 
 /*
     Writing for both pointer to const char type , pointer to a char type. 
@@ -316,4 +317,12 @@ const char*insert_at_idx(const char*c,int len,int idx,const char*ch1,int idx2){
      }
      return ch;
  }
+unsigned int find_char(const char*c,const char c1){
+    for(int i=0;i<strlen(c);i++){
+        if(c[i]==c1){
+            return i;
+        }
+    }
+    return MAX;
+}
 }
