@@ -8,6 +8,11 @@
 #endif
 #define null ((void*)0)
 #define _PROTOTYPE(name,params) name##params
+#define CSTRING
+#ifdef CSTRING
+#include<cstring>
+#endif
+
 /*
     Writing for both pointer to const char type , pointer to a char type. 
  This is a container class for C c style character array.
@@ -257,5 +262,58 @@ const char*insert_at_idx(const char*c,int len,int idx,const char*ch1,int idx2){
     }
     return ch;
      
+ }
+ bool is_equal(const char*c,const char*ch1){
+     if(strcmp(c,ch1)==0){
+         return true;
+     }
+     return false;
+ }
+ const char*replace(const char*c,int idx,const char c1){
+     char*ch=new char[strlen(c)];
+     int len=strlen(c);
+     unsigned int i=0;
+     while(i<len){
+         if(i==idx){
+             ch[i]=c1;
+             i++;
+             continue;
+         }
+         ch[i]=c[i];
+         i++;
+     }
+     return ch;
+ }
+ const char*replace(const char*c,int idx,int len,const char*c1){
+     char*ch=new char[strlen(c)];
+     int len1=strlen(c);
+     unsigned int i=0;
+     while(i<len1){
+         if(i==idx){
+             i=idx+len;
+             for(int j=0;j<len;j++){
+                 ch[idx+j]=c1[j];
+             }
+         }
+         ch[i]=c[i];
+         i++;
+     }
+     return ch;
+ }
+ const char*replace(const char*c,int idx,int len,const char*c1,int idx2){
+     char*ch=new char[strlen(c)];
+     int len1=strlen(c);
+     unsigned int i=0;
+     while(i<len1){
+         if(i==idx){
+             i=idx+len;
+             for(int k=0;k<len;k++){
+                 ch[idx+k]=c1[idx2+k];
+             }
+         }
+         ch[i]=c[i];
+         ++i;
+     }
+     return ch;
  }
 }
