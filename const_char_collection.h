@@ -325,4 +325,25 @@ unsigned int find_char(const char*c,const char c1){
     }
     return MAX;
 }
+unsigned int find_char(const char*c,int idx,const char c1){
+    for(int i=idx;i<strlen(c);i++){
+        if(c[i]==c1){
+            return i;
+        }
+    }
+    return MAX;
+}
+unsigned int find_substring(const char*c,const char*c1){
+    int len=strlen(c);
+    int len1=strlen(c1);
+    int len2=len-len1;
+    ++len2;
+    for(unsigned int i=0;i<len2;++i){
+      const char*ch=init(c,i,len);
+      if(C::is_equal(ch,c1)){
+          return i;
+      }
+    }
+    return MAX;
+}
 }
