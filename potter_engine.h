@@ -24,17 +24,23 @@ enum FRAME_BUFFER{
     DEPTH_BUFFER_AND_COLOR_BUFFER=DEPTH_BUFFER | COLOR_BUFFER
 };
 enum TEXTURE_MAP{
-    SPECULAR_MAP,
-    COLOR_MAP,
-    EMISSION_MAP,
-    NORMAL_MAP,
-    PARALLAX_MAP,
-    PARALLAX_OCCLUSION_MAP,
-    BUMP_MAP,
-    DISPLACEMENT_MAP,
-    SHADOW_MAP
+    SPECULAR_MAP_2D,
+    COLOR_MAP_2D,      //reflection map
+    EMISSION_MAP_2D,
+    NORMAL_MAP_2D,
+    PARALLAX_MAP_2D,
+    PARALLAX_OCCLUSION_MAP_2D,
+    BUMP_MAP_2D,
+    DISPLACEMENT_MAP_2D,
+    SHADOW_MAP_2D,
+    LIGHT_MAP_2D,
+    VOLUME_TEXTURE_MAP_3D
 };
-
+enum FALL_OFF{
+    ATTENUATE_0,
+    ATTENUATE_1,
+    ATTENUATE_2
+};
 typedef Vector3d Position;
 typedef Vector3d Direction;
 typedef Vector3d Vertex;
@@ -181,6 +187,10 @@ class Point_light:public Light{
      static float get_dist_fall_off(const Point_light& point){
          return point.attenuate;
      }
+ static float fall_off(const float& distance,const float& max_distance,FALL_OFF fall_off, const float& epsilon=0.001){
+     if(fall_off==ATTENATE_0)
+     
+ }
 };
 class Spot_light:public Light{
     private:
@@ -214,6 +224,9 @@ struct Index_buffer{
     size_t idx1;
     size_t idx2;
 };
+enum TEXTURE_PACK{
+    TEXTURE_ATLAS_2D   //similar to texture_array_2d... 
+}
 
 /*
  They influence the points of a triangle, in what sense, They tend to determine points that fall within the triangle....
