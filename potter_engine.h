@@ -12,7 +12,7 @@ typedef double pe_double;
 #endif
 enum LIGHT{
     POINT,//like the bulb
-    DIRECTIONAL,
+    DIRECTIONAL,//idea sunlight
     SPOT_LIGHT,//flash light
     AREA_LIGHT,//Real world simulation of light 
     INFINITE_LIGHT//it models the sun.
@@ -34,7 +34,11 @@ enum TEXTURE_MAP{
     DISPLACEMENT_MAP_2D,
     SHADOW_MAP_2D,
     LIGHT_MAP_2D,
-    VOLUME_TEXTURE_MAP_3D
+    VOLUME_TEXTURE_MAP_3D,
+    ALPHA_MAP_2D,
+    HEIGHT_MAP_2D
+};
+enum PROCEDURAL_TEXTURE{
 };
 enum FALL_OFF{
     ATTENUATE_0,
@@ -112,7 +116,11 @@ enum Material_property{
     SPECULAR ,//for the specular highlight 
     ROUGHNESS,
     NORMAL_ORIENTATE,
-  };
+    REFRACT_INDEX,
+    SCATTER_INDEX,
+    ABSORB_INDEX
+};
+
 //to model light interaction with material,we use multiplication..
 //it handles light arriving at the point being shaded without interactioj with other objects...
 //we characterise light by it's color and the spatial distribution in relation to the position and direction.'
@@ -188,9 +196,9 @@ class Point_light:public Light{
          return point.attenuate;
      }
  static float fall_off(const float& distance,const float& max_distance,FALL_OFF fall_off, const float& epsilon=0.001){
-     if(fall_off==ATTENATE_0)
-     
- }
+     if(fall_off==ATTENUATE_0){ return 0.001;}
+     return 0.00123;
+   }
 };
 class Spot_light:public Light{
     private:
@@ -226,7 +234,7 @@ struct Index_buffer{
 };
 enum TEXTURE_PACK{
     TEXTURE_ATLAS_2D   //similar to texture_array_2d... 
-}
+};
 
 /*
  They influence the points of a triangle, in what sense, They tend to determine points that fall within the triangle....
@@ -241,3 +249,12 @@ void set_weight(Bary_weight*  bary_w1,const float& w1,const float& w2,const floa
     bary_w1->b2=w2;
     bary_w1->b3=w3;
 }
+class PT_ENGINE Area_light{
+    
+};
+enum MATERIAL_MODEL{
+    LAMBERTIAN_MODEL,
+    DIFFUSE_MODEL, // local subsurface scattering model
+    SPECULAR_MODEL,//reflection model
+    CARTOON_MODEL//mostly cartoon models
+};
