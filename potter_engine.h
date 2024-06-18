@@ -1,6 +1,8 @@
 #include"color.h"
 #include"Matrix.h"
+#include"Hash_map.h"
 //OPENGL3D.... for  God's given game engine
+using namespace HASH_MAP;
 #define PT_ENGINE
 #ifdef PT_ENGINE
 typedef unsigned int pe_uint;
@@ -257,4 +259,11 @@ enum MATERIAL_MODEL{
     DIFFUSE_MODEL, // local subsurface scattering model
     SPECULAR_MODEL,//reflection model
     CARTOON_MODEL//mostly cartoon models
+};
+enum SHADER_TYPE{
+    VERTEX_SHADER,
+    FRAGMENT_SHADER,
+    COMPUTE_SHADER,
+    GEOMETRY_SHADER,
+    TESSELLATION_SHADER
 };
