@@ -1,5 +1,7 @@
 #include<iostream>
 using namespace std;
+#ifndef HASH_MAP_H
+#define HASH_MAP_H
 #define TABLE_SIZE 567
 #ifndef null
 #define null nullptr
@@ -26,7 +28,8 @@ Firstly work with hash function that converts int key to int hash_value.
 why do i need the hash node,Incase I encountered the same key 
 load factor=number of filled slots/total number of slots..
 i have to handle collision by seperate chaining.
-*/
+*/ 
+namespace HASH_MAP{
 template<class T, class M>
 struct  Pair{
     T first;
@@ -202,7 +205,7 @@ int Hash_function(int key,int Entry_size)
 int Hash_string(const string key,int Entry_size){
     int Hash_value=0;
     for(auto ch:key){
-        Hash_value+=(int)ch;
+        Hash_value+=(size_t)ch;
 }
 int result=Hash_value MOD Entry_size;
 return result;
@@ -482,6 +485,9 @@ class Hash_table{
 void Resize(const size_t& sz){
     Rehash(sz);
 }
+static void set_size(Hash_table<T,M>*str,const size_t& sz){
+    str->size=sz;
+}
 //it pushes the element at the head node or at the last node
  void push(const Pair<T,M>& pair){
      int hash_value=hash_func(pair.first,size);
@@ -649,6 +655,10 @@ size_t get_no_of_element_per_head(const T& key){
       return iter;
   }
 };
+
+
+
+//String Maps...
 typedef int(*String_hash)(const string,int);
 template<class T,class M,Cmp<T,M> cmp=sort_node_until,String_hash hash_func=Hash_string>
 class String_map{
@@ -756,8 +766,17 @@ class String_map{
 void Resize(const size_t& sz){
     Rehash(sz);
 }
+static void set_size(String_map<T,M>*str,const size_t& sz){
+    str->size=sz;
+}
+static size_t get_size(String_map<T,M>& str){
+    return str.size;
+}
 //it pushes the element at the head node or at the last node
  void push(const Pair<T,M>& pair){
+     if(this->hash_entry==null){
+         hash_entry=new Hash_entry<Pair<T,M>>[size];
+     }
      int hash_value=hash_func(pair.first,size);
      if(hash_entry[hash_value].head!=null){
          Hash_node<Pair<T,M>>*iter=get_last_iter(hash_entry[hash_value].head);
@@ -840,7 +859,7 @@ int return_hash_index(const Pair<T,M>& pair){
     int hash_value=hash_func(pair.first,size);
     return hash_value;
 }
-//it inserts pair of value into the internal state of the object.to which it is attached.
+//it inserts pair of value into the internal state of the object to which it is attached.
 void insert_key_pair(const Pair<T,M>& pair){
     int hash_value=hash_func(pair.first,size);
     Hash_node<Pair<T,M>>*iter=null;
@@ -944,3 +963,6 @@ void print_synonym(const String_map<T,M>& smap,const T& value){
         iter=iter->next;
     }
 }
+}
+#endif   //for HASH_MAP_H
+
