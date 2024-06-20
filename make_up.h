@@ -3,6 +3,10 @@
 #include<sstream>
 #include<cmath> //for pow(n,t);
 #define number 0x7FFF
+#define SSTREAM
+#ifdef DEBUG
+#include<assert.h>
+#endif
 using namespace std;
 enum BASE{
     BASE_TWO=1<<1,
@@ -11,7 +15,10 @@ enum BASE{
 };
 
 string Reverse_string(const string& str){
-    string rstr={" ",str.size()};
+    string rstr;
+    for(int i=0;i<str.size();i++){
+        rstr.push_back(' ');
+    }
     int i=0;
     int z=str.size()-1;
     while(i<str.size() and z>=0){
@@ -171,3 +178,60 @@ string invert_all_bits(long long value){
     }
   return str;
  }
+bool is_binary(const string& str){
+    bool is_bin=true;
+    for(int i=0;i<str.size();i++){
+        if(str[i]>=(char)50){
+            return false;
+        }
+    }
+    return is_bin;
+}
+ template<size_t N>
+ class Bit{
+     private:
+     string str;
+      public:
+     Bit(){
+         string str;
+         for(int i=0;i<N;i++){
+             str.push_back('0');
+         }
+    }
+     Bit(long long value){
+      if(N!=0){
+          for(int i=0;i<N;i++){
+             str.push_back('0');
+         }
+      }
+      int j=str.size()-1;
+ #ifdef SSTREAM
+    stringstream ssobj;
+#endif
+    ssobj<<value;
+    string str1=ssobj.str();
+    if(is_binary(str1)==true){
+    for(int i=str1.size()-1;i>=0;i--){
+        str[j]=str1[i];
+        --j;
+ }
+    }//if is_binary is false, convert value to binary
+    else{
+        long long value1=convert_to_binary(value,2);
+        stringstream str2;
+        str2<<value1;
+        string str3=str2.str();
+        for(int i=str3.size()-1;i>=0;i--){
+        str[j]=str3[i];
+        --j;
+    }
+   }
+}
+static void print_bit_pattern(const Bit<N>& bit){
+    cout<<bit.str<<endl;
+}
+static bool check_binary(const Bit<N>& bit){
+    bool is_bin=is_binary(bit.str);
+    return is_bin;
+}
+};
