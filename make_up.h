@@ -157,3 +157,17 @@ long long convert_hex_to_decimal(const string& str){
          }
      return add;
 }
+string invert_all_bits(long long value){
+    stringstream ssobj;
+    ssobj<<value;
+    string str=ssobj.str();
+    for(int i=0;i<str.size();++i){
+        if(str[i]=='0'){
+            str[i]='1';
+        }
+        else if(str[i]=='1'){
+            str[i]='0';
+        }
+    }
+  return str;
+ }
