@@ -192,20 +192,23 @@ bool is_binary(const string& str){
      private:
      string str;
       public:
-     Bit(){
+Bit(){
          string str;
          for(int i=0;i<N;i++){
              str.push_back('0');
          }
     }
-     Bit(long long value){
+Bit(string str1){
+        str=str1;
+    }
+Bit(long long value){
       if(N!=0){
           for(int i=0;i<N;i++){
              str.push_back('0');
          }
       }
       int j=str.size()-1;
- #ifdef SSTREAM
+#ifdef SSTREAM
     stringstream ssobj;
 #endif
     ssobj<<value;
@@ -227,11 +230,32 @@ bool is_binary(const string& str){
     }
    }
 }
+string get_head() const {
+    return str;
+}
 static void print_bit_pattern(const Bit<N>& bit){
     cout<<bit.str<<endl;
 }
 static bool check_binary(const Bit<N>& bit){
     bool is_bin=is_binary(bit.str);
     return is_bin;
+}
+template<size_t G>
+static Bit cast_to_N_bit(const Bit<G>& bit){
+    string strz;
+    for(int i=0;i<N;i++){
+        strz.push_back('0');
+    }
+    int j=strz.size()-1;
+  for(int i=bit.get_head().size();i>=0;i--){
+      strz[j]=bit.get_head()[i];
+      --j;
+  }
+  Bit<N>bit1=strz;
+  return bit1;
+}
+Bit& operator=(const Bit<N>& bits){
+    str=bits.str;
+    return *this;
 }
 };
