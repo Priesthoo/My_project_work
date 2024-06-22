@@ -7,6 +7,7 @@
 #ifdef DEBUG
 #include<assert.h>
 #endif
+#define ASSERT(exp,value){ if (exp!=true){ std::cout<<value<<endl;}}
 using namespace std;
 enum BASE{
     BASE_TWO=1<<1,
@@ -186,6 +187,46 @@ bool is_binary(const string& str){
         }
     }
     return is_bin;
+}
+size_t get_no_of_bits(long long value){
+    size_t sz=0;
+    long long val=value;
+    while(val>0){
+        ++sz;
+        val/=2;
+    }
+    return sz;
+}
+template<size_t N>
+string Bits_anded(const string& str,const string str2){
+    string str4;
+    string str3;
+    string str1;
+    for(int i=0;i<N;i++){
+        str1.push_back('0');
+        str3.push_back('0');
+    }
+    for(int i=str.size()-1;i>=0;i++){
+        str1[i]=str[i];
+    }
+    for(int i=str2.size()-1;i>=0;i++){
+        str3[i]=str2[i];
+    }
+    for(int i=str1.size()-1;i>=0;i++){
+        if(str1[i]=='1' and str3[i]=='0'){
+            str4.push_back('0');
+        }
+        else if(str1[i]=='1' and str3[i]=='1'){
+            str4.push_back('1');
+        }
+        else if(str1[i]=='0' and str3[i]=='1' ){
+            str4.push_back('0');
+        }
+        else if(str1[i]=='0' and str3[i]=='0'){
+            str4.push_back('0');
+        }
+    }
+    return str4;
 }
  template<size_t N>
  class Bit{
