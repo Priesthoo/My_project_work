@@ -7,8 +7,19 @@
 #ifdef DEBUG
 #include<assert.h>
 #endif
-#define ASSERT(exp,value){ if (exp!=true){ std::cout<<value<<endl;}}
+#define ASSERT(exp,value,str){ \
+if (exp!=true){ \
+   str val={value};  \
+     return val;  \
+     } \
+     }
 using namespace std;
+template<class T>
+string assertion(T condition,string str){
+    if(condition!=true){
+        return str;
+    }
+}
 enum BASE{
     BASE_TWO=1<<1,
     BASE_EIGHT=1<<3,
@@ -198,38 +209,69 @@ size_t get_no_of_bits(long long value){
     return sz;
 }
 template<size_t N>
-string Bits_anded(const string& str,const string str2){
-    string str4;
-    string str3;
-    string str1;
-    for(int i=0;i<N;i++){
-        str1.push_back('0');
-        str3.push_back('0');
+string Bits_anded(const string& str,const string& str2){
+    string str4(N,'0');
+    string str3(N,'0');
+    string str1(N,'0');
+    int j=N-1;
+    int k=N-1;
+    for(int i=str.size()-1;i>=0;i--){
+        str1[j]=str[i];
+        --j;
     }
-    for(int i=str.size()-1;i>=0;i++){
-        str1[i]=str[i];
+    for(int i=str2.size()-1;i>=0;i--){
+        str3[k]=str2[i];
+        k--;
     }
-    for(int i=str2.size()-1;i>=0;i++){
-        str3[i]=str2[i];
-    }
-    for(int i=str1.size()-1;i>=0;i++){
+    for(int i=str1.size()-1;i>=0;i--){
         if(str1[i]=='1' and str3[i]=='0'){
-            str4.push_back('0');
+            str4[i]='0';
         }
         else if(str1[i]=='1' and str3[i]=='1'){
-            str4.push_back('1');
+            str4[i]='1';
         }
         else if(str1[i]=='0' and str3[i]=='1' ){
-            str4.push_back('0');
+            str4[i]='0';
         }
         else if(str1[i]=='0' and str3[i]=='0'){
-            str4.push_back('0');
+            str4[i]='0';
+        }
+    }
+    return str4;
+}
+template<size_t N>
+string Bits_ored(const string& str,const string& str2){
+    string str4(N,'0');
+    string str3(N,'0');
+    string str1(N,'0');
+    int j=N-1;
+    int k=N-1;
+    for(int i=str.size()-1;i>=0;i--){
+        str1[j]=str[i];
+        --j;
+    }
+    for(int i=str2.size()-1;i>=0;i--){
+        str3[k]=str2[i];
+        k--;
+    }
+    for(int i=str1.size()-1;i>=0;i--){
+        if(str1[i]=='1' and str3[i]=='0'){
+            str4[i]='1';
+        }
+        else if(str1[i]=='1' and str3[i]=='1'){
+            str4[i]='1';
+        }
+        else if(str1[i]=='0' and str3[i]=='1' ){
+            str4[i]='1';
+        }
+        else if(str1[i]=='0' and str3[i]=='0'){
+            str4[i]='0';
         }
     }
     return str4;
 }
  template<size_t N>
- class Bit{
+ class Bit {
      private:
      string str;
       public:
@@ -274,7 +316,11 @@ Bit(long long value){
 string get_head() const {
     return str;
 }
-static void print_bit_pattern(const Bit<N>& bit){
+string& get_head(){
+    return str;
+}
+template<size_t  B>
+static void print_bit_pattern(const Bit<B>& bit){
     cout<<bit.str<<endl;
 }
 static bool check_binary(const Bit<N>& bit){
@@ -299,4 +345,18 @@ Bit& operator=(const Bit<N>& bits){
     str=bits.str;
     return *this;
 }
+Bit& operator=(const string& str1){
+    *this={str1};
+    return *this;
+}
+template<size_t K>
+Bit operator &(const Bit<K>&bits){
+    if(this->get_head().size()!=bits.get_head().size()){
+        Bit<N> bit1=assertion<const size_t>(this->get_head().size()==bits.get_head().size(),"Cast to same size, sizes are not equal");
+        return bit1;
+    }
+    Bit<N> bit=Bits_anded<N>(this->get_head(),bits.get_head());
+    return bit;
+}
+
 };
