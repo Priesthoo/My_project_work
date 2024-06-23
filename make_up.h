@@ -270,6 +270,37 @@ string Bits_ored(const string& str,const string& str2){
     }
     return str4;
 }
+template<size_t N>
+string Bits_xored(const string& str,const string& str2){
+    string str4(N,'0');
+    string str3(N,'0');
+    string str1(N,'0');
+    int j=N-1;
+    int k=N-1;
+    for(int i=str.size()-1;i>=0;i--){
+        str1[j]=str[i];
+        --j;
+    }
+    for(int i=str2.size()-1;i>=0;i--){
+        str3[k]=str2[i];
+        k--;
+    }
+    for(int i=str1.size()-1;i>=0;i--){
+        if(str1[i]=='1' and str3[i]=='0'){
+            str4[i]='1';
+        }
+        else if(str1[i]=='1' and str3[i]=='1'){
+            str4[i]='0';
+        }
+        else if(str1[i]=='0' and str3[i]=='1' ){
+            str4[i]='1';
+        }
+        else if(str1[i]=='0' and str3[i]=='0'){
+            str4[i]='0';
+        }
+    }
+    return str4;
+}
  template<size_t N>
  class Bit {
      private:
@@ -358,5 +389,37 @@ Bit operator &(const Bit<K>&bits){
     Bit<N> bit=Bits_anded<N>(this->get_head(),bits.get_head());
     return bit;
 }
-
+template<size_t K>
+Bit& operator&=(const Bit<K>& bit){
+    *this=*this & bit;
+    return *this;
+}
+template<size_t K>
+Bit operator |(const Bit<K>&bits){
+    if(this->get_head().size()!=bits.get_head().size()){
+        Bit<N> bit1=assertion<const size_t>(this->get_head().size()==bits.get_head().size(),"Cast to same size, sizes are not equal");
+        return bit1;
+    }
+    Bit<N> bit=Bits_ored<N>(this->get_head(),bits.get_head());
+    return bit;
+}
+template<size_t K>
+Bit& operator|=(const Bit<K>& bit){
+    *this=*this |  bit;
+    return *this;
+}
+template<size_t K>
+Bit operator ^(const Bit<K>&bits){
+    if(this->get_head().size()!=bits.get_head().size()){
+        Bit<N> bit1=assertion<const size_t>(this->get_head().size()==bits.get_head().size(),"Cast to same size, sizes are not equal");
+        return bit1;
+    }
+    Bit<N> bit=Bits_xored<N>(this->get_head(),bits.get_head());
+    return bit;
+}
+template<size_t K>
+Bit& operator^=(const Bit<K>& bit){
+    *this=*this^bit;
+    return *this;
+}
 };
