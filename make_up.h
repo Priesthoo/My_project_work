@@ -69,6 +69,7 @@ long long convert_to_binary(const long long& value,const int& divide){
     str1>>v;
     return v;
 }
+
 int convert_bin(const char c){
     if(c=='1'){
         return 1;
@@ -91,6 +92,33 @@ long long convert_to_decimal(const long long& binary,BASE base=BASE_TWO){
     }
     return j;
 }
+long long string_to_decimal(const string& str){
+    string str1=Reverse_string(str);
+    long long v=0;
+    long long j=0;
+    for(int i=str1.size()-1;i>=0;--i){
+        v=convert_bin(str1[i]);
+        v*=pow(2,i);
+        j+=v;
+    }
+    return j;
+  }
+  string decimal_to_string_binary(long long& value){
+      string str;
+      long long v=value;
+      int divide=2;
+      int c=0;
+      while(v>=divide){
+        c=v%divide;
+        long long  f=v/divide;
+        char c1=convert(c);
+        str.push_back(c1);
+        v=f;
+    }
+    str.push_back('1');
+    str=Reverse_string(str);
+    return str;
+  }
 long long convert_hex_to_binary(long long hex){
     long long  v=convert_to_binary(hex,2);
     return v;
@@ -189,6 +217,18 @@ string invert_all_bits(long long value){
         }
     }
   return str;
+ }
+ string invert_bits(const string& str){
+     string str2=str;
+     for(int i=0;i<str.size();++i){
+         if(str[i]=='0'){
+             str2[i]='1';
+         }
+         else if(str[i]=='1'){
+             str2[i]='0';
+         }
+     }
+     return str2;
  }
 bool is_binary(const string& str){
     bool is_bin=true;
@@ -422,4 +462,9 @@ Bit& operator^=(const Bit<K>& bit){
     *this=*this^bit;
     return *this;
 }
+Bit operator~(void ){
+    string str1=invert_bits(this->get_head());
+    Bit<N> bit1={str1};
+    return bit1;
+ }
 };
