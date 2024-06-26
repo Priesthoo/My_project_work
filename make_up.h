@@ -490,11 +490,7 @@ Bit operator~(void ){
      *this=*this>>value;
      return *this;
  }
-template<size_t T>
-long long&  operator=( Bit<T> bit){
-    long long value2=string_to_decimal(bit->get_head());
-    return value2;
-}
+
 template<size_t H>
 Bit operator+(const Bit<H>&bit){
     long long val=string_to_decimal(this->get_head());
@@ -509,5 +505,26 @@ Bit operator+(const long long& value){
     Bit<N> bit={val2};
     return bit;
 }
-
+Bit& operator+=(const Bit<N>& bit){
+    *this=*this+bit;
+    return *this;
+}
+Bit& operator+=(const long long& value){
+    *this=*this+value;
+    return *this;
+}
+static long long convert_bit_to_value(const Bit<N>& bit){
+    long long val=string_to_decimal(bit.get_head());
+    return val;
+}
+template<size_t G>
+Bit operator-(const Bit<G>& bit){
+    if(Bit<N>::convert_bit_to_value(*this)>Bit<G>::convert_bit_to_value(bit)){
+    long long val=string_to_decimal(this->get_head());
+    long long val2=string_to_decimal(bit.get_head());
+    long long val3=val-val2;
+    Bit<N> bit={val3};
+    }
+    return bit;
+}
 };
