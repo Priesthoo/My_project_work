@@ -392,10 +392,10 @@ string& get_head(){
 }
 template<size_t  B>
 static void print_bit_pattern(const Bit<B>& bit){
-    cout<<bit.str<<endl;
+    cout<<bit.get_head()<<endl;
 }
 static bool check_binary(const Bit<N>& bit){
-    bool is_bin=is_binary(bit.str);
+    bool is_bin=is_binary(bit.get_head());
     return is_bin;
 }
 template<size_t G>
@@ -467,4 +467,47 @@ Bit operator~(void ){
     Bit<N> bit1={str1};
     return bit1;
  }
+ Bit operator<<(int value){
+     long long h=pow(2,value);
+     long long value1=string_to_decimal(this->get_head());
+     long long value2=value1*h;
+     Bit<N> bit={value2};
+     return bit; 
+ }
+ Bit& operator<<=(int value){
+     *this=*this<<value;
+     return *this;
+ }
+
+ Bit operator>>(int value){
+     long long h=pow(2,value);
+     long long value1=string_to_decimal(this->get_head());
+     long long value2=value1/h;
+     Bit<N>bit={value2};
+     return bit;
+ }
+ Bit& operator >>=(int value){
+     *this=*this>>value;
+     return *this;
+ }
+template<size_t T>
+long long&  operator=( Bit<T> bit){
+    long long value2=string_to_decimal(bit->get_head());
+    return value2;
+}
+template<size_t H>
+Bit operator+(const Bit<H>&bit){
+    long long val=string_to_decimal(this->get_head());
+    long long val2=string_to_decimal(bit.get_head());
+    long long value1=val+val2;
+    Bit<N> bit1={value1};
+    return bit1;
+}
+Bit operator+(const long long& value){
+    long long val=string_to_decimal(this->get_head());
+    long long val2=val+value;
+    Bit<N> bit={val2};
+    return bit;
+}
+
 };
