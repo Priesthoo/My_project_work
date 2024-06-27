@@ -533,16 +533,16 @@ static Bit number_rep(const long long& value){
     str2<<value;
     string str1=str2.str();
     if(str1[0]=='-'){
-        long long value2=0;
-        str1=str1.substr(1,str1.size());
-        stringstream str5;
-        str5<<str1;
-        str5>>value2;
-        Bit<N> bit={value2};
-        Bit<N> bit_comp=~bit;
-        Bit<N> bit6={1};
-        Bit<N> bit3=bit_comp+bit6;
-        return bit3;
+     long long value2=0;
+     str1=str1.substr(1,str1.size());
+     stringstream str5;
+     str5<<str1;
+     str5>>value2;
+     Bit<N> bit={value2};
+     Bit<N> bit_comp=~bit;
+     Bit<N> bit6={1};
+     Bit<N> bit3=bit_comp+bit6;
+     return bit3;
     }
     else {
         Bit<N>bit={value};
