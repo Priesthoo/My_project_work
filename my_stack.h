@@ -43,6 +43,9 @@ class Simple_stack{
    delete [ ] nstack.arr;
    return;
  }
+
+
+
  void pop(void){
      Simple_stack<G> nstack={};
      --this->stack_size;
@@ -58,12 +61,17 @@ class Simple_stack{
     delete [ ] nstack.arr;
      return;
  }
+
+
  G operator[ ](const TYPE::uint_type& idx) const {
      return arr[idx];
  }
+
+
 G& operator[ ](const TYPE::uint_type& idx){
     return arr[idx];
 }
+
    
 void clear(void){
     delete [ ] this->arr;
