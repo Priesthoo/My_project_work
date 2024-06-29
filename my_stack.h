@@ -18,7 +18,9 @@ class Simple_stack{
     G*arr;
     TYPE::uint_type stack_size;
     Simple_stack():arr{null_ptr},stack_size{0}{}
-    void push(const G& value){//Allocation of memory in the heap
+    
+
+void push(const G& value){//Allocation of memory in the heap
      if(this->arr==null_ptr){
          this->arr=new G[ONE];
          this->arr[0]=value;
