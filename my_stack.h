@@ -1,4 +1,4 @@
- #include<iostream>
+#include<iostream>
 using namespace std;
 #define ONE 1
 #ifndef SIMPLE_STACK
@@ -8,7 +8,7 @@ namespace My_Stack{
 #ifdef UINT
 #define null_ptr nullptr
  namespace TYPE{
-     typedef unsigned int uint_type;
+ typedef unsigned int uint_type;
  }
 #endif //for UINT
  
@@ -19,26 +19,26 @@ class Simple_stack{
     TYPE::uint_type stack_size;
     Simple_stack():arr{null_ptr},stack_size{0}{}
     void push(const G& value){//Allocation of memory in the heap
-        if(this->arr==null_ptr){
-            this->arr=new G[ONE];
-            this->arr[0]=value;
-            this->stack_size=ONE;
-            return;
+     if(this->arr==null_ptr){
+         this->arr=new G[ONE];
+         this->arr[0]=value;
+         this->stack_size=ONE;
+          return;
         }
-     Simple_stack<G>nstack={};
-     nstack.arr=new G[this->stack_size];
-    for(int i=0;i<this->stack_size;i++){
-        nstack.arr[i]=this->arr[i];
-        }
-        delete [ ] this->arr;
-        this->stack_size+=1;
-       this->arr=new G[this->stack_size];
-       for(int i=0;i<this->stack_size;i++){
-           if(i==this->stack_size-1){
-               this->arr[i]=value;
-               break;
-           }
-         this->arr[i]=nstack.arr[i];
+   Simple_stack<G>nstack={};
+   nstack.arr=new G[this->stack_size];
+   for(int i=0;i<this->stack_size;i++){
+     nstack.arr[i]=this->arr[i];
+      }
+     delete [ ] this->arr;
+     this->stack_size+=1;
+     this->arr=new G[this->stack_size];
+     for(int i=0;i<this->stack_size;i++){
+        if(i==this->stack_size-1){
+            this->arr[i]=value;
+             break;
+         }
+       this->arr[i]=nstack.arr[i];
    }
    delete [ ] nstack.arr;
    return;
@@ -58,6 +58,12 @@ class Simple_stack{
     delete [ ] nstack.arr;
      return;
  }
+ G operator[ ](const TYPE::uint_type& idx) const {
+     return arr[idx];
+ }
+G& operator[ ](const TYPE::uint_type& idx){
+    return arr[idx];
+}
    
 void clear(void){
     delete [ ] this->arr;
