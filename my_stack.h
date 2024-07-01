@@ -85,6 +85,7 @@ void clear(void){
  
 };
 
+
 #endif //for Simple stack;
 
 #ifndef STACK_LIST_NODE
@@ -162,4 +163,10 @@ void print(My_Stack::Stack_list<T> stack){
     }
     return;
     
+}
+template<class T>
+void clear_allocated_array(My_Stack::Simple_stack<T>*mystack){
+    mystack->arr=null_ptr;
+    mystack->stack_size=0;
+    return;
 }
