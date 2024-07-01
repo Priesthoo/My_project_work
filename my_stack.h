@@ -79,6 +79,7 @@ G& operator[ ](const TYPE::uint_type& idx){
    
 void clear(void){
     delete [ ] this->arr;
+    this->arr=null_ptr;
     this->stack_size=0;
   }
  
@@ -133,8 +134,32 @@ class Stack_list{
       last_node->next->next=null_ptr;
       return;
  }
-
+  void pop(void){
+      Stack_node<T>*stnode=get_last_node(this->head_node);
+      stnode=stnode->next;
+      return;
+      
+}
 
 };
 #endif
+}
+template<class T>
+void clear_nodes(My_Stack::Stack_list<T>*stack){
+    stack->head_node=null_ptr;
+    return;
+}
+template<class T>
+void print(My_Stack::Stack_list<T> stack){
+    My_Stack::Stack_node<T>*stnode=stack.head_node;
+    while(stnode!=null_ptr){
+        if(stnode->next==null_ptr){
+            cout<<stnode->value<<endl;
+            return;
+        }
+        cout<<stnode->value<<"->";
+        stnode=stnode->next;
+    }
+    return;
+    
 }
