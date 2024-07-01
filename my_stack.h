@@ -32,8 +32,7 @@ class Simple_stack{
          this->arr[0]=value;
          this->stack_size=ONE;
           return;
-        }
-        
+     }
    Simple_stack<G>nstack={};
    nstack.arr=new G[this->stack_size];
    for(int i=0;i<this->stack_size;i++){
@@ -52,6 +51,15 @@ class Simple_stack{
    delete [ ] nstack.arr;
    return;
  }
+  Simple_stack(const initializer_list<G>& list){
+   auto key=list.begin();
+   this->stack_size=list.size();
+   this->arr=new G[list.size()];
+   for(int i=0;i<list.size();i++){
+       this->arr[i]=key[i];
+   }
+   
+  }
  
  void pop(void){
      Simple_stack<G> nstack={};
@@ -135,6 +143,24 @@ class Stack_list{
       last_node->next->next=null_ptr;
       return;
  }
+Stack_list(const initializer_list<T>& list){
+    auto key=list.begin();
+    Stack_node<T>* iter=null_ptr;
+    TYPE::uint_type sz=list.size();
+    head_node=new Stack_node<T>;
+    head_node->value=key[0];
+    TYPE::uint_type sz1=1;
+    iter=get_last_node(this->head_node);
+    while(sz1<sz){
+        if(iter->next==null_ptr){
+            iter->next=new Stack_node<T>;
+            iter->next->value=key[sz1];
+            iter->next->next=null_ptr;
+           }
+           iter=iter->next;
+           ++sz1;
+    }
+}
   void pop(void){
       Stack_node<T>*stnode=get_last_node(this->head_node);
       stnode=stnode->next;
