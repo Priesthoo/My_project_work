@@ -17,7 +17,7 @@ namespace My_Stack{
 
 #ifdef INITIALIZER_LIST
 #include<initializer_list>
-#endif
+#endif //endif for initializer list
 template<class G>
 class Simple_stack{
     public:
@@ -90,6 +90,15 @@ void clear(void){
     this->arr=null_ptr;
     this->stack_size=0;
   }
+static TYPE::uint_type get_size(Simple_stack<G>stack){
+    return stack.stack_size;
+}
+static bool is_empty(Simple_stack<G>stack){
+    if((stack.stack_size==0) or(stack.arr==null_ptr)){
+        return true;
+    }
+    return false;
+}
  
 };
 
@@ -167,9 +176,39 @@ Stack_list(const initializer_list<T>& list){
       return;
       
 }
+TYPE::uint_type get_size() const{
+    TYPE::uint_type sz=0;
+     Stack_node<T>*stnode=head_node;
+     while(stnode!=null_ptr){
+         ++sz;
+         stnode=stnode->next;
+     }
+     return sz;
+}
+static bool is_empty(Stack_list<T>stack){
+    if(stack.head_node==null_ptr){
+        return true;
+    }
+    return false;
+}
+static Stack_node<T>* get_Nth_node(Stack_list<T>stack,TYPE::uint_type sz){
+    if(sz>stack.get_size()){
+        return null_ptr;
+    }
+    TYPE::uint_type sz1=1;
+    Stack_node<T>*stnode=stack.stack_node;
+    while(stnode!=null_ptr){
+        if(sz==sz1){
+            return stnode;
+        }
+        ++sz1;
+        stnode=stnode->next;
+    }
+    return null_ptr;
+}
 
 };
-#endif
+#endif//For stack_list...
 }
 template<class T>
 void clear_nodes(My_Stack::Stack_list<T>*stack){
@@ -188,8 +227,7 @@ void print(My_Stack::Stack_list<T> stack){
         stnode=stnode->next;
     }
     return;
-    
-}
+  }
 template<class T>
 void clear_allocated_array(My_Stack::Simple_stack<T>*mystack){
     mystack->arr=null_ptr;
