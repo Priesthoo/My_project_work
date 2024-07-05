@@ -1,7 +1,4 @@
 #include<iostream>
-
-
-
 #ifndef KEY_CODE_H
 #define KEY_CODE_H
 #endif
@@ -78,11 +75,11 @@ enum Key_code{
     KEY_NUMPAD_7=0x67,
     KEY_NUMPAD_8=0x68,
     KEY_NUMPAD_9=0x69,
-    KEY_NUMPAD_*=0x6A,
-    KEY_NUMPAD_+=0x6B,
-    KEY_NUMPAD_-=0x6D,
-    KEY_NUMPAD_.=0x6E,
-    KEY_NUMPAD_/=0x6F,
+    KEY_NUMPAD_STAR=0x6A, //*
+    KEY_NUMPAD_PLUS=0x6B, //+
+    KEY_NUMPAD_MINUS=0x6D,//-
+    KEY_NUMPAD_DOT=0x6E, //.
+    KEY_NUMPAD_SLASH=0x6F,// single slash(/).
     KEY_F1=0x70,
     KEY_F2=0x71,
     KEY_F3=0x72,
