@@ -234,3 +234,6 @@ void clear_allocated_array(My_Stack::Simple_stack<T>*mystack){
     mystack->stack_size=0;
     return;
 }
+void print(const char*c, size_t sz){
+    cout<<c<<sz<<endl;
+}
