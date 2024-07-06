@@ -1,6 +1,8 @@
 #include"color.h"
 #include"Matrix.h"
+#include"Hash_map.h"
 //OPENGL3D.... for  God's given game engine
+using namespace HASH_MAP;
 #define PT_ENGINE
 #ifdef PT_ENGINE
 typedef unsigned int pe_uint;
@@ -10,9 +12,26 @@ typedef char  pe_char;
 typedef float pe_float;
 typedef double pe_double;
 #endif
+enum class Event_type{
+    IS_RUNNING,
+    IS_DESTROYED,
+    IS_WALKING,
+    IS_HEALTH_0_25,
+    IS_HEALTH_0_50,
+    IS_HEALTH_0_75,
+    IS_HEALTH_0_100,
+    IS_COLLIDE,
+    IS_NOT_COLLIDE,
+    IS_ALIVE,
+    IS_EXPLOSIVE
+  };
+enum class Object_type{
+    STATIC=0x0,
+    DYNAMIC=0x01
+};
 enum LIGHT{
     POINT,//like the bulb
-    DIRECTIONAL,
+    DIRECTIONAL,//idea sunlight
     SPOT_LIGHT,//flash light
     AREA_LIGHT,//Real world simulation of light 
     INFINITE_LIGHT//it models the sun.
@@ -24,16 +43,21 @@ enum FRAME_BUFFER{
     DEPTH_BUFFER_AND_COLOR_BUFFER=DEPTH_BUFFER | COLOR_BUFFER
 };
 enum TEXTURE_MAP{
-    SPECULAR_MAP,
-    COLOR_MAP,      //reflection map
-    EMISSION_MAP,
-    NORMAL_MAP,
-    PARALLAX_MAP,
-    PARALLAX_OCCLUSION_MAP,
-    BUMP_MAP,
-    DISPLACEMENT_MAP,
-    SHADOW_MAP,
-    LIGHT_MAP
+    SPECULAR_MAP_2D,
+    COLOR_MAP_2D,      //reflection map
+    EMISSION_MAP_2D,
+    NORMAL_MAP_2D,
+    PARALLAX_MAP_2D,
+    PARALLAX_OCCLUSION_MAP_2D,
+    BUMP_MAP_2D,
+    DISPLACEMENT_MAP_2D,
+    SHADOW_MAP_2D,
+    LIGHT_MAP_2D,
+    VOLUME_TEXTURE_MAP_3D,
+    ALPHA_MAP_2D,
+    HEIGHT_MAP_2D
+};
+enum PROCEDURAL_TEXTURE{
 };
 enum FALL_OFF{
     ATTENUATE_0,
@@ -111,7 +135,11 @@ enum Material_property{
     SPECULAR ,//for the specular highlight 
     ROUGHNESS,
     NORMAL_ORIENTATE,
-  };
+    REFRACT_INDEX,
+    SCATTER_INDEX,
+    ABSORB_INDEX
+};
+
 //to model light interaction with material,we use multiplication..
 //it handles light arriving at the point being shaded without interactioj with other objects...
 //we characterise light by it's color and the spatial distribution in relation to the position and direction.'
@@ -165,6 +193,7 @@ class Light{
   }
   
 };
+typedef unsigned int world_int;
 class Point_light:public Light{
     private:
     float attenuate;
@@ -187,9 +216,9 @@ class Point_light:public Light{
          return point.attenuate;
      }
  static float fall_off(const float& distance,const float& max_distance,FALL_OFF fall_off, const float& epsilon=0.001){
-     if(fall_off==ATTENATE_0)
-     
- }
+     if(fall_off==ATTENUATE_0){ return 0.001;}
+     return 0.00123;
+   }
 };
 class Spot_light:public Light{
     private:
@@ -206,15 +235,43 @@ class Spot_light:public Light{
     }
     
 };
-
+#ifndef TEXT_COORD
+#define TEXT_COORD
+struct Texture_2D{
+    float x;
+    float y;
+};
+#endif
+#ifndef OBJECT_ATTRIBUTE
+#define OBJECT_ATTRIBUTE
+#endif
+#ifdef OBJECT_ATTRIBUTE
+struct Vertex_attribute{
+    Vertex pos;
+    Texture_2D text2d;
+    Vertex normal;
+    float weight;
+    ColorRGBA color;
+};
+#endif
 //model transform consists of translation and rotation.
+#ifndef OBJECT_VERTEX
+#define OBJECT_VERTEX
+#endif
+#ifdef OBJECT_VERTEX
+struct obj_vertex{
+    Vertex_attribute*vertexattr;
+    size_t count;
+};
+#endif //object vertices
+
 
 struct Triangle{ //primitives mostly used by GPU hardware
    Vertex p0;
    Vertex p1;
    Vertex p2;
 };
-struct Triangle_mesh{
+struct obj_triangle{
     Triangle* triang;
     size_t count;
 };
@@ -222,6 +279,9 @@ struct Index_buffer{
     size_t idx0;
     size_t idx1;
     size_t idx2;
+};
+enum TEXTURE_PACK{
+    TEXTURE_ATLAS_2D   //similar to texture_array_2d... 
 };
 
 /*
@@ -237,13 +297,50 @@ void set_weight(Bary_weight*  bary_w1,const float& w1,const float& w2,const floa
     bary_w1->b2=w2;
     bary_w1->b3=w3;
 }
-enum BODY{
-    RIGID_BODY,
-    SOFT_BODY,
-    DESTRUCT_BODY
+class PT_ENGINE Area_light{
+    
 };
-enum DYNAMICS{
-    RIGID_BODY_DYNAMICS,
-    SOFT_BODY_DYNAMICS,
-    DESTRUCT_BODY_DYNAMICS
+
+enum MATERIAL_MODEL{
+    LAMBERTIAN_MODEL,
+    DIFFUSE_MODEL, // local subsurface scattering model
+    SPECULAR_MODEL,//reflection model
+    CARTOON_MODEL//mostly cartoon models
 };
+enum SHADER_TYPE{
+    VERTEX_SHADER,
+    FRAGMENT_SHADER,
+    COMPUTE_SHADER,
+    GEOMETRY_SHADER,
+    TESSELLATION_SHADER
+};
+enum NDFs{
+    ISOTROPIC_NDFS,
+    ANISOTROPIC_NDFS
+};
+enum INTERSECTION{
+};
+#ifndef WORLD_STATE
+#define WORLD_STATE
+#endif
+#ifndef OBJECT_STATE
+#define OBJECT_STATE
+#endif
+#ifdef OBJECT_STATE
+ struct Object{
+ obj_vertex Vertices;
+ obj_triangle triangles;
+ Event_type event;
+      
+      
+      
+};
+#endif
+#ifdef WORLD_STATE
+  struct World{
+      bool is_gravity;
+      float gravity;
+      world_int frame_buffer;
+   };
+#endif
+  
