@@ -19,12 +19,28 @@ enum class Event_type{
     IS_HEALTH_0_25,
     IS_HEALTH_0_50,
     IS_HEALTH_0_75,
-    IS_HEALTH_0_100,
+    IS_HEALTH_1_00,
     IS_COLLIDE,
     IS_NOT_COLLIDE,
     IS_ALIVE,
     IS_EXPLOSIVE
   };
+#ifndef ANIMATION
+#define ANIMATION
+#endif
+#ifdef ANIMATION
+class Animation{
+  }; 
+#endif //animation
+
+#ifndef PHYSICS
+#define PHYSICS
+#endif
+#ifdef PHYSICS
+class Physics{
+    
+};
+#endif //physics
 enum class Object_type{
     STATIC=0x0,
     DYNAMIC=0x01
@@ -235,6 +251,11 @@ class Spot_light:public Light{
     }
     
 };
+struct Texture_3D{
+    float x;
+    float y;
+    float z;
+};
 #ifndef TEXT_COORD
 #define TEXT_COORD
 struct Texture_2D{
@@ -252,6 +273,10 @@ struct Vertex_attribute{
     Vertex normal;
     float weight;
     ColorRGBA color;
+#ifdef TEXTURE_COORD_3D
+     Texture_3D text3d;
+#endif
+ 
 };
 #endif
 //model transform consists of translation and rotation.
@@ -300,6 +325,21 @@ void set_weight(Bary_weight*  bary_w1,const float& w1,const float& w2,const floa
 class PT_ENGINE Area_light{
     
 };
+enum BODY{
+    RIGID_BODY,
+    SOFT_BODY,
+    DESTRUCT_BODY
+};
+enum DYNAMICS{
+    RIGID_BODY_DYNAMICS,
+    SOFT_BODY_DYNAMICS,
+    DESTRUCT_BODY_DYNAMICS
+};
+enum COLLISION{
+    RIGID_BODY_COLLISION,
+    SOFT_BODY_COLLISION,
+    DESTRUCT_BODY_COLLISION
+};
 
 enum MATERIAL_MODEL{
     LAMBERTIAN_MODEL,
@@ -331,9 +371,11 @@ enum INTERSECTION{
  obj_vertex Vertices;
  obj_triangle triangles;
  Event_type event;
-      
-      
-      
+ BODY body;
+ DYNAMICS dynamic;
+ COLLISION collide;
+ Animation animate;
+ Physics physic;
 };
 #endif
 #ifdef WORLD_STATE
@@ -343,4 +385,12 @@ enum INTERSECTION{
       world_int frame_buffer;
    };
 #endif
-  
+#ifndef RENDERING
+#define RENDERING
+enum class RENDER{
+    WORLD_RENDER,
+    MATERIAL_RENDER,
+    ANIMATE_RENDER,
+    OBJECT_RENDER
+};
+#endif
