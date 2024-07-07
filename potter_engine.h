@@ -368,14 +368,14 @@ enum INTERSECTION{
 #endif
 #ifdef OBJECT_STATE
  struct Object{
- obj_vertex Vertices;
- obj_triangle triangles;
+ obj_vertex* Vertices;
+ obj_triangle* triangles;
  Event_type event;
  BODY body;
  DYNAMICS dynamic;
  COLLISION collide;
- Animation animate;
- Physics physic;
+ Animation* animate;
+ Physics* physic;
 };
 #endif
 #ifdef WORLD_STATE
