@@ -83,5 +83,6 @@ int main(int argc, char *argv[])
 	file_off1->offset=lseek(handle,(off_t)0,SEEK_CUR);
 	cout<<"File position after write operation:"<<file_off1->offset<<endl;
 	
-	
+	delete file_off1;
+	delete file_off;
 }
