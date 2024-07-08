@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
 	void*buff=nullptr;
 	unsigned long word=0;
 	ssize_t sz1=read(handle,&word,4);
+	ssize_t sz3=read(handle,&word,4);
 	File_offset* file_off=new File_offset;
 	file_off->offset=lseek(handle,(off_t)0,SEEK_CUR);
 	cout<<"File position after read operation:"<<file_off->offset<<endl;
