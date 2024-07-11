@@ -24,7 +24,19 @@ class Simple_stack{
     G*arr;
     TYPE::uint_type stack_size;
     Simple_stack():arr{null_ptr},stack_size{0}{}
-    
+    Simple_stack(const Simple_stack<G>& stack){
+        this->stack_size=stack.stack_size;
+        this->arr=new G[this->stack_size];
+        for(int i=0;i<this->stack_size;i++){
+            this->arr[i]=stack.arr[i];
+        }
+    }
+#ifndef  OPERATOR
+ Simple_stack& operator=(const Simple_stack<G>& stack){
+     *this={stack};
+     return *this;
+ }
+#endif
     
     void push(const G& value){//Allocation of memory in the heap
      if(this->arr==null_ptr){
@@ -130,7 +142,16 @@ template<class T>
      return null_ptr;  //This will never be executed....
  }
 #endif   //for get_last_node
-
+#define CLEAR_NODE
+#ifdef CLEAR_NODE
+template<class T>
+void clear(Stack_node<T>* node){
+    if(node!=null_ptr){
+        node=null_ptr;
+    }
+    return;
+}
+#endif 
 #ifndef STACK_LIST
 #define STACK_LIST
 template<class T>
@@ -206,6 +227,9 @@ static Stack_node<T>* get_Nth_node(Stack_list<T>stack,TYPE::uint_type sz){
     }
     return null_ptr;
 }
+~Stack_list(){
+    clear(head_node);
+}
 
 };
 #endif//For stack_list...
@@ -236,4 +260,33 @@ void clear_allocated_array(My_Stack::Simple_stack<T>*mystack){
 }
 void print(const char*c, size_t sz){
     cout<<c<<sz<<endl;
+}
+template<class T>
+void print_array(My_Stack::Simple_stack<T>stack){
+    for(int i=0;i<stack.stack_size;i++){
+        cout<<stack[i]<<endl;
+    }
+}
+template<class T>
+void push_array(My_Stack::Simple_stack<T>*sstack,const T value){
+    if(sstack!=null_ptr){
+        if(sstack->arr==null_ptr){
+            sstack->arr=new T[1];
+            sstack->arr[0]=value;
+            sstack->stack_size=1;
+            return;
+        }
+        else {
+     My_Stack::Simple_stack<T>stack={*sstack};
+     delete [ ] sstack->arr;
+     sstack->stack_size=stack.stack_size+1;
+     sstack->arr=new T[sstack->stack_size];
+     for(int i=0;i<sstack->stack_size;i++){
+         sstack->arr[i]=stack.arr[i];
+         }
+         sstack->arr[stack.stack_size]=value;
+         delete [ ] stack.arr;  
+   }
+    }
+    return;
 }
