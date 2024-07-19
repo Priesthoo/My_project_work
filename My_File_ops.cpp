@@ -20,6 +20,10 @@ using namespace std;
 #endif
 #endif 
 
+#ifndef COLLECTION
+#define COLLECTION
+#include"char_collection.h"
+#endif
 
 
 
@@ -100,6 +104,16 @@ FILE *return_stream(FILE* file){
     return file;
 }
 
+#define INVALID_STREAM_POS -1
+
+#ifndef FILE_PTR
+#define File_ptr  FILE*
+#endif
+
+#ifndef STREAM_POS_TYPE
+#define STREAM_POS_TYPE
+typedef long stream_pos;
+#endif
 
 
 #ifdef LIMIT
@@ -107,14 +121,36 @@ FILE *return_stream(FILE* file){
 #endif
 #ifndef FILE_OPERATION
 #define FILE_OPERATION
+namespace File_Operation{
 class File_ops{
+    private:
+    void rewind();
+    void get_curr_stream_position();
+    void unchanged_read();
     public:
     FILE* file_stream;
+    const char* file_name;
     size_t no_of_bytes;
-    const char*mode;
-    public:
-    File_ops():file_stream{NULL},no_of_bytes{},mode{NULL}{}
+    stream_pos curr_pos;
+    int file_descriptor;
+     public:
+    File_ops():file_stream{NULL},file_name{null_ptr},no_of_bytes{},curr_pos{}{}
+     File_ops(File_ptr stream,const char* file_name1){
+        file_stream=stream;
+        file_name=file_name1;
+        no_of_bytes=no_of_file_bytes(file_name);
+        curr_pos=fseek(file_stream,0,SEEK_CUR);
+        file_descriptor=fileno(file_stream);
+    }
+    ~File_ops(){
+        file_stream=null_ptr;
+        file_name=null_ptr;
+        no_of_bytes=0;
+        curr_pos=0;
+        file_descriptor=-1;
+    }
   };
+}
 #endif
 
 void*fread_string_from_stream(char*str,size_t byte,const char*ch){
@@ -132,6 +168,14 @@ void*fread_string_from_stream(char*str,size_t byte,const char*ch){
   }
   return str;
 }
+/*
+ For file operation, File position is important, i must implement an interface that describes the file position
+ int rewind_stream(FILE*stream);
+ void get_curr_stream_pos(FILE*stream);
+ 
+ 
+*/
+
 
 int main(int argc, char *argv[])
 {
@@ -142,8 +186,26 @@ int main(int argc, char *argv[])
 	 file_op=fopen("file.txt","r");
 	 char ch[10];
 	char*str=(char*)fread_string_from_stream(ch,10,"file.txt");
-	cout<<str[0]<<endl;
-	 
+	for(int i=0;i<10;i++){
+	    cout<<str[i];
+	}
+	cout<<endl;
+	int get=fgetc(file_op);
+	int h=fseek(file_op,0,SEEK_SET);
+    cout<<sizeof(off_t)<<endl;
+    fflush(file_op);
+    int fd=fileno(file_op);
+    cout<<fd<<endl;
+    auto mseek=lseek(fd,0,SEEK_CUR);
+    cout<<mseek<<endl;
+	File_Operation::File_ops My_file_mod={file_op,"file.txt"};
+	const char* h1={"hello who is this, how are you doing"};
+	cout<<strlen(My_file_mod.file_name)<<endl;
+	cout<<sizeof(File_ptr)<<endl;
+	cout<<"number of bytes: "<<My_file_mod.no_of_bytes<<endl;
+	cout<<"current stream position:"<<My_file_mod.curr_pos<<endl;
+	cout<<sizeof(File_Operation::File_ops)<<endl;
+	
 	 
 	 
 	 
