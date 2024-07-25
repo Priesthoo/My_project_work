@@ -351,6 +351,8 @@ class Image_type{
     int height;
     std::vector<Sample> samples;
     std::vector<True_color>colors;
+    typedef std::vector<Sample>::iterator Pixel_point;
+    typedef std::vector<True_color>::iterator Pixel_color;
   Image_type():samples{},colors{}{}
   void push_back(const Sample& samp, const True_color& tcolor){
       if(!samples.empty()){
@@ -382,7 +384,20 @@ class Image_type{
            |
            x-axis(height)...
  */
-  void construct_samples(const int& width,const int& height){
+ Pixel_point get_sample_begin(){
+     return samples.begin();
+ }
+ Pixel_color get_color_begin(){
+     return colors.begin();
+ }
+
+ Pixel_point get_sample_end(){
+  return samples.end();
+  }
+  Pixel_color get_color_end(){
+      return colors.end();
+  }
+  void construct_samples(const int& width,const int& height) {
    Sample sample7;
    int i=0;
    this->width=width;
@@ -398,7 +413,7 @@ class Image_type{
       ++i;
  }  
  }
- void insert_colors(std::vector<True_color>tcolor){
+ void insert_colors(std::vector<True_color>tcolor) {
      if(this->samples.size()==0){
          return;
      }
@@ -420,8 +435,8 @@ Pixel convert_image_type_to_pixel(const Image_type& image,const int& idx){
     int k=0;
     if(idx>=0 and idx<image.size()){
     for(size_t i=0;i<image.size();i++){
-        k=image.samples[i].x+image.samples[i].y;
-        if(k==idx){
+        k=(image.samples[i].x+1)*(image.samples[i].y+1);
+        if(k==(idx+1)){
             pixel.first=image.samples[i];
             pixel.second=image.colors[i];
         }
