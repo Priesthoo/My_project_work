@@ -1,4 +1,4 @@
- #include<iostream>
+#include<iostream>
 using namespace std;
 #include"container.h"
 #include<memory>
@@ -8,6 +8,8 @@ using namespace std;
 #ifndef SHARED_PTR
 #define SHARED_PTR
 #endif
+#include<utility>
+#define BIG_NUM 8880000000
 template<class T>
  void print(const char*c,const T& value){
      cout<<c<<value<<endl;
@@ -29,34 +31,26 @@ enum class  INTENSITY_LEVEL{
     BIT_32=0x20
 };
 
-#define BIT_8 INTENSITY_LEVEL::BIT_8
-#define BIT_24 INTENSITY_LEVEL::BIT_24
+
 #define BIT_32 INTENSITY_LEVEL::BIT_32
-
-#ifndef VALUE_TYPE
-#define VALUE_TYPE
-template<class T>
-struct Value_type{
-    T value;
-    Value_type():value{}{}
-    Value_type(const Value_type& valtype){
-        this->value=valtype.value;
-    }
-  Value_type(const T& value1){
-      this->value=value1;
-  }
-  Value_type& operator=(const Value_type& value){
-      *this={value};
-      return *this;
-  }
- 
+enum SPATIAL_OPERATIONS{
+    SINGLE_OPS,
+    NEIGHBOUR_OPS
 };
-#endif
-/*
 
+#ifndef CLAMP
+#define CLAMP
+float clamp_value(const float min,const float v,const float max){
+    if(v<min){
+        return min;
+    }
+    else if(v>max){
+        return max;
+    }
+    return v;
+}
+#endif //for clamp
 
-
-*/
 #ifndef SAMPLE
 #define SAMPLE
 struct Sample{
@@ -69,7 +63,7 @@ struct Sample{
       this->y=samp.y;
       return *this;
   }
- bool operator<(const Sample& samp){
+ bool operator<(const Sample& samp) const {
      if((this->x< samp.x) and(this->y>samp.y)){
          return false;
      }
@@ -78,8 +72,22 @@ struct Sample{
      }
      return true;
  }
+ bool operator==(const Sample& samp) const{
+     if((this->x==samp.x) and (this->y==samp.y)){
+         return true;
+     }
+     return false;
+ }
 };
+
+std::ostream& operator<<(std::ostream& str,const Sample& samp){
+    str<<"["<<samp.x<<","<<samp.y<<"]"<<std::endl;
+    return str;
+}
 #endif
+enum PIXEL_COLOR_FORMAT{
+    RGBA_8_8_8_8
+};
 
 
 #ifndef INTENSITY_TRUE_COLOR
@@ -161,7 +169,10 @@ true_color.r=this->r+tcolor.r;
 true_color.g=this->g+tcolor.g;
 true_color.b=this->b+tcolor.b;
 true_color.a=this->a+tcolor.a;
+float agba=clamp_value(0.0f,true_color.a,1.0f);
+true_color.a=agba;
 return true_color;
+
 #endif
  }
  
@@ -181,6 +192,10 @@ return true_color;
 true_color.r=this->r-tcolor.r;
 true_color.g=this->g-tcolor.g;
 true_color.b=this->b-tcolor.b;
+if(this->a==0.0f and tcolor.a==1.0f){
+true_color.a=0.0f;
+return true_color;
+}
 true_color.a=this->a-tcolor.a;
 return true_color;
 #endif
@@ -244,7 +259,7 @@ return true_color;
 true_color.r=this->r*tcolor;
 true_color.g=this->g*tcolor;
 true_color.b=this->b*tcolor;
-true_color.a=this->a*tcolor;
+true_color.a=this->a;
 return true_color;
 #endif
 }
@@ -264,32 +279,154 @@ return true_color;
 true_color.r=this->r/tcolor;
 true_color.g=this->g/tcolor;
 true_color.b=this->b/tcolor;
-true_color.a=this->a/tcolor;
+true_color.a=this->a;
 return true_color;
 #endif
 }
-
 };
+std::ostream& operator<<(ostream& str,const True_color& tcolor2){
+    str<<"red:"<<tcolor2.r<<" green:"<<tcolor2.g<<" blue:"<<tcolor2.b<<" alpha:"<<tcolor2.a<<endl;
+    return str;
+}
 #endif
 
-#ifndef PIXEL_DATA
-#define PIXEL_DATA
-struct Pixel{
- #ifdef VALUE_TYPE
- Value_type<Sample> Samples;
- #endif
- True_color color;
-Pixel():Samples{},color{}{}
-Pixel(const Value_type<Sample>&  samp,const True_color& true_color){
-    Samples=samp;
-    color=true_color;
-} 
-};
-#endif
-
+//set colors
+True_color set_color(const float& red,const float& green,const float& blue,const float& alpha ){
+   True_color tcolor;
+   tcolor.r=red;
+   tcolor.g=green;
+   tcolor.b=blue;
+   tcolor.a=alpha;
+   return tcolor;
+}
+True_color set_color(const float& red,const float& green,const float& blue){
+   True_color tcolor;
+   tcolor.r=red;
+   tcolor.g=green;
+   tcolor.b=blue;
+   return tcolor;
+}
+bool is_sorted(const std::vector<Sample>& samp){
+    for(int i=1;i<samp.size();i++){
+      if(samp[i]<samp[i-1]){
+          return false;
+      }
+   }
+   return true;
+}
+bool is_found(const std::vector<Sample> samp,const Sample samp1){
+    for(int i=0;i<samp.size();i++){
+        if(samp[i]==samp1){
+            return true;
+        }
+    }
+    return false;
+}
 #ifndef MATH_OPERATION
 #define MATH_OPERATION
 #endif
 #ifndef MY_ARRAY_FOR_IMAGE
 #define MY_ARRAY_FOR_IMAGE
 #endif
+
+#ifndef SWAP_VALUES
+#define SWAP_VALUES
+template<class T>
+void swap_values(T& first, T& second){
+    T swap=first;
+    first=second;
+    second =swap;
+}
+#endif
+
+typedef pair<Sample,True_color> Pixel;
+
+
+
+#ifndef IMAGE_TYPE
+#define IMAGE_TYPE
+class Image_type{
+    public:
+    int width;
+    int height;
+    std::vector<Sample> samples;
+    std::vector<True_color>colors;
+  Image_type():samples{},colors{}{}
+  void push_back(const Sample& samp, const True_color& tcolor){
+      if(!samples.empty()){
+          if(is_found(samples,samp)){
+              return;
+          }
+      }
+      samples.push_back(samp);
+      colors.push_back(tcolor);
+      
+  }
+ size_t size() const {
+     if(samples.size()==colors.size()){
+         return samples.size();
+     }
+ }
+ /*
+        image coordinate system
+   (0,0) ------------------------------------------------>y-axis(width).
+           |
+           |   (x0,y0)(a sample).
+           |
+           |
+           |
+           |
+           |
+           |
+           |
+           |
+           x-axis(height)...
+ */
+  void construct_samples(const int& width,const int& height){
+   Sample sample7;
+   int i=0;
+   this->width=width;
+   this->height=height;
+  while(i<height){
+      sample7.x=i;
+      int j=0;
+      while(j<width){
+          sample7.y=j;
+         this->samples.push_back(sample7);
+          ++j;
+      }
+      ++i;
+ }  
+ }
+ void insert_colors(std::vector<True_color>tcolor){
+     if(this->samples.size()==0){
+         return;
+     }
+     if(this->samples.size()!=tcolor.size()){
+         return;
+      }
+     for(int i=0;i<this->samples.size();i++){
+         this->colors.push_back(tcolor[i]);
+     }
+     return;
+ }
+};
+#endif
+
+#define EXTRACT_PIXEL_COLOR
+#ifdef EXTRACT_PIXEL_COLOR
+Pixel convert_image_type_to_pixel(const Image_type& image,const int& idx){
+    Pixel pixel;
+    int k=0;
+    if(idx>=0 and idx<image.size()){
+    for(size_t i=0;i<image.size();i++){
+        k=image.samples[i].x+image.samples[i].y;
+        if(k==idx){
+            pixel.first=image.samples[i];
+            pixel.second=image.colors[i];
+        }
+        return pixel;
+     }
+    }
+}
+#endif //Extract_pixel_color...
