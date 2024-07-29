@@ -1,6 +1,5 @@
 #include<iostream>
 using namespace std;
-#include"container.h"
 #include<memory>
 #include<string>
 #define MULTI_COLOR
@@ -10,6 +9,14 @@ using namespace std;
 #endif
 #include<utility>
 #define BIG_NUM 8880000000
+#include"Image_color.h"
+
+const char* my_assert(bool statement,const char* error){
+    if(!statement){
+        return error;
+    }
+ }
+ #define IM_ASSERT(T,V) my_assert(T,V);
 template<class T>
  void print(const char*c,const T& value){
      cout<<c<<value<<endl;
@@ -35,7 +42,10 @@ enum class  INTENSITY_LEVEL{
 #define BIT_32 INTENSITY_LEVEL::BIT_32
 enum SPATIAL_OPERATIONS{
     SINGLE_OPS,
-    NEIGHBOUR_OPS
+    NEIGHBOUR_OPS,
+    SPATIAL_TRANSFORM,
+    INTENSITY_ASSIGNMENT,
+    PROBABILITY
 };
 
 #ifndef CLAMP
@@ -58,11 +68,13 @@ struct Sample{
     int y;
     Sample():x{},y{}{}
     Sample(int _x,int _y):x{_x},y{_y}{}
+ #ifndef SHARED_PTR
   Sample& operator=(const Sample& samp){
       this->x=samp.x;
       this->y=samp.y;
       return *this;
   }
+ #endif
  bool operator<(const Sample& samp) const {
      if((this->x< samp.x) and(this->y>samp.y)){
          return false;
@@ -86,236 +98,27 @@ std::ostream& operator<<(std::ostream& str,const Sample& samp){
 }
 #endif
 enum PIXEL_COLOR_FORMAT{
-    RGBA_8_8_8_8
+    RGBA_8_8_8_8,
+    GRAY_SCALE_8,
+    B_8_BIT,
+    R_8_BIT,
+    G_8_BIT
 };
 
 
-#ifndef INTENSITY_TRUE_COLOR
-#define INTENSITY_TRUE_COLOR
-struct True_color{
-#ifdef GRAY_SCALE && #ifndef MULTI_COLOR && #ifdef BIT_8
- float gcolor;
-#endif
-#ifdef MULTI_COLOR && #ifndef GRAY_SCALE && ifdef BIT_24
-    float r;
-    float g;
-    float b;
-#endif
-
- #ifdef ALPHA && #ifdef MULTI_COLOR && #ifdef BIT_32 && #ifndef GRAY_SCALE
-    float a;
-#endif
-
-True_color(){
- #ifdef GRAY_SCALE && #ifndef MULTI_COLOR && #ifdef BIT_8
- gcolor={};
- #endif
-#ifdef MULTI_COLOR && #ifndef GRAY_SCALE && ifdef BIT_24
-r={};
-g={};
-b={};
-#endif
-#ifdef ALPHA && #ifdef MULTI_COLOR && #ifdef BIT_32 && #ifndef GRAY_SCALE
- a={};
-#endif 
-}
-
-True_color(const True_color& tcolor){
- #ifdef GRAY_SCALE && #ifndef MULTI_COLOR && #ifdef BIT_8
- this->gcolor=tcolor.gcolor;
- #endif
- #ifdef MULTI_COLOR && #ifndef GRAY_SCALE && ifdef BIT_24
-this->r=tcolor.r;
-this->g=tcolor.g;
-this->b=tcolor.b;
-#endif 
-#ifdef ALPHA && #ifdef MULTI_COLOR && #ifdef BIT_32 && #ifndef GRAY_SCALE
-this->r=tcolor.r;
-this->g=tcolor.g;
-this->b=tcolor.b;
-this->a=tcolor.a;
-#endif
-}
-
-True_color& operator=(const True_color& tcolor){
-#ifdef GRAY_SCALE && #ifndef MULTI_COLOR && #ifdef BIT_8
-*this={tcolor};
-return *this;
-#endif
-#ifdef MULTI_COLOR && #ifndef GRAY_SCALE && ifdef BIT_24
-*this={tcolor};
-return *this;
-#endif
-#ifdef ALPHA && #ifdef MULTI_COLOR && #ifdef BIT_32 && #ifndef GRAY_SCALE
-*this={tcolor};
-return *this;
-#endif
-}
-
-True_color operator+(const True_color& tcolor){
- True_color true_color;
- #ifdef GRAY_SCALE && #ifndef MULTI_COLOR && #ifdef BIT_8
-true_color.gcolor=this->gcolor+tcolor.gcolor;
- return true_color;
-#endif
-#ifdef MULTI_COLOR && #ifndef GRAY_SCALE && ifdef BIT_24
-true_color.r=this->r+tcolor.r;
-true_color.g=this->g+tcolor.g;
-true_color.b=this->b+tcolor.b;
-return true_color;
-#endif
-#ifdef ALPHA && #ifdef MULTI_COLOR && #ifdef BIT_32 && #ifndef GRAY_SCALE
-true_color.r=this->r+tcolor.r;
-true_color.g=this->g+tcolor.g;
-true_color.b=this->b+tcolor.b;
-true_color.a=this->a+tcolor.a;
-float agba=clamp_value(0.0f,true_color.a,1.0f);
-true_color.a=agba;
-return true_color;
-
-#endif
- }
- 
-True_color operator-(const True_color& tcolor){
-True_color true_color;
-#ifdef GRAY_SCALE && #ifndef MULTI_COLOR && #ifdef BIT_8
-true_color.gcolor=this->gcolor-tcolor.gcolor;
- return true_color;
-#endif
-#ifdef MULTI_COLOR && #ifndef GRAY_SCALE && ifdef BIT_24
-true_color.r=this->r-tcolor.r;
-true_color.g=this->g-tcolor.g;
-true_color.b=this->b-tcolor.b;
-return true_color;
-#endif
-#ifdef ALPHA && #ifdef MULTI_COLOR && #ifdef BIT_32 && #ifndef GRAY_SCALE
-true_color.r=this->r-tcolor.r;
-true_color.g=this->g-tcolor.g;
-true_color.b=this->b-tcolor.b;
-if(this->a==0.0f and tcolor.a==1.0f){
-true_color.a=0.0f;
-return true_color;
-}
-true_color.a=this->a-tcolor.a;
-return true_color;
-#endif
-}
-
-True_color operator*(const True_color& tcolor){
- True_color true_color;
- #ifdef GRAY_SCALE && #ifndef MULTI_COLOR && #ifdef BIT_8
-true_color.gcolor=this->gcolor*tcolor.gcolor;
- return true_color;
-#endif
-#ifdef MULTI_COLOR && #ifndef GRAY_SCALE && ifdef BIT_24
-true_color.r=this->r*tcolor.r;
-true_color.g=this->g*tcolor.g;
-true_color.b=this->b*tcolor.b;
-return true_color;
-#endif
-#ifdef ALPHA && #ifdef MULTI_COLOR && #ifdef BIT_32 && #ifndef GRAY_SCALE
-true_color.r=this->r*tcolor.r;
-true_color.g=this->g*tcolor.g;
-true_color.b=this->b*tcolor.b;
-true_color.a=this->a*tcolor.a;
-return true_color;
-#endif
-}
-
-True_color operator/(const True_color& tcolor){
- True_color true_color;
- #ifdef GRAY_SCALE && #ifndef MULTI_COLOR && #ifdef BIT_8
-true_color.gcolor=this->gcolor/tcolor.gcolor;
- return true_color;
-#endif
-#ifdef MULTI_COLOR && #ifndef GRAY_SCALE && ifdef BIT_24
-true_color.r=this->r/tcolor.r;
-true_color.g=this->g/tcolor.g;
-true_color.b=this->b/tcolor.b;
-return true_color;
-#endif
-#ifdef ALPHA && #ifdef MULTI_COLOR && #ifdef BIT_32 && #ifndef GRAY_SCALE
-true_color.r=this->r/tcolor.r;
-true_color.g=this->g/tcolor.g;
-true_color.b=this->b/tcolor.b;
-true_color.a=this->a/tcolor.a;
-return true_color;
-#endif
-}
-
-True_color operator*(const float& tcolor){
- True_color true_color;
- #ifdef GRAY_SCALE && #ifndef MULTI_COLOR && #ifdef BIT_8
-true_color.gcolor=this->gcolor*tcolor;
- return true_color;
-#endif
-#ifdef MULTI_COLOR && #ifndef GRAY_SCALE && ifdef BIT_24
-true_color.r=this->r*tcolor;
-true_color.g=this->g*tcolor;
-true_color.b=this->b*tcolor;
-return true_color;
-#endif
-#ifdef ALPHA && #ifdef MULTI_COLOR && #ifdef BIT_32 && #ifndef GRAY_SCALE
-true_color.r=this->r*tcolor;
-true_color.g=this->g*tcolor;
-true_color.b=this->b*tcolor;
-true_color.a=this->a;
-return true_color;
-#endif
-}
-True_color operator/(const float& tcolor){
- True_color true_color;
- #ifdef GRAY_SCALE && #ifndef MULTI_COLOR && #ifdef BIT_8
-true_color.gcolor=this->gcolor/tcolor;
- return true_color;
-#endif
-#ifdef MULTI_COLOR && #ifndef GRAY_SCALE && ifdef BIT_24
-true_color.r=this->r/tcolor;
-true_color.g=this->g/tcolor;
-true_color.b=this->b/tcolor;
-return true_color;
-#endif
-#ifdef ALPHA && #ifdef MULTI_COLOR && #ifdef BIT_32 && #ifndef GRAY_SCALE
-true_color.r=this->r/tcolor;
-true_color.g=this->g/tcolor;
-true_color.b=this->b/tcolor;
-true_color.a=this->a;
-return true_color;
-#endif
-}
-};
-std::ostream& operator<<(ostream& str,const True_color& tcolor2){
-    str<<"red:"<<tcolor2.r<<" green:"<<tcolor2.g<<" blue:"<<tcolor2.b<<" alpha:"<<tcolor2.a<<endl;
-    return str;
-}
-#endif
 
 //set colors
-True_color set_color(const float& red,const float& green,const float& blue,const float& alpha ){
-   True_color tcolor;
-   tcolor.r=red;
-   tcolor.g=green;
-   tcolor.b=blue;
-   tcolor.a=alpha;
-   return tcolor;
-}
-True_color set_color(const float& red,const float& green,const float& blue){
-   True_color tcolor;
-   tcolor.r=red;
-   tcolor.g=green;
-   tcolor.b=blue;
-   return tcolor;
-}
-bool is_sorted(const std::vector<Sample>& samp){
-    for(int i=1;i<samp.size();i++){
+
+bool is_sorted(const Table<Sample>& samp){
+    for(int i=1;i<samp.get_size();i++){
       if(samp[i]<samp[i-1]){
           return false;
       }
    }
    return true;
 }
-bool is_found(const std::vector<Sample> samp,const Sample samp1){
-    for(int i=0;i<samp.size();i++){
+bool is_found(const Table<Sample>& samp,const Sample& samp1){
+    for(int i=0;i<samp.get_size();i++){
         if(samp[i]==samp1){
             return true;
         }
@@ -339,9 +142,6 @@ void swap_values(T& first, T& second){
 }
 #endif
 
-typedef pair<Sample,True_color> Pixel;
-
-
 
 #ifndef IMAGE_TYPE
 #define IMAGE_TYPE
@@ -349,26 +149,46 @@ class Image_type{
     public:
     int width;
     int height;
-    std::vector<Sample> samples;
-    std::vector<True_color>colors;
-    typedef std::vector<Sample>::iterator Pixel_point;
-    typedef std::vector<True_color>::iterator Pixel_color;
-  Image_type():samples{},colors{}{}
-  void push_back(const Sample& samp, const True_color& tcolor){
-      if(!samples.empty()){
-          if(is_found(samples,samp)){
-              return;
-          }
-      }
-      samples.push_back(samp);
-      colors.push_back(tcolor);
-      
-  }
+ Table<Sample>samples;
+ Table<Color> True_colors;
+  Image_type():samples{},True_colors{},width{},height{}{}
+  Image_type(const Image_type& im_type){
+      this->width=im_type.width;
+      this->height=im_type.height;
+      this->samples=im_type.samples;
+   }
+  
+Image_type& operator=(const Image_type& im_type){
+    *this={im_type};
+    return *this;
+}
+  
+   Image_type(const int& _x,const int& _y){
+       this->construct_samples(_x,_y);
+       this->init_all_samples();
+       True_colors.set_size(this->size());
+   }
  size_t size() const {
-     if(samples.size()==colors.size()){
-         return samples.size();
+    return samples.get_size();
+  }
+ void init_all_samples(){
+     if(this->size()==0){
+         return;
+     }
+     Sample samp={};
+     int i=0;
+     while(i<this->size()){
+         for(int j=0;j<this->height;j++){
+             samp.x=j;
+             for(int k=0;k<this->width;k++){
+                 samp.y=k;
+                 this->samples[i]=samp;
+                 ++i;
+             }
+         }
      }
  }
+ 
  /*
         image coordinate system
    (0,0) ------------------------------------------------>y-axis(width).
@@ -384,64 +204,134 @@ class Image_type{
            |
            x-axis(height)...
  */
- Pixel_point get_sample_begin(){
-     return samples.begin();
- }
- Pixel_color get_color_begin(){
-     return colors.begin();
- }
 
- Pixel_point get_sample_end(){
-  return samples.end();
-  }
-  Pixel_color get_color_end(){
-      return colors.end();
-  }
+  
   void construct_samples(const int& width,const int& height) {
-   Sample sample7;
-   int i=0;
    this->width=width;
    this->height=height;
-  while(i<height){
-      sample7.x=i;
-      int j=0;
-      while(j<width){
-          sample7.y=j;
-         this->samples.push_back(sample7);
-          ++j;
-      }
-      ++i;
- }  
+   int result=width*height;
+  this->samples.set_size(result);
  }
- void insert_colors(std::vector<True_color>tcolor) {
-     if(this->samples.size()==0){
-         return;
+
+ ~Image_type(){
+     samples.~Table();
+     width=0;
+     height=0;
+     } 
+ Color& operator[ ](const Sample& samp){
+     if((samp.x<this->height) and (samp.y<this->width) and this->size()!=0){
+         for(int i=0;i<this->size();i++){
+            if(samples[i]==samp){
+                return True_colors[i];
+            }
+         }
      }
-     if(this->samples.size()!=tcolor.size()){
-         return;
-      }
-     for(int i=0;i<this->samples.size();i++){
-         this->colors.push_back(tcolor[i]);
+ }
+  Color operator[ ](const Sample& samp) const {
+     if((samp.x<this->height) and (samp.y<this->width) and this->size()!=0){
+         for(int i=0;i<this->size();i++){
+            if(samples[i]==samp){
+                return True_colors[i];
+            }
+         }
      }
-     return;
  }
 };
 #endif
 
-#define EXTRACT_PIXEL_COLOR
-#ifdef EXTRACT_PIXEL_COLOR
-Pixel convert_image_type_to_pixel(const Image_type& image,const int& idx){
-    Pixel pixel;
-    int k=0;
-    if(idx>=0 and idx<image.size()){
-    for(size_t i=0;i<image.size();i++){
-        k=(image.samples[i].x+1)*(image.samples[i].y+1);
-        if(k==(idx+1)){
-            pixel.first=image.samples[i];
-            pixel.second=image.colors[i];
-        }
-        return pixel;
-     }
+/*
+This type is for Spatial transformation, After performing spatial transformation,
+convert it back to 2D
+
+*/
+#define SAMPLE_3D
+#ifdef SAMPLE_3D
+struct Sample_3d{
+    int x;
+    int y;
+    int z;
+    Sample_3d():x{},y{},z{}{}
+    Sample_3d(const int& _x,const int& _y,const int& _z=1){
+        x=_x;
+        y=_y;
+        z=1;
     }
-}
-#endif //Extract_pixel_color...
+    Sample_3d (const Sample_3d& samp3d){
+        *this={samp3d.x,samp3d.y,samp3d.z};
+    }
+ Sample_3d& operator=(const Sample_3d& samp3d){
+     *this={samp3d};
+     return *this;
+ }
+ };
+#endif  //for Samp3d
+enum class  INTERPOLATION{
+    NEAREST_NEIGHBOUR,
+    BILINEAR_INTERPOLATION,
+    BICUBIC_INTERPOLATION,
+    SPLINE_INTERPOLATION,
+    LINEAR_INTERPOLATION,
+    CUBIC_CONVOLUTION_INTERPOLATION
+};
+#ifndef TRANSFORM_2D
+#define TRANSFORM_2D
+enum class TRANSFORM {
+    ROTATION,
+    TRANSLATION,
+    SHEAR_VERTICAL,
+    SHEAR_HORIZONTAL,
+    SCALING
+};
+#endif //transform 
+
+enum READ_IMAGE{
+    HORIZONTAL_SCAN
+};
+typedef Table<Sample> Samples;
+typedef Table<float> Values;
+class Transform{
+    private:
+    Samples loc;
+    Values value;
+    public:
+    Transform(){
+        this->init_all_location();
+        value.set_size(loc.get_size());
+    }
+    
+ void init_all_location(){
+     Sample samp;
+     for(int i=0;i<3;i++){
+         samp.x=i;
+         for(int j=0;j<3;j++){
+             samp.y;
+             loc.push(samp);
+         }
+     }
+     return;
+ }
+ size_t size_of_matrix() const{
+     return loc.get_size();
+ }
+ float& operator[ ](const Sample& sz){
+     if((loc.get_size()!=0) and (value.get_size()!=0)){
+         for(int i=0;i<9;i++){
+             if(loc[i]==sz){
+                 return value[i];
+             }
+         }
+    }
+ }
+ float operator[ ](const Sample& sz) const{
+     if((loc.get_size()!=0) and (value.get_size()!=0)){
+         for(int i=0;i<9;i++){
+             if(loc[i]==sz){
+                 return value[i];
+             }
+         }
+    }
+ }
+ 
+ 
+    
+};
