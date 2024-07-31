@@ -7,6 +7,14 @@ using namespace std;
 #ifndef SHARED_PTR
 #define SHARED_PTR
 #endif
+
+#ifndef MATH_H
+#define MATH_H
+#include<cmath>
+#endif
+
+
+
 #include<utility>
 #define BIG_NUM 8880000000
 #include"Image_color.h"
@@ -156,6 +164,7 @@ class Image_type{
       this->width=im_type.width;
       this->height=im_type.height;
       this->samples=im_type.samples;
+      this->True_colors=im_type.True_colors;
    }
   
 Image_type& operator=(const Image_type& im_type){
@@ -188,6 +197,7 @@ Image_type& operator=(const Image_type& im_type){
          }
      }
  }
+ 
  
  /*
         image coordinate system
@@ -235,6 +245,25 @@ Image_type& operator=(const Image_type& im_type){
             }
          }
      }
+ }
+ Color& operator[ ](const size_t& sz){
+     if(sz<this->size()){
+         return True_colors[sz];
+     }
+ }
+ Color operator[ ](const size_t& sz) const {
+     if(sz<this->size()){
+         return True_colors[sz];
+     }
+ }
+ size_t convert_samples_to_index(const Sample& samp){
+     if(this->size()!=0){
+     for(int i=0;i<this->size();i++){
+         if(samples[i]==samp){
+             return i;
+         }
+     }
+ }
  }
 };
 #endif
@@ -290,13 +319,14 @@ enum READ_IMAGE{
 typedef Table<Sample> Samples;
 typedef Table<float> Values;
 class Transform{
-    private:
+    public:
     Samples loc;
     Values value;
     public:
     Transform(){
         this->init_all_location();
         value.set_size(loc.get_size());
+        identity(*this);
     }
     
  void init_all_location(){
@@ -331,7 +361,107 @@ class Transform{
          }
     }
  }
- 
- 
-    
+ float& operator[ ](const size_t& sz){
+     if((loc.get_size()!=0) and sz<9){
+         return this->value[sz];
+   }
+ }
+  float operator[ ](const size_t& sz) const{
+     if((loc.get_size()!=0) and sz<9){
+         return this->value[sz];
+   }
+  }
+void construct_translation(const float& x,const float& y){
+     this->value[6]=x;
+     this->value[7]=y;
+}
+Transform(const Transform& transform){
+    loc=transform.loc;
+    value=transform.value;
+    }
+Transform& operator=(const Transform& trans){
+    *this={trans};
+    return *this;
+}
+size_t return_by_sample(const Sample& samp){
+    size_t sz1=0;
+    if(this->size_of_matrix()!=0){
+       for(int i=0;i<9;i++){
+        if(loc[i]==samp){
+            sz1=i;
+            return sz1;
+        }
+    }
+   }
+}
+void construct_vertical_shear(const float& sh);
+void construct_horizontal_shear(const float& sh);
+/*
+Note: theta must be in radians,constructing a rotational matrix on the called object
+*/
+ void construct_rotation(const float& theta){
+this->value[0]=cos(theta);
+ this->value[1]=sin(theta);
+ this->value[3]=-sin(theta);
+ this->value[4]=cos(theta);
+}
+ void identity(Transform& trans){
+     trans[0]=1.0f;
+     trans[1]=0.0f;
+     trans[2]=0.0f;
+     trans[3]=0.0f;
+     trans[4]=1.0f;
+     trans[5]=0.0f;
+     trans[6]=0.0f;
+     trans[7]=0.0f;
+     trans[8]=1.0f;
+ }
+ void construct_scale(const float&  uniform_scale){
+ for(int i=0;i<9;i++){
+       if((i==4) or (i==0)){ //uniform scaling
+           this->value[i]=uniform_scale;
+       }
+ }
+ }
+ Transform operator*(const Transform& trans){
+     Transform trans1;
+     trans1[0]=(this->value[0]*trans[0])+(this->value[1]*trans[3])+(this->value[2]*trans[6]);
+     trans1[1]=(this->value[0]*trans[1])+(this->value[1]*trans[4])+(this->value[2]*trans[7]);
+     trans1[2]=(this->value[0]*trans[2])+(this->value[1]*trans[5])+(this->value[2]*trans[8]);
+     trans1[3]=(this->value[3]*trans[0])+(this->value[4]*trans[3])+(this->value[5]*trans[6]);
+     trans1[4]=(this->value[3]*trans[1])+(this->value[4]*trans[4])+(this->value[5]*trans[7]);
+     trans1[5]=(this->value[3]*trans[2])+(this->value[4]*trans[5])+(this->value[5]*trans[8]);
+     trans1[6]=(this->value[6]*trans[0])+(this->value[7]*trans[3])+(this->value[8]*trans[6]);
+     trans1[7]=(this->value[6]*trans[1])+(this->value[7]*trans[4])+(this->value[8]*trans[7]);
+     trans1[8]=(this->value[6]*trans[2])+(this->value[7]*trans[5])+(this->value[8]*trans[8]);
+     return trans1;
+     } 
+ };
+ enum SPATIAL_FILTER{
+     MASK,
+     KERNEL
+ };
+ enum SAMPLER_ORDER{
+     ROW_ORDER,
+     COLUMN_ORDER
 };
+ enum File_encoder{
+ };
+ enum File_decoder{
+ };
+ 
+ ostream& operator<<(ostream& os,const Transform& trans){
+     os<<"[";
+     for(int i=0;i<9;i++){
+       os<<trans.value[i]<<",";
+          if((i==8)){
+             os<<"]"<<endl;
+         }
+         else if((i==2) or(i==5)){
+             os<<endl;
+         }
+     }
+     
+     return os;
+ }
+ 
