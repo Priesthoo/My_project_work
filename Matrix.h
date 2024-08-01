@@ -1,27 +1,18 @@
 #include"Vector3d.h"
 #include<iostream>
-#include"Vector.h"
-typedef Vector<float> Mat_elem;
+#include"Image_color.h"
+typedef Table<float> Mat_elem;
 using namespace std;
 class Mat3x3{//construct the coordinate system
     Mat_elem mat;
     public:     //it represents three vectors (mutually perpendicular to each other)
     Mat3x3(){
         mat.set_size(9);
-        (*this).set_identity();
+        this->set_identity();
     }
-    Mat3x3(const Vector<float>& vec){
-        if(mat.check_if_NULL()==true){
-            mat.set_size(9);
-        }
-        for(int i=0;i<mat.get_length();i++){
-            mat[i]=vec[i];
-        }
-    }
+ 
     Mat3x3(const float& a0,const float& a1,const float& a2,const float& a3,const float& a4,const float& a5,const float& a6,const float& a7,const float& a8){
-        if(mat.check_if_NULL()==true){
-            mat.set_size(9);
-        }
+        mat.set_size(9);
         mat[0]=a0;    // | mat[0]   mat[1]   mat[2] |
          mat[1]=a1;   // | mat[3]   mat[4]   mat[5] |
         mat[2]=a2;   //  |  mat[6]   mat[7]   mat[8]|  
@@ -33,10 +24,9 @@ class Mat3x3{//construct the coordinate system
         mat[8]=a8;
      }
     void set_mat3x3(const Mat3x3& M){
-        if(mat.check_if_NULL()==true){
-            mat.set_size(9);
-        }
-        for(int i=0;i<mat.get_length();i++){
+        mat.set_size(9);
+       
+        for(int i=0;i<mat.get_size();i++){
             mat[i]=M.mat[i];
         }
     }
@@ -85,10 +75,10 @@ Vector3d operator*(const Vector3d& vec){// transforming the vector coordinate sy
      mat[8]=1;
      }
      size_t get_mat_length() const {
-        return  mat.get_length();
+        return  mat.get_size();
      }
      Mat3x3& operator=(const Mat3x3& mat1){
-         for(int i=0;i<mat.get_length();i++){
+         for(int i=0;i<mat.get_size();i++){
              mat[i]=mat1.mat[i];
          }
          return *this;
@@ -100,9 +90,8 @@ class Mat4x4{ //
     Mat_elem V;
     public:
     Mat4x4(){
-        if(V.check_if_NULL()==true){
-            V.set_size(16);
-        }
+        V.set_size(16);
+    
     }
     float& operator[ ](const int& idx){
         return V[idx];
@@ -111,9 +100,7 @@ class Mat4x4{ //
         return V[idx];
     }
     Mat4x4(const Mat3x3& mat,const Vector3d& trans){
-        if(V.check_if_NULL()==true){
-            V.set_size(16);
-        }
+         V.set_size(16);
         V[0]=mat[0];
         V[1]=mat[1];
         V[2]=mat[2];
@@ -132,10 +119,8 @@ class Mat4x4{ //
          V[15]=1;
     }
     Mat4x4(const float&a,const float&b,const float& c,const float& d,const float& e,const float& f,const float& g,const float& h,const float& i,const float& j,const float& k,const float& l,const float& m,const float& n,const float& o,const float&p){
-        if(V.check_if_NULL()==true){
-            V.set_size(16);
-        }
-        V[0]=a;
+        V.set_size(16);
+         V[0]=a;
         V[1]=b;
         V[2]=c;
         V[3]=d;
@@ -158,10 +143,8 @@ class Mat4x4{ //
         V[11]=trans[2];
     }
     void set_matrix(const Mat3x3&  mat,const Vector3d& trans){
-          if(V.check_if_NULL()==true){
             V.set_size(16);
-        }
-        V[0]=mat[0];
+         V[0]=mat[0];
         V[1]=mat[1];
         V[2]=mat[2];
         V[3]=trans[0];
@@ -179,7 +162,7 @@ class Mat4x4{ //
          V[15]=1;
     }
     size_t get_matrix_length(){
-        return V.get_length();
+        return V.get_size();
     }
     static void print_out_mat(const Mat4x4&  mat){
         cout<<"{"<<mat[0]<<","<<mat[1]<<","<<mat[2]<<","<<mat[3]<<endl;
