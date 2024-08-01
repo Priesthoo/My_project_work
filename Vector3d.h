@@ -2,6 +2,7 @@
 #include<cmath>
 #include<string>
 using namespace std;
+
 class Vector3d{
    protected:
    float x,y,z;
@@ -166,4 +167,9 @@ class Vector3d{
        return vec2;
    }
    }
+};
+
+enum COORDINATE_SYSTEM{
+    LEFT_HANDEDNESS,
+    RIGHT_HANDEDNESS
 };
