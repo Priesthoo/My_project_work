@@ -1,4 +1,4 @@
- #include<iostream>
+#include<iostream>
 #include<memory>
 #include<string>
 #include<vector>
@@ -11,6 +11,21 @@ using namespace std;
 #ifndef UNIQUE_PTR
 #define UNIQUE_PTR
 #endif
+
+#ifndef CLAMP
+#define CLAMP
+float clamp_value(const float min,const float v,const float max){
+    if(v<min){
+        return min;
+    }
+    else if(v>max){
+        return max;
+    }
+    return v;
+}
+#endif //for clamp
+
+
 
 /*
 implement ur own default deleter for shared_ptr when it uses array type as a template argumentl
@@ -125,13 +140,16 @@ Color& operator=(const Color& clor1){
    color0 .color[0]=color[0]+color1.color[0];
    color0.color[1]=color[1]+color1.color[1];
    color0.color[2]=color[2]+color1.color[2];
+   
    return color0;
  }
    Color operator-(const Color& color1){
    Color color0;
    color0 .color[0]=color[0]-color1.color[0];
    color0.color[1]=color[1]-color1.color[1];
+
    color0.color[2]=color[2]-color1.color[2];
+
    return color0;
  }
  
@@ -162,6 +180,12 @@ Color& operator=(const Color& clor1){
    color0.color[1]=color[1]*color1;
    color0.color[2]=color[2]*color1;
    return color0;
+ }
+ bool operator==(const Color& color1) const {
+     if((this->color[0]==color1.color[0]) and (this->color[1]==color1.color[1]) and (this->color[2]==color1.color[2])){
+         return true;
+     }
+     return false;
  }
  
   //don't overload (=) operator;'
