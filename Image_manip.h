@@ -18,6 +18,8 @@ using namespace std;
 #include<utility>
 #define BIG_NUM 8880000000
 #include"Image_color.h"
+typedef float gray_scale_f; //float version of grayscale
+typedef size_t grayscale_ui; //unsigned int version of grayscale;
 
 const char* my_assert(bool statement,const char* error){
     if(!statement){
@@ -56,17 +58,16 @@ enum SPATIAL_OPERATIONS{
     PROBABILITY
 };
 
-#ifndef CLAMP
-#define CLAMP
-float clamp_value(const float min,const float v,const float max){
-    if(v<min){
-        return min;
-    }
-    else if(v>max){
-        return max;
-    }
-    return v;
-}
+#ifndef COLOR_CLAMP
+#define COLOR_CLAMP
+void clamp_values(const float min,float& v,const float max){
+    if(v>max){
+        v=max;
+ }
+ else if(v<min){
+     v=min;
+ }
+ }
 #endif //for clamp
 
 #ifndef SAMPLE
@@ -265,8 +266,10 @@ Image_type& operator=(const Image_type& im_type){
      }
  }
  }
+ 
 };
 #endif
+
 
 /*
 This type is for Spatial transformation, After performing spatial transformation,
@@ -292,7 +295,16 @@ struct Sample_3d{
      *this={samp3d};
      return *this;
  }
+ Sample_3d convert_to_samp_3d(const Sample samp){
+     this->x=samp.x;
+     this->y=samp.y;
+     this->z=1;
+ }
  };
+ ostream& operator<<(ostream& os,const Sample_3d& samp){
+     os<<"["<<samp.x<<","<<samp.y<<","<<samp.z<<"]"<<endl;
+     return os;
+ }
 #endif  //for Samp3d
 enum class  INTERPOLATION{
     NEAREST_NEIGHBOUR,
@@ -435,7 +447,14 @@ this->value[0]=cos(theta);
      trans1[7]=(this->value[6]*trans[1])+(this->value[7]*trans[4])+(this->value[8]*trans[7]);
      trans1[8]=(this->value[6]*trans[2])+(this->value[7]*trans[5])+(this->value[8]*trans[8]);
      return trans1;
-     } 
+     }
+ void convert_to_matrix(const Sample_3d& samp){
+    this->value[0]=(float)samp.x;
+     this->value[3]=(float)samp.y;
+     this->value[6]=(float)samp.z;
+     
+ }
+
  };
  enum SPATIAL_FILTER{
      MASK,
@@ -454,7 +473,7 @@ this->value[0]=cos(theta);
      os<<"[";
      for(int i=0;i<9;i++){
        os<<trans.value[i]<<",";
-          if((i==8)){
+          if(i==8){
              os<<"]"<<endl;
          }
          else if((i==2) or(i==5)){
@@ -464,4 +483,38 @@ this->value[0]=cos(theta);
      
      return os;
  }
+ void  get_sample_3d_from_transform(const Transform& trans,Sample_3d& samp){
+     samp.x=trans[0];
+     samp.y=trans[3];
+     samp.z=trans[6];
+     return;
+ }
+bool is_found_in_image(const Color& color,const Image_type& image){
+    for(int i=0;i<image.size();i++){
+        if(color==image.True_colors[i]){
+            return true;
+        }
+    }
+    return false;
+}
+
+class Spatial_Filter{
+    private:
+    Table<float>mask;
+    public:
+    Spatial_Filter():mask{}{}
+    Spatial_Filter(const size_t& sz){
+        this->mask.set_size(sz);
+    }
+    void push_filter_value(const float& fs){
+        this->mask.push(fs);
+    }
+ float operator[ ](const size_t& idx){
+     return mask[idx];
+ }
+ size_t size_of_filter() const{
+     return mask.get_size();
+ }
  
+    
+};
