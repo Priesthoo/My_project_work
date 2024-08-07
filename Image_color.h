@@ -114,6 +114,19 @@ Table& operator=(const Table& table){
 size_t get_size() const {
     return sz;
 }
+bool operator==(const Table& table) const {
+    bool is_okay=true;
+    for(int i=0;i<table.get_size();i++){
+        if(table.get_size()!=this->get_size()){
+            is_okay=false;
+            return is_okay;
+        }
+        if(table[i]!=this->data.get()[i]){
+            return false;
+        }
+    }
+    return true;
+}
 };
 class Color {
     public:
