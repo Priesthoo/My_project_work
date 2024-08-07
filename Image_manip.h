@@ -17,6 +17,7 @@ using namespace std;
 
 #include<utility>
 #define BIG_NUM 8880000000
+
 #include"Image_color.h"
 typedef float gray_scale_f; //float version of grayscale
 typedef size_t grayscale_ui; //unsigned int version of grayscale;
@@ -172,7 +173,8 @@ Image_type& operator=(const Image_type& im_type){
     *this={im_type};
     return *this;
 }
-  
+  //_x is the height from the origin
+  //_y is the width from the origin
    Image_type(const int& _x,const int& _y){
        this->construct_samples(_x,_y);
        this->init_all_samples();
@@ -197,6 +199,12 @@ Image_type& operator=(const Image_type& im_type){
              }
          }
      }
+ }
+ bool operator==(const Image_type& image) const{
+     if((this->width==image.width) and (this->height==image.height)){
+         return true;
+     }
+     return false;
  }
  
  
@@ -269,7 +277,13 @@ Image_type& operator=(const Image_type& im_type){
  
 };
 #endif
-
+ostream& operator<<(ostream& os,const Image_type& image){
+    os<<"Number of pixels: "<<image.width*image.height<<" pixels"<<endl;
+    os<<"Width: "<<image.width<<endl;
+    os<<"Height: "<<image.height<<endl;
+    os<<"PIXEL_COLOR_FORMAT: "<<"RGB_8_8_8_BIT"<<endl;
+    return os;
+}
 
 /*
 This type is for Spatial transformation, After performing spatial transformation,
@@ -464,10 +478,6 @@ this->value[0]=cos(theta);
      ROW_ORDER,
      COLUMN_ORDER
 };
- enum File_encoder{
- };
- enum File_decoder{
- };
  
  ostream& operator<<(ostream& os,const Transform& trans){
      os<<"[";
@@ -515,6 +525,66 @@ class Spatial_Filter{
  size_t size_of_filter() const{
      return mask.get_size();
  }
- 
+ bool operator==(const Spatial_Filter& filter) const{
+     if(this->mask==filter.mask){
+         return true;
+     }
+     return false;
+ }
+};
+//by default standard_output outputs floating point values as integers,Therfore I have to employ the #include<iomanip> to manipulate with the output_streams..
+enum SPATIAL_FILTER_OPS_TYPE{
+    CORRELATION,
+    CONVOLUTION
+};
+#ifndef IMAGE_FILE_FORMAT
+#define IMAGE_FILE_FORMAT 12
+enum class IMAGE_FORMAT{
+    PNG,
+    JPEG,
+    APNG,
+    AVIF,
+    GIF,
+    SVG,
+    WEBP,
+    BMP,
+    ICO,
+    TIFF
+  };
+#endif
+enum IMAGE_CODEC{
+    
     
 };
+enum SPATIAL_FILTER_TYPES{
+    SHARPENING,
+    SMOOTHING   //
+};
+/*
+apart from built-in types, user defined type must provide a constructor with no parameters
+e.g classname(). and type must overload (==) operator....
+*/
+template<class T>
+bool is_uninitialized(const T&first){
+    const T v={};
+    if(first==v){
+        return true;
+    }
+    return false;
+}
+void construct_spatial_filter(Spatial_Filter& filter,SPATIAL_FILTER_OPS_TYPE TYPE){
+    if(filter.size_of_filter()==0){
+        return;
+    }
+    if(is_uninitialized(filter)){
+        return;
+    }
+}
+const char* convert_bool_to_string(const bool is_value){
+    if(is_value==true){
+        const char* j={"true"};
+        return j;
+    }
+    const char*j={"false"};
+    return j;
+ }
