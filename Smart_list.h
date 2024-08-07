@@ -69,6 +69,15 @@ class Smart_list{//size of smart list is still the same as the size of the share
       const char*h={"it is not null"};
       return h;
   }
+  shared_ptr<Node<T>> get_begin(){
+      return this->ptr;
+  }
+  shared_ptr<Node<T>> get_end(){
+      shared_ptr<Node<T>> ptr1;
+      if(ptr1.get()==nullptr){
+          return ptr1;
+      }
+  }
 };
 #endif
 template<class T>
@@ -83,5 +92,37 @@ ostream& operator<<(ostream& os,const Smart_list<T>& ptr){
         }
         ptr1=ptr1.get()->next;
     }
+    return os;
+}
+#ifndef SMART_ITERATOR
+#define SMART_ITERATOR
+template<class T>
+class Smart_iterator{
+    public:
+    shared_ptr<Node<T>>iter;
+    public:
+    Smart_iterator():iter{}{}
+    Smart_iterator(const shared_ptr<Node<T>>& sptr){
+        iter=sptr;
+    }
+    Smart_iterator& operator=(const shared_ptr<Node<T>>& sptr){
+        *this={sptr};
+        return *this;
+    }
+ Smart_iterator& operator++(){
+     iter=iter.get()->next;
+     return *this;
+ }
+ const Smart_iterator operator++(int){
+     shared_ptr<Node<T>> ptr={iter};
+     iter=iter.get()->next;
+     return ptr;
+ }
+        
+};
+#endif
+template<class T>
+ostream& operator<<(ostream& os,const Smart_iterator<T>& iter1){
+    os<<iter1.iter.get()->value<<endl;
     return os;
 }
