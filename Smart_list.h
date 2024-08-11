@@ -6,6 +6,25 @@ using namespace std;
 #include<initializer_list>
 #endif
 
+#ifndef CCTYPE_H
+#define CCTYPE_H
+#include<cctype>
+#endif
+//deleter for char
+template<class T>
+class Deleter_for_string{
+    public:
+    void operator()(T* ptr){
+        if(ptr!=nullptr){
+            delete [ ] ptr;
+        }
+    }
+};
+
+
+
+
+
 #ifndef SMART_NODE
 #define SMART_NODE 12
 template<class T>
@@ -126,3 +145,80 @@ ostream& operator<<(ostream& os,const Smart_iterator<T>& iter1){
     os<<iter1.iter.get()->value<<endl;
     return os;
 }
+
+#ifndef SMART_BUFFER_STRING
+#define SMART_BUFFER_STRING 1000000
+class Smart_string{
+    private:
+    shared_ptr<char>ptr;
+    size_t ssize;
+    public:
+    Smart_string():ptr{}{}
+    Smart_string(const size_t& sz,const char& c){
+        ptr.reset(new char[sz],Deleter_for_string<char>());
+       for(int i=0;i<sz;i++){
+           ptr.get()[i]=c;
+       }
+       ssize=sz;
+    }
+
+   Smart_string(const size_t& sz){
+       *this={sz,' '};
+  }
+  Smart_string(const char* ch){
+      size_t sz=strlen(ch);
+      ptr.reset(new char[sz],Deleter_for_string<char>());
+      for(int i=0;i<sz;i++){
+          ptr.get()[i]=ch[i];
+      }
+      ssize=sz;
+  }
+  shared_ptr<char> get_first_head(){
+      return ptr;
+  }
+  
+  char& operator [ ](const size_t& idx){
+      return ptr.get()[idx];
+  }
+   char operator [ ](const size_t& idx) const{
+      return ptr.get()[idx];
+  }
+size_t get_smart_size() const {
+    return ssize;
+}
+Smart_string(const Smart_string& str){
+    ptr=str.ptr;
+    ssize=str.ssize;
+}
+void push_char(const char& ch){
+    if(ptr.get()==nullptr){
+        ptr.reset(new char[1],Deleter_for_string<char>());
+        ssize=1;
+        ptr.get()[0]=ch;
+        return;
+    }
+   Smart_string str1={*this};
+   this->ptr.reset();
+   ptr.reset(new char[str1.ssize+1],Deleter_for_string<char>());
+   this->ssize=str1.ssize+1;
+   for(int i=0;i<str1.get_smart_size();i++){
+       ptr.get()[i]=str1[i];
+   }
+   ptr.get()[str1.ssize]=ch;
+   str1.get_first_head().reset();
+   str1.ssize=0;
+   return;
+   
+}
+};
+
+ostream& operator<<(ostream& os,const Smart_string& str){
+    for(size_t sz=0;sz<str.get_smart_size();sz++){
+        os<<str[sz];
+    }
+    os<<endl;
+    os<<"string size: "<<str.get_smart_size()<<endl;
+    return os;
+}
+ 
+#endif // smart_string
