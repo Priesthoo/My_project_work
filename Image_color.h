@@ -127,7 +127,19 @@ bool operator==(const Table& table) const {
     }
     return true;
 }
+bool is_empty(){
+    if(this->sz==0){
+        return true;
+    }
+    return false;
+}
+void clear_table(){
+    data.reset();
+    this->sz=0;
+}
 };
+
+
 class Color {
     public:
     float color[3];
