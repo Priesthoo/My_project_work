@@ -516,10 +516,22 @@ class Spatial_Filter{
     Spatial_Filter(const size_t& sz){
         this->mask.set_size(sz);
     }
+    Spatial_Filter(const Spatial_Filter& f){
+        mask=f.mask;
+    }
     void push_filter_value(const float& fs){
         this->mask.push(fs);
     }
- float operator[ ](const size_t& idx){
+ float operator[ ](const size_t& idx) const{
+     return mask[idx];
+ }
+ bool filter_is_empty(){
+     if(mask.is_empty()==true){
+         return true;
+     }
+     return false;
+ }
+  float& operator[ ](const size_t& idx){
      return mask[idx];
  }
  size_t size_of_filter() const{
@@ -531,7 +543,27 @@ class Spatial_Filter{
      }
      return false;
  }
+ Spatial_Filter& operator=(const Spatial_Filter& sp){
+     *this={sp};
+     return *this;
+ }
+ Spatial_Filter(const Table<float>& f){
+     mask.set_size(f.get_size());
+     for(int i=0;i<f.get_size();i++){
+         mask[i]=f[i];
+     }
+ }
+void clear_filter(){
+    mask.clear_table();
+}
+ 
 };
+ostream& operator<<(ostream& os,const Spatial_Filter& filter){
+    for(int i=0;i<filter.size_of_filter();i++){
+        os<<filter[i]<<" ,";
+    }
+    return os;
+}
 //by default standard_output outputs floating point values as integers,Therfore I have to employ the #include<iomanip> to manipulate with the output_streams..
 enum SPATIAL_FILTER_OPS_TYPE{
     CORRELATION,
@@ -558,7 +590,7 @@ enum IMAGE_CODEC{
 };
 enum SPATIAL_FILTER_TYPES{
     SHARPENING,
-    SMOOTHING   //
+    SMOOTHING   //average intensity evaluation....
 };
 /*
 apart from built-in types, user defined type must provide a constructor with no parameters
@@ -572,19 +604,30 @@ bool is_uninitialized(const T&first){
     }
     return false;
 }
-void construct_spatial_filter(Spatial_Filter& filter,SPATIAL_FILTER_OPS_TYPE TYPE){
-    if(filter.size_of_filter()==0){
-        return;
-    }
-    if(is_uninitialized(filter)){
-        return;
-    }
-}
-const char* convert_bool_to_string(const bool is_value){
+  const char* convert_bool_to_string(const bool is_value){
     if(is_value==true){
         const char* j={"true"};
         return j;
     }
     const char*j={"false"};
     return j;
- }
+}
+/*
+*/
+void init_spatial_filter(Spatial_Filter& filter,Table<float> mask_value,SPATIAL_FILTER_OPS_TYPE FILTER){
+    if(!filter.filter_is_empty()){
+        filter.clear_filter();  //clear table if it is not empty
+    }
+    if(FILTER==CORRELATION){
+        for(int i=0;i<mask_value.get_size();i++){
+            filter.push_filter_value(mask_value[i]);
+        }
+        return;
+    }
+    else if(FILTER==CONVOLUTION){
+        for(int i=mask_value.get_size()-1;i>=0;i--){
+            filter.push_filter_value(mask_value[i]);
+        }
+    }
+}
+//NB:for smart pointers, you can not overload or override the (=) operator    
