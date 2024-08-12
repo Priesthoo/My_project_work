@@ -161,6 +161,7 @@ class Smart_string{
        }
        ssize=sz;
     }
+    //sets the size, allocate memory according to size,and initializes the allocated variables with ' '
     void set_size(const size_t& sz){
         if(ptr.get()!=nullptr){
             ptr.reset();
@@ -183,7 +184,8 @@ class Smart_string{
       }
       ssize=sz;
   }
-  shared_ptr<char> get_first_head(){
+  //returns ptr;
+  shared_ptr<char> get_first_head() const{
       return ptr;
   }
   
@@ -193,6 +195,7 @@ class Smart_string{
    char operator [ ](const size_t& idx) const{
       return ptr.get()[idx];
   }
+  //for size.........
 size_t get_smart_size() const {
     return ssize;
 }
@@ -228,6 +231,24 @@ Smart_string substring(const size_t& idx){
         str[i]=this->ptr.get()[i+idx];
     }
   return str;
+}
+Smart_string substring(const size_t& idx,const size_t len){
+    Smart_string str;
+    for(int i=idx;i<len;i++){
+        str.push_char(this->get_first_head().get()[i]);
+    }
+    return str;
+}
+bool operator==(const Smart_string& str) const {
+    if(this->get_smart_size()==str.get_smart_size()){
+        for(int i=0;i<this->get_smart_size();i++){
+            if(this->get_first_head().get()[i]!=str[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
 }
 };
 
