@@ -161,6 +161,16 @@ class Smart_string{
        }
        ssize=sz;
     }
+    void set_size(const size_t& sz){
+        if(ptr.get()!=nullptr){
+            ptr.reset();
+        }
+        ptr.reset(new char[sz],Deleter_for_string<char>());
+        for(int i=0;i<sz;i++){
+            ptr.get()[i]=' ';
+        }
+        ssize=sz;
+    }
 
    Smart_string(const size_t& sz){
        *this={sz,' '};
@@ -209,6 +219,15 @@ void push_char(const char& ch){
    str1.ssize=0;
    return;
    
+}
+Smart_string substring(const size_t& idx){
+    size_t sz=this->ssize- idx;
+    Smart_string str;
+    str.set_size(sz);
+    for(int i=0;i<sz;i++){
+        str[i]=this->ptr.get()[i+idx];
+    }
+  return str;
 }
 };
 
