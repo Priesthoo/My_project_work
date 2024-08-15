@@ -5,6 +5,11 @@ using namespace std;
 #define INIT_LIST 10
 #include<initializer_list>
 #endif
+#ifndef MATH_H
+#define MATH_H
+#include<cmath>
+#define NOT_FOUND pow(2,32)
+#endif
 
 #ifndef CCTYPE_H
 #define CCTYPE_H
@@ -223,7 +228,7 @@ void push_char(const char& ch){
    return;
    
 }
-Smart_string substring(const size_t& idx){
+Smart_string substring(const size_t& idx) const {
     size_t sz=this->ssize- idx;
     Smart_string str;
     str.set_size(sz);
@@ -232,13 +237,15 @@ Smart_string substring(const size_t& idx){
     }
   return str;
 }
-Smart_string substring(const size_t& idx,const size_t len){
+//it creates a substring starting at idx with len..
+Smart_string substring(const size_t& idx,const size_t len) const {
     Smart_string str;
     for(int i=idx;i<len;i++){
         str.push_char(this->get_first_head().get()[i]);
     }
     return str;
 }
+//overloading the (==) equality operator...
 bool operator==(const Smart_string& str) const {
     if(this->get_smart_size()==str.get_smart_size()){
         for(int i=0;i<this->get_smart_size();i++){
@@ -250,8 +257,34 @@ bool operator==(const Smart_string& str) const {
     }
     return false;
 }
-};
 
+//returns the starting index of a substring within a string..
+//The length of the substring must be less than the smart string object.
+size_t find_idx(const char*c)  const{
+    Smart_string str={c};
+    size_t sz=str.get_smart_size(); // returns the length of string of characters.
+    size_t sz1=this->get_smart_size()-sz;
+    ++sz1;
+    for(int i=0;i<sz1;i++){
+        if(this->substring(i,sz)==str){
+            return i;
+        }
+    }
+    return NOT_FOUND;
+}
+Smart_string operator+(const Smart_string& str){
+    size_t sz=this->get_smart_size()+str.get_smart_size();
+    Smart_string str1={sz};
+    for(int i=0;i<this->get_smart_size();i++){
+        str1[i]=this->ptr.get()[i];
+    }
+    for(int i=0;i<str.get_smart_size();i++){
+        str1[this->get_smart_size()+i]=str[i];
+    }
+    return str1;
+ }
+};
+//overloading the output operator 
 ostream& operator<<(ostream& os,const Smart_string& str){
     for(size_t sz=0;sz<str.get_smart_size();sz++){
         os<<str[sz];
