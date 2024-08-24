@@ -295,3 +295,29 @@ ostream& operator<<(ostream& os,const Smart_string& str){
 }
  
 #endif // smart_string
+enum WIDGET_CONTROL{
+    BUTTON,
+    CHECK_BOX,
+    LIST_BOX,
+    SLIDER,
+    RADIO_BOX,
+    LABEL,
+    BUTTON_WITH_LABEL,
+    PROGRESS_BAR,
+    COMBO_BOX,
+    CHECK_LIST_BOX,
+  };
+ #ifndef STRING_CONVERT
+ #define STRING_CONVERT 10
+ #include<string>
+ #endif
+ 
+#ifdef STRING_CONVERT
+string convert_sstring_to_string(const Smart_string& str1){
+    string str;
+    for(int i=0;i<str1.get_smart_size();i++){
+        str.push_back(str1[i]);
+    }
+    return str;
+}
+#endif
