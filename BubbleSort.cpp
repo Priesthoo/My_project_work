@@ -8,7 +8,7 @@ void Bubble_Sort(vector<T>& Array){
     if(Array.size()==0){
         return;
     }
-    for(int i=0;i<Array.size()-1;i++){
+    for(int i=0;i<Array.size();i++){
         unsigned int k=0;
    for(int j=1;j<Array.size()-i;j++){
        if(Array.at(j-1)>Array.at(j)){
