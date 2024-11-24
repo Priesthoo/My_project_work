@@ -48,9 +48,39 @@ int Implement_Hoares_Partition(vector<T>& array,const unsigned int& low,const un
         
     }
 }
+//Function: It arranges the elements about a pivot, and returns the index of the pivot.
+template<class T>
+int Implement_Lomutos_Partition(vector<T>& Array,const unsigned int& low, const unsigned int& high){
+    int pivot_index=high;
+    int i=low-1;
+    T pivot=Array.at(pivot_index);
+    for(int j=low;j<high;j++){
+        if(Array.at(j)<pivot){
+            ++i;
+            std::swap(Array.at(i),Array.at(j));
+        }
+    }
+    std::swap(Array.at(i+1),Array.at(pivot_index));
+    return (i+1);
+ }
+
+ template<class T>
+ void Lomutos_Quick_Sort(vector<T>& Array,const size_t& low,const size_t& high){
+     if(Array.size()==0){
+         return;
+     }
+     if(low>=high){
+         return;
+     }
+     int partition_index=Implement_Lomutos_Partition(Array,low,high);
+     Lomutos_Quick_Sort(Array,low,partition_index-1);
+     Lomutos_Quick_Sort(Array,partition_index+1,high);
+     return;
+ }
+ 
 template<class T>
 void Quick_Sort(vector<T>& array,const size_t& low, const size_t& high){
-     if(Array.size()==0){
+     if(array.size()==0){
          return;
      }
      if(low<high){
@@ -65,7 +95,7 @@ void Quick_Sort(vector<T>& array,const size_t& low, const size_t& high){
 int main(int argc, char *argv[])
 {
 	vector<int> Array={5,1,9,4,14,7,5};
-	Quick_Sort(Array,0,Array.size()-1);
+	Lomutos_Quick_Sort(Array,0,Array.size()-1);
 	for(const auto& ref: Array){
 	    cout<<ref<<endl;
 	}
