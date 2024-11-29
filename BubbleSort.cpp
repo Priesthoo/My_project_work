@@ -218,7 +218,7 @@ void Implement_Merge_Sort(vector<T>& array, vector<T>& temp_array, int left_pos,
         
     }
     // we need to get the temporary index for the temporary array.
-    //The size of thr array must be equal to avoid or prevent exceptions being thrown when size of temp_array is larger than that of the reference array
+    //The size of the array must be equal to avoid or prevent exceptions being thrown when size of temp_array is larger than that of the reference array
     
     if(temp_array.size()!=array.size()){
         return;
@@ -227,7 +227,7 @@ void Implement_Merge_Sort(vector<T>& array, vector<T>& temp_array, int left_pos,
     int temp_pos=static_cast<int>(left_pos);
     int left_end=static_cast<int>(right_pos-1);
     size_t no_of_element=static_cast<size_t>(right_end-left_pos+1);
-    // This loops does one thing:
+    // This loop does one thing:
     //it loops through the elements and transfer ownership of resources,
     // Conditions are provided to execute the loop 
      while(left_pos<=left_end && (right_pos <= right_end)){
