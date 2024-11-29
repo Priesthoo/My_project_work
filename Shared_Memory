@@ -1,0 +1,23 @@
+#include<memory>
+#include<utility>
+#include<iostream>
+using namespace std;
+
+//To illustrate the concepts of move semantics on shared_ptr.
+
+int main(int argc, char *argv[])
+{
+	shared_ptr<int> pointer_1(new int);
+	*pointer_1=12;
+	std::cout<<"using deference operator to initialize a pointer variable by value"<<std::endl;
+	std::cout<<"moving the resources from one shared_ptr to another"<<endl;
+	std::cout<<"Result of transferring the resources from an object of shared_ptr to another object of the same type"<<std::endl;
+	shared_ptr<int>pointer_2=std::move(pointer_1);
+	
+	std::cout<<"The reference count:"<<pointer_2.use_count()<<",After Transferring the resources using std::move()"<<endl;
+	shared_ptr<int> pointer_3=pointer_2;
+	std::cout<<"The reference Count after using assignment operator:"<<pointer_3.use_count()<<endl;
+	shared_ptr<int>pointer_4=std::move(pointer_3);
+	std::cout<<"Reference count after using std::move() to transfer resources:"<<pointer_4.use_count()<<std::endl;
+	
+}
