@@ -8,7 +8,7 @@ using namespace std;
 //inorder Tranversal
 // Post order Tranversal
 // pre order Transversal.
-enum Tree_Tranversa{
+enum Tree_Tranversal{
     INORDER_TRANVERSAL,
     POST_ORDER_TRANVERSAL,
     PRE_ORDER_TRANVERSAL
