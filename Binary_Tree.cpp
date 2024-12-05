@@ -3,7 +3,7 @@
 #include<vector>
 #include<memory>
 using namespace std;
-//Binary search tree is a type of search tree that contains no more than two nodes and  it facilotates searching.
+//Binary search tree is a type of search tree that contains no more than two nodes and  it facilitates searching.
 //it provides three types of Tree Transversal.
 //inorder Tranversal
 // Post order Tranversal
