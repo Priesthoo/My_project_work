@@ -8,7 +8,7 @@ using namespace std;
 //inorder Tranversal
 // Post order Tranversal
 // pre order Transversal.
-enum Tree_Tranversal{
+enum Tree_Tranversa{
     INORDER_TRANVERSAL,
     POST_ORDER_TRANVERSAL,
     PRE_ORDER_TRANVERSAL
@@ -124,7 +124,13 @@ class Binary_Search_Tree{
             return;
         }
    }
-   
+   shared_ptr<Binary_Node<T>>& root(){
+       return Root;
+   }
+ void Print_Nodes(){
+   Inorder_Transversal(root());
+   }
+      
    
 };
 
