@@ -3,7 +3,7 @@
 #include<vector>
 #include<memory>
 using namespace std;
-//Binary search tree is a type of search tree that contains no more than two nodes and  it facilotates searching.
+//Binary search tree is a type of search tree that contains no more than two nodes and  it facilitates searching.
 //it provides three types of Tree Transversal.
 //inorder Tranversal
 // Post order Tranversal
@@ -104,6 +104,16 @@ template<class T>
      Inorder_Transversal(root.get()->Right_Node());
      
  }
+ template<class T>
+ void Descending_Inorder_Transversal(shared_ptr<Binary_Node<T>>& root){
+     if(root.get()==NULL){
+         return;
+     }
+     Descending_Inorder_Transversal(root.get()->Right_Node());
+     std::cout<<root.get()->Element()<<"->";
+     Descending_Inorder_Transversal(root.get()->Left_Node());
+     
+ }
  
  template<class T>
  void Post_Order_Transversal(shared_ptr<Binary_Node<T>>& root){
@@ -186,7 +196,8 @@ int main(int argc, char *argv[])
 	Insert(13,root);
 	Insert(7,root);
 	Insert(4,root);
-	Pre_Order_Transversal(root);
+	Insert(1,root);
+	Descending_Inorder_Transversal(root);
 	
 	
 }
