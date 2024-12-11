@@ -3,12 +3,12 @@
 #include<vector>
 #include<memory>
 using namespace std;
-//Binary search tree is a type of search tree that contains no more than two nodes and  it facilitates searching.
+//Binary search tree is a type of search tree that contains no more than two nodes and  it facilotates searching.
 //it provides three types of Tree Transversal.
 //inorder Tranversal
 // Post order Tranversal
 // pre order Transversal.
-enum Tree_Tranversal{
+enum Tree_Tranversa{
     INORDER_TRANVERSAL,
     POST_ORDER_TRANVERSAL,
     PRE_ORDER_TRANVERSAL
@@ -104,6 +104,25 @@ template<class T>
      Inorder_Transversal(root.get()->Right_Node());
      
  }
+ 
+ template<class T>
+ void Post_Order_Transversal(shared_ptr<Binary_Node<T>>& root){
+     if(root.get()==nullptr){
+         return;
+     }
+     Post_Order_Transversal(root.get()->Left_Node());
+     Post_Order_Transversal(root.get()->Right_Node());
+     std::cout<<root.get()->Element()<<"->";
+ }
+ template<class T>
+ void Pre_Order_Transversal(shared_ptr<Binary_Node<T>>& root ){
+    if(root.get()==nullptr){
+        return;
+    }
+    std::cout<<root.get()->Element()<<"->";
+    Pre_Order_Transversal(root.get()->Left_Node());
+    Pre_Order_Transversal(root.get()->Right_Node());
+ }
 
 template<class T>
 class Binary_Search_Tree{
@@ -133,7 +152,32 @@ class Binary_Search_Tree{
       
    
 };
+//From.observation, i can deduce that AVL_Node is a extension of BinaryNode which acts as the member type of Binary_Search_Tree
+template<class T>
+class AVL_Node:public Binary_Node<T>{
+    private:
+    int height;
+    public:
+    AVL_Node():Binary_Node<T>{},height{0}{}
+    AVL_Node(const T& element, const int& height_1):Binary_Node<T>{element,NULL,NULL},height{height_1}{}
+    void Set_element_and_height(const T& element, const int& height_1){
+        this->Element()=element;
+        Height()=height_1;
+        return;
+    }
+    int Height() const {
+        return height;
+    }
+    int& Height() {
+        return height;
+    }
+};
+// AVL_Tree is a kind of binary search tree that has balance condition attached to it.
 
+//Hash_table
+
+//CPU renderer
+//Understanding exceptions, 
 
 int main(int argc, char *argv[])
 {
@@ -142,6 +186,7 @@ int main(int argc, char *argv[])
 	Insert(13,root);
 	Insert(7,root);
 	Insert(4,root);
-	Inorder_Transversal(root);
+	Pre_Order_Transversal(root);
+	
 	
 }
