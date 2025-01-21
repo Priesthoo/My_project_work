@@ -11,7 +11,7 @@ using namespace std;
     static const unsigned int write=1<<3;
    static const unsigned int  read=1<<4;
 };
-//This function Test the configured options
+//This function Tests the configured options
 void TestOptions(const unsigned int&  option){
     if(option & OPTIONS::open){
         std::cout<<"File is opened "<<endl;
