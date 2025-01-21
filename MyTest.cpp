@@ -4,7 +4,7 @@
 #include<iostream>
 
 using namespace std;
-//The are the options to be used to open file
+//The are the options to be used to open,close,read from and write to file.
  struct OPTIONS{
     static const unsigned int open=1<<1;
     static const unsigned int close=1<<2;
