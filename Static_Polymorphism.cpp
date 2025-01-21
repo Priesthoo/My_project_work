@@ -1,4 +1,4 @@
- #include<iostream>
+#include<iostream>
 #include<memory>
 using namespace std;
 // This class will  serve as a base class for all derived classes that will be defined here,It will also implement the function that will be shared across derived class
@@ -47,11 +47,25 @@ template<class T>
         
     }
 };
+struct Binary_Node{
+    int value;
+    Binary_Node* right;
+    Binary_Node*left;
+};
+Binary_Node* Create_Root(const int& value1){
+    Binary_Node*root_node=new Binary_Node;
+    //check if memory is allocated.
+    if(root_node==NULL){
+        return NULL;
+    }
+    
+    root_node->value=value1;
+    root_node->right=NULL;
+    root_node->left=NULL;
+    return root_node;
+}
 
 int main(int argc, char *argv[])
 {
-	Player player;
-	player.change_strategy<Defensive_Strategy>();
-	player.change_strategy<Offensive_Strategy>();
-	
-}   
+	std::cout<<Create_Root(5)->value<<std::endl;
+}
