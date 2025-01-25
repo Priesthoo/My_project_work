@@ -1,10 +1,12 @@
-namespace MECHANICS{
-    static const int STATICS=1<<2;
-    static const int DYNAMICS=1<<4;
-    static const int STATICS_AND_DYNAMICS=STATICS|DYNAMICS;
-}
+template<class T>
+class Clone{
+    public:
+    T clone() {
+        return static_cast<T*>(this)->make_clone();
+    }
+};
 //The Factory Method.
-class Mechanics{
+class Mechanics: public Clone<Mechanics>{
     private:
     bool is_dynamic;
     bool is_static;
@@ -25,6 +27,9 @@ class Mechanics{
     Mechanics& operator=(const Mechanics& mechanic){
         *this={mechanic};
         return*this;
+    }
+    Mechanics make_clone() {
+        return *this;
     }
     
 };
