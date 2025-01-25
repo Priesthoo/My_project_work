@@ -1,3 +1,4 @@
+//A class that provides a copy of a particular object 
 template<class T>
 class Clone{
     public:
