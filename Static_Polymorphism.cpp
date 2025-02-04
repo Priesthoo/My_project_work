@@ -1,71 +1,55 @@
 #include<iostream>
-#include<memory>
 using namespace std;
-// This class will  serve as a base class for all derived classes that will be defined here,It will also implement the function that will be shared across derived class
+//Defining an Adapter pattern, This pattern establishes relationships between two imcompatible class interfaces
 template<class T>
-class Strategy{
+class Clone{
     public:
-    void execute_all_strategy(){
-        //execute() is the function that will be shared across the derived class
-        static_cast<T*>(this)->execute();
-    }
-   ~Strategy(){
-       
-   }
-};
-//An inheritor
-class Defensive_Strategy:public Strategy<Defensive_Strategy>{
-   public:
-   void execute(){
-       std::cout<<"Using Defensive Strategy"<<std::endl;
-   }
-~Defensive_Strategy(){
-    
-}
-};
-//An inheritor
-class Offensive_Strategy:public Strategy<Offensive_Strategy>{
-    public:
-    void execute(){
-        std::cout<<"Using Offensive Strategy"<<std::endl;
-    }
-    ~Offensive_Strategy(){
-        
+    T clone() {
+        return static_cast<T*>(this)->make_clone();
     }
 };
-
-class Player{
-    public:
 template<class T>
-    void change_strategy(){
-        T strategy;
-        strategy.execute_all_strategy();
-       return;
+class CommonInterface{
+    public:
+    CommonInterface()=default;
+    void Do_Work(){ //This will be a common interface that will be shared by the inheritors of the class 
+        static_cast<T*>(this)->do_work();
     }
-    
-    ~Player(){
-        
+    ~CommonInterface(){
+        std::cout<<"Destroying CommonInterface"<<std::endl;
     }
 };
-struct Binary_Node{
-    int value;
-    Binary_Node* right;
-    Binary_Node*left;
+//First Imcompatible Interface
+class BRDF:public CommonInterface<BRDF>{
+    public:
+    BRDF()=default;
+    void do_work(){
+        std::cout<<"Implementing BRDF"<<std::endl;
+    }
+    ~BRDF(){
+        std::cout<<"Destroying BRDF"<<std::endl;
+    }
 };
-Binary_Node* Create_Root(const int& value1){
-    Binary_Node*root_node=new Binary_Node;
-    //check if memory is allocated.
-    if(root_node==NULL){
-        return NULL;
+//Second Imcompatible Interface
+class BTDF:public CommonInterface<BTDF>{
+    public:
+    BTDF()=default;
+    void do_work(){
+        std::cout<<"Implementing BTDF"<<std::endl;
+    }
+    ~BTDF(){
+        std::cout<<"Destroying BTDF"<<std::endl;
     }
     
-    root_node->value=value1;
-    root_node->right=NULL;
-    root_node->left=NULL;
-    return root_node;
-}
-
-int main(int argc, char *argv[])
-{
-	std::cout<<Create_Root(5)->value<<std::endl;
-}
+};
+//The adapter that groups the two imcompatible interfaces.Achieved by Multiple Inheritance.
+class BSSDF:public CommonInterface<BSSDF>,public BTDF,public BRDF{
+    public:
+    BSSDF()=default;
+    void do_work(){
+        std::cout<<"Implementing both BTDF and BSDF "<<std::endl;
+    }
+    ~BSSDF(){
+        std::cout<<"Destroying BSSDF"<<std::endl;
+    }
+};
