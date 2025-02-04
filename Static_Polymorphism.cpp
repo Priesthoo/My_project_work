@@ -60,7 +60,7 @@ class BSSDF:public BTDF,public BRDF{
     void do_work(){
         std::cout<<"Implementing   BRDF "<<std::endl;
     }
-    void DoWork(){
+    void Dowork(){
         std::cout<<"Implementing BSDF"<<std::endl;
     }
     ~BSSDF(){
