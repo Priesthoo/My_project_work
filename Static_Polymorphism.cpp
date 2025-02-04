@@ -19,6 +19,17 @@ class CommonInterface{
         std::cout<<"Destroying CommonInterface"<<std::endl;
     }
 };
+template<class T>
+class AnotherInterface{
+    public:
+    AnotherInterface()=default;
+    void DoWork(){
+        static_cast<T*>(this)->Dowork();
+    }
+    ~AnotherInterface(){
+        std::cout<<"Destroying AnotherInterface"<<std::endl;
+    }
+};
 //First Imcompatible Interface
 class BRDF:public CommonInterface<BRDF>{
     public:
@@ -31,10 +42,10 @@ class BRDF:public CommonInterface<BRDF>{
     }
 };
 //Second Imcompatible Interface
-class BTDF:public CommonInterface<BTDF>{
+class BTDF:public AnotherInterface<BTDF>{
     public:
     BTDF()=default;
-    void do_work(){
+    void Dowork(){
         std::cout<<"Implementing BTDF"<<std::endl;
     }
     ~BTDF(){
@@ -43,13 +54,17 @@ class BTDF:public CommonInterface<BTDF>{
     
 };
 //The adapter that groups the two imcompatible interfaces.Achieved by Multiple Inheritance.
-class BSSDF:public CommonInterface<BSSDF>,public BTDF,public BRDF{
+class BSSDF:public BTDF,public BRDF{
     public:
     BSSDF()=default;
     void do_work(){
-        std::cout<<"Implementing both BTDF and BSDF "<<std::endl;
+        std::cout<<"Implementing   BRDF "<<std::endl;
+    }
+    void DoWork(){
+        std::cout<<"Implementing BSDF"<<std::endl;
     }
     ~BSSDF(){
         std::cout<<"Destroying BSSDF"<<std::endl;
     }
 };
+
