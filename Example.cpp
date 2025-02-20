@@ -18,7 +18,7 @@ class Observer:public Implementer<Observer>{
     bool is_listening;
     Observer()=default;
     void update(const int& value) const {
-       Display(value);
+       Display(value); //The handler of the emitted signal
        return;
     }
     void Display(const int& value) const{
