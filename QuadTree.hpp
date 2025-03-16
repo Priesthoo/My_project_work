@@ -134,7 +134,7 @@ class QuadTree{
           }
       }
       else{
-          (TopLeft_point.Y()+BottomRight_point.Y()/2 )>=point.Y()){
+         if (TopLeft_point.Y()+BottomRight_point.Y()/2 )>=point.Y()){
               if(North_East.get()=NULL){
                   North_East.reset(new QuadTree<T>(Point(TopLeft_point.X()+BottomRight_point.X()/2,TopLeft_point.Y()+BottomRight_point.Y()/2),Point(BottomRight_point.X(),TopLeft_point.Y()+BottomRight_point.Y()/2)))
               }
