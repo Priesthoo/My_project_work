@@ -47,7 +47,10 @@ class Point{
     }
  Point operator-(const Point<T>& point){
      return Point(X()-point.X(),Y()-point.Y());
- } //This returns the absolute values after subtraction, Negative values will be converted to positive values, Positive values will still be positive 
+ }
+ //This returns the absolute values after subtraction, Negative values will be converted to positive values, Positive values will still be positive 
+
+
   Point obtainAbsolute(){
       Point<T>  abspoint=Point(std::abs(X()),std::abs(Y()));
       return abspoint;
