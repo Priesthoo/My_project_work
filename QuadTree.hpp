@@ -71,7 +71,7 @@ class QuadTree{
     shared_ptr<QuadTree<T>>South_West;
     shared_ptr<QuadTree<T>> South_East;
     bool is_Point_in_Boundary(const Point<T>& point) const{
-         if(point.X() >TopLeft_point.X() &&(point.Y() <BottomRight_point.X()) &&(point.Y() >TopLeft_point.Y())&&(point.Y()<BottomRight_point.Y())){
+         if(point.X() >=TopLeft_point.X() &&(point.X() <=BottomRight_point.X()) &&(point.Y() >TopLeft_point.Y())&&(point.Y()<BottomRight_point.Y())){
              return true;
              }    
     }
