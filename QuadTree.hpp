@@ -1,6 +1,9 @@
 #include<iostream>
 #include<memory>
 #include<cmath>
+typedef float Float;
+typedef double Double;
+typedef int Int;
 using namespace std;
 //Octree that has (S^3-1)/7
 template<class T>
@@ -102,7 +105,7 @@ class QuadTree{
     
     
     
-    void Insert_a_point(Point<T>* point){
+    void insert_a_point(Point<T>* point){
         if(point==NULL){
             return;
         }
@@ -113,14 +116,15 @@ class QuadTree{
       abspoint=(BottomRight_point-TopLeft_point).obtainAbsolute();
       if(abspoint.X()<=1 &&(abspoint.Y()<=1)){
           if(data.get()==NULL){
-          data=*point;
+          data->X()=point->X();
+          data->Y()=point->Y();
           return;
           }
       }
-      if(((TopLeft_point.X()+BottomRight_point.X())/2 )>=point->X()){
+      if((TopLeft_point.X()+BottomRight_point.X()/2)>=point->X()){
           //This is North_West
-          if((TopLeft_point.Y()+BottomRight_point.Y()/2 )>=point.Y()){
-              if(North_West.get()=NULL){
+          if((TopLeft_point.Y()+BottomRight_point.Y()/2 )>=point->Y()){
+              if(North_West.get()==NULL){
               North_West.reset(new QuadTree<T>(Point(TopLeft_point.X(),TopLeft_point.Y()),Point(TopLeft_point.X()+BottomRight_point.X()/2,TopLeft_point.Y()+BottomRight_point.Y()/2)));
               North_West->insert_a_point(point);
              }
@@ -134,21 +138,31 @@ class QuadTree{
           }
       }
       else{
-         if (TopLeft_point.Y()+BottomRight_point.Y()/2 )>=point.Y()){
-              if(North_East.get()=NULL){
-                  North_East.reset(new QuadTree<T>(Point(TopLeft_point.X()+BottomRight_point.X()/2,TopLeft_point.Y()+BottomRight_point.Y()/2),Point(BottomRight_point.X(),TopLeft_point.Y()+BottomRight_point.Y()/2)))
+         if((TopLeft_point.Y()+BottomRight_point.Y()/2)>=point->Y()){
+              //North_East
+              if(North_East.get()==NULL){
+                  North_East.reset(new QuadTree<T>(Point(TopLeft_point.X()+BottomRight_point.X()/2,TopLeft_point.Y()+BottomRight_point.Y()/2),Point(BottomRight_point.X(),TopLeft_point.Y()+BottomRight_point.Y()/2)));
+                 North_East->insert_a_point(point);
               }
-          
-      }
+   }
+          else{
+              //This is South_East
+              if(South_East.get()==NULL){
+                  South_East.reset(new QuadTree<T>(Point(TopLeft_point.X()+BottomRight_point.X()/2,TopLeft_point.Y()+BottomRight_point.Y()/2),Point(BottomRight_point.X(),BottomRight_point.Y())));
+                  South_East->insert_a_point(point);
+              }
+          }
     }
     }
+   
 };
 
 int main()
 {
-   Point<float> point;
-   point=Point(3.0f,3.0f);
-    Point<float> static_point=Point(-2.0f,-2.50f);
-   point=(static_point-point).obtainAbsolute();
-   std::cout<<"X:"<<point.X()<<"      Y:"<<point.Y()<<std::endl;
-}
+  QuadTree<float> quad_tree(Point(-12.0f,-12.0f),Point(60.0f,60.0f));
+  Point<float> point_1;
+  point_1=Point(3.0f,4.0f);
+  quad_tree.insert_a_point(&point_1);
+   
+   
+   }
