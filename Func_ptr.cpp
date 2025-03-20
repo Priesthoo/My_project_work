@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 {
 	Func_ptr* func=new Func_ptr;
 	*func=Print_value;
-    static_cast<Func_ptr>(*func)(15);
+ static_cast<Func_ptr>(*func)(15);
 	
 
 	
