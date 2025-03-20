@@ -1,5 +1,5 @@
 #include<iostream>
-//To illustrate functions pointers, can we allocate memory on the heap to actually execute the functions
+//To illustrate functions pointers, can we allocate memory on the heap to actually execute the function.
 typedef void (*Func_ptr)(const int&);
 
 void Print_value(const int& value){
