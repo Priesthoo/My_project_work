@@ -161,7 +161,7 @@ namespace Function{
             evthandler.Handler.reset(new Event_Functor_Mapper<Class>);
         }
         evthandler.Handler->event=event1;
-        event.SetOrigin_Object(object);
+        evthandler.Handler->event.SetOrigin_Object(object);
         evthandler.Handler->Method=static_cast<ClassMethod<Class>>(method_1);
         handler->push_back(evthandler);
         return;
@@ -182,19 +182,29 @@ namespace Function{
             evthandler.Handler.reset(new Event_Functor_Mapper<Class>);
         }
         evthandler.Handler->event=event1;
-        event.SetOrigin_Object(object);
+        evthandler.Handler->event.SetOrigin_Object(object);
         evthandler.Handler->Method=method;
         handler->push_back(evthandler);
         return;
    }
    //This is used whrn we have class for event handling and another class for Event_handlet_list....
   template<class EventTag,class Class,class Another_Class,class Origin_Object>
-  void Bind_Method(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<Another_Class>*handler,Origin_Object* object){
+  void Bind_Method(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<Another_Class>*handler,const long& id,Origin_Object* object){
        if(handler==nullptr){
            std::cout<<"Handler is empty,To solve this,Either use a custom allocator or alocate from the heap directly,or use smart pointers"<<std::endl;
             return;
         }
-        EventHandler<Another_Class>
+        EventHandler<Another_Class>evthandler;
+        Event event1(evttag,id);
+        if(evthandler.Handler.get()==nullptr){
+            evthandler.Handler.reset(new Event_Functor_Mapper<Another_Class>);
+            
+        }
+        evthandler.Handler->event=event1;
+        evthandler.Handler->event.SetOrigin_Object(object);
+        evthandler.Handler->Method=static_cast<Classmethod<Another_Class>>(method);
+        handler->push_back(evthandler);
+        return;
   }
    
        
