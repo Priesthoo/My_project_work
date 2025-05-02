@@ -110,7 +110,7 @@ class CustomEvent:public Event{
  using Classmethod=void(Class::*)(Event& arg);
  
 //This maps the Eventtype, Event and the handler together..,Note EventArg represents the event, EventTag represents the type of event.
-template<,class Class>
+template<class Class>
 class Event_Functor_Mapper{
     
     public:
@@ -162,7 +162,7 @@ namespace Function{
         }
         evthandler.Handler->event=event1;
         evthandler.Handler->event.SetOrigin_Object(object);
-        evthandler.Handler->Method=static_cast<ClassMethod<Class>>(method_1);
+        evthandler.Handler->Method=static_cast<Classmethod<Class>>(method_1);
         handler->push_back(evthandler);
         return;
        }
@@ -171,7 +171,7 @@ namespace Function{
    
   */
    template<class EventTag,class Class,class OriginObject>
-   void Bind_Method(const EventTag& evttag, Classmethod<Class> method,Event_Handler_List<Class>*handler,const long& id,Origin_Object* object){
+   void Bind_Method(const EventTag& evttag, Classmethod<Class> method,Event_Handler_List<Class>*handler,const long& id,OriginObject* object){
        if(handler==nullptr){
            std::cout<<"Handler is empty,To solve this,Either use a custom allocator or alocate from the heap directly,or use smart pointers"<<std::endl;
             return;
@@ -187,7 +187,8 @@ namespace Function{
         handler->push_back(evthandler);
         return;
    }
-   //This is used whrn we have class for event handling and another class for Event_handlet_list....
+   
+   //This is used when we have class for event handling and another class for Event_handlet_list....
   template<class EventTag,class Class,class Another_Class,class Origin_Object>
   void Bind_Method(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<Another_Class>*handler,const long& id,Origin_Object* object){
        if(handler==nullptr){
@@ -212,19 +213,20 @@ namespace Function{
 bool Unbind();
 
    template<class Class,class Another_Class>
-   void ProcessEvent(Event_Handler_List<Class>* handler,Event& event_arg){
+   bool ProcessEvent(Event_Handler_List<Class>* handler,Event& event_arg){
        if(handler==nullptr){
-           std::cout<<"Event_Handler_List  is empty, We can not process any event, Attach an Event_Handler_List to the pointer variable"
+           std::cout<<"Event_Handler_List  is empty, We can not process any event, Attach an Event_Handler_List to the pointer variable"<<std::endl;
        }
        for(const auto& Evthandler:*handler){
            Event arg=Evthandler.Handler->event;
            if(arg.GetClassName()==event_arg.GetClassName() &&(arg.GetOrigin_Object()==event_arg.GetOrigin_Object())&& (arg.GetType()==event_arg.GetType())&& (arg.GetId()==event_arg.GetId())){
-                Classmethod<Another_Class>  method=static_cast<Classmethod<Another_Class>(EvtHandler.Handler->Method);
-                class Another_Class instance;
-                (instance.*method)(event);
+                Classmethod<Another_Class>  method=static_cast<Classmethod<Another_Class>>(Evthandler.Handler->Method);
+                Another_Class instance;
+                (instance.*method)(event_arg);
+                return true;
      }
        }
-       return;
+       return false;
    }
  
 }
@@ -249,16 +251,18 @@ class EventHandler:public Object{
         id=p_id;
         return;
     }
-    void SetHandler(unique_ptr<Event_Functor_Mapper<Class> ptr){
+    void SetHandler(unique_ptr<Event_Functor_Mapper<Class> >ptr){
         Handler=std::move(ptr);
         return;
     }
+    
 template<class EventTag,class AnotherClass,class OriginObject>
-void Bind(const EventTag& evttag, Classmethod<AnotherClass>method_1,Event_Handler_List<Class>* handler,OriginObject* obj){
-     Function::Bind<EventTag,Class,AnotherClass,OriginObject>(evttag,method_1,handler,obj);
+void Bind(const EventTag& evttag, Classmethod<AnotherClass>method_1,Event_Handler_List<Class>* handler,const long& id,OriginObject* obj){
+     Function::Bind<EventTag,Class,AnotherClass,OriginObject>(evttag,method_1,handler,id,obj);
 }
 template<class EventTag,class OriginObject>
-void Bind(const EventTag& evttag,Classmethod<Class>method,Event_handler_List<Class>* handler,OriginObject* object);
-    Function::Bind_Method(evvtag,method,handler,object);
+void Bind(const EventTag& evttag,Classmethod<Class>method,Event_Handler_List<Class>* handler,const long& id,OriginObject* object){
+    Function::Bind_Method<EventTag,Class,OriginObject>(evttag,method,handler,id,object);
+}
 
 };
