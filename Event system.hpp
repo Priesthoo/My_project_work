@@ -317,6 +317,9 @@ class EventHandler:public Object{
         Handler=std::move(ptr);
         return;
     }
+    long GetId(){
+        return id;
+    }
     
 template<class EventTag,class AnotherClass,class OriginObject>
 void Bind(const EventTag& evttag, Classmethod<AnotherClass>method_1,Event_Handler_List<Class>* handler,const long& id,OriginObject* obj){
@@ -333,6 +336,10 @@ void Bind(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<An
   Function::Bind_Method<EventTag,Class,AnotherClass,OriginObject>(evttag,method,handler,id,object);
   return;
 
+}
+template<class EventTag,class AnotherClass>
+void Bind(const EventTag& evttag,Classmethod<AnotherClass> method,Event_Handler_List<Class>* handler){
+    Bind(evttag,method,handler,GetId(),this);
 }
 
 };
