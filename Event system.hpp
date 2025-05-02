@@ -188,7 +188,11 @@ namespace Function{
         return;
    }
    
-   //This is used when we have class for event handling and another class for Event_handlet_list....
+   //This is used when we have class for event handling and another class for Event_handler_list....
+   /*
+   It is possible for another event handler  of another class to handle the event(s) produced by  this class.....
+   
+   */
   template<class EventTag,class Class,class Another_Class,class Origin_Object>
   void Bind_Method(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<Another_Class>*handler,const long& id,Origin_Object* object){
        if(handler==nullptr){
@@ -210,9 +214,28 @@ namespace Function{
    
        
  //This unbinds the Event and the call back function(class Method) from the event handler
-bool Unbind();
+ template<class EventTag,class Class,class OriginObject>
+bool Unbind(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<Class>* handler,const long& id,OriginObject* object){
+    if(handler==nullptr){
+        std::cout<<"Handler is empty,To solve this,Either use a custom allocator or alocate from the heap directly,or use smart pointers"<<std::endl;
+            return;
+  }
+    for(const auto& evthandler:handler){
+        Event event=evthandler.Handler->event;
+        if(event.GetType()==evttag &&(event.GetId()==id) &&(event.GetOrigin_Object()==object) &&(evthandler.Handler->Method==method)){
+          handler->remove(evthandler);
+            return true;
+        }
+  }
+    
+    return false;
+}
+/*
 
-   template<class Class,class Another_Class>
+
+
+*/
+template<class Class,class Another_Class>
    bool ProcessEvent(Event_Handler_List<Class>* handler,Event& event_arg){
        if(handler==nullptr){
            std::cout<<"Event_Handler_List  is empty, We can not process any event, Attach an Event_Handler_List to the pointer variable"<<std::endl;
@@ -223,7 +246,7 @@ bool Unbind();
                 Classmethod<Another_Class>  method=static_cast<Classmethod<Another_Class>>(Evthandler.Handler->Method);
                 Another_Class instance;
                 (instance.*method)(event_arg);
-                return true;
+                return true;  //it found the handler for the event 
      }
        }
        return false;
