@@ -228,7 +228,7 @@ bool Unbind(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<
         }
   }
     
-    return false;
+    return false;  //it didn't find any Event handler that matched the passed parameter...'
 }
 /*
 
@@ -251,7 +251,23 @@ template<class Class,class Another_Class>
        }
        return false;
    }
- 
+   //No need to cast from one member function pointer to another.....
+ template<class Class>
+    bool Process_Event(Event_Handler_List<Class>* handler,Event& event_arg){
+         if(handler==nullptr){
+           std::cout<<"Event_Handler_List  is empty, We can not process any event, Attach an Event_Handler_List to the pointer variable"<<std::endl;
+       }
+       for(const auto& Evthandler:*handler){
+           Event arg=Evthandler.Handler->event;
+           if(arg.GetClassName()==event_arg.GetClassName() &&(arg.GetOrigin_Object()==event_arg.GetOrigin_Object())&& (arg.GetType()==event_arg.GetType())&& (arg.GetId()==event_arg.GetId())){
+                
+                Class instance;
+                (instance.*Evthandler.Handler->Method)(event_arg);
+                return true;  //it found the handler for the event 
+     }
+       }
+       return false;
+    }
 }
 
 template<class Class>
@@ -287,5 +303,6 @@ template<class EventTag,class OriginObject>
 void Bind(const EventTag& evttag,Classmethod<Class>method,Event_Handler_List<Class>* handler,const long& id,OriginObject* object){
     Function::Bind_Method<EventTag,Class,OriginObject>(evttag,method,handler,id,object);
 }
+
 
 };
