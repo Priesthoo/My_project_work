@@ -50,7 +50,10 @@ class Object{
     
 };
 //Every other Event that derives from Event class must set SetClassName() to the name of the event,Otherwise,
+/*
+Since every event Object will have unique id..... I can remove any event that matches the event type and the event id from the eventhandlerlist....
 
+*/
 class Event:public Object{
     private:
     EventType Type;  //this is an event type
@@ -220,15 +223,34 @@ bool Unbind(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<
         std::cout<<"Handler is empty,To solve this,Either use a custom allocator or alocate from the heap directly,or use smart pointers"<<std::endl;
             return;
   }
-    for(const auto& evthandler:handler){
+    for(const auto& evthandler:*handler){
         Event event=evthandler.Handler->event;
         if(event.GetType()==evttag &&(event.GetId()==id) &&(event.GetOrigin_Object()==object) &&(evthandler.Handler->Method==method)){
-          handler->remove(evthandler);
+          handler->remove(evthandler); //remove the event handler from the list.....
             return true;
         }
   }
     
     return false;  //it didn't find any Event handler that matched the passed parameter...'
+}
+//NB:I might want to unbind the Event and class Method(Of Another class), from an Event_Handler_List of a Class....
+template<class EventTag,class Class,class Another_Class,class OriginObject>
+bool Unbind(const EventTag& evttag,Classmethod<Another_Class> method, Event_Handler_List<Class>* handler,const long& id,OriginObject* object){
+      if(handler==nullptr){
+        std::cout<<"Handler is empty,To solve this,Either use a custom allocator or alocate from the heap directly,or use smart pointers"<<std::endl;
+            return;
+  }
+  Classmethod<Class> method_1=static_cast<Classmethod<Class>>(method);
+  Event event;
+  for(const auto& evthandler:*handler){
+     event=evthandler.Handler->event;
+     if(event.GetType()==evttag &&(event.GetOrigin_Object()==object) &&(event.GetId()==id)&&(evthandler.Handler->Method==method_1)){
+         handler->remove(evthandler);
+         return true; // it was a success
+ }
+ 
+  }
+  return false;
 }
 /*
 
