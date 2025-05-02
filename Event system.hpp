@@ -60,6 +60,7 @@ class Event:public Object{
     long id;
     Object* orig_object;  //This is the object that sends the event
     public:
+    Event();
     Event(EventType type,const long i):Type{type},id{i}{
         SetClassName(string("Event"));
     }
@@ -221,7 +222,7 @@ namespace Function{
 bool Unbind(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<Class>* handler,const long& id,OriginObject* object){
     if(handler==nullptr){
         std::cout<<"Handler is empty,To solve this,Either use a custom allocator or alocate from the heap directly,or use smart pointers"<<std::endl;
-            return;
+            return false;
   }
     for(const auto& evthandler:*handler){
         Event event=evthandler.Handler->event;
@@ -238,7 +239,7 @@ template<class EventTag,class Class,class Another_Class,class OriginObject>
 bool Unbind(const EventTag& evttag,Classmethod<Another_Class> method, Event_Handler_List<Class>* handler,const long& id,OriginObject* object){
       if(handler==nullptr){
         std::cout<<"Handler is empty,To solve this,Either use a custom allocator or alocate from the heap directly,or use smart pointers"<<std::endl;
-            return;
+            return false;
   }
   Classmethod<Class> method_1=static_cast<Classmethod<Class>>(method);
   Event event;
@@ -320,11 +321,18 @@ class EventHandler:public Object{
 template<class EventTag,class AnotherClass,class OriginObject>
 void Bind(const EventTag& evttag, Classmethod<AnotherClass>method_1,Event_Handler_List<Class>* handler,const long& id,OriginObject* obj){
      Function::Bind<EventTag,Class,AnotherClass,OriginObject>(evttag,method_1,handler,id,obj);
+     return ;
 }
 template<class EventTag,class OriginObject>
 void Bind(const EventTag& evttag,Classmethod<Class>method,Event_Handler_List<Class>* handler,const long& id,OriginObject* object){
     Function::Bind_Method<EventTag,Class,OriginObject>(evttag,method,handler,id,object);
+    return;
 }
+template<class EventTag,class AnotherClass,class OriginObject>
+void Bind(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<AnotherClass>*handler,const long& id,OriginObject* object){
+  Function::Bind_Method<EventTag,Class,AnotherClass,OriginObject>(evttag,method,handler,id,object);
+  return;
 
+}
 
 };
