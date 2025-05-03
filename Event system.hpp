@@ -437,8 +437,19 @@ bool SendEvent(){
     Event event(PLAYER_IS_DOWN,54);
     event.SetOrigin_Object(this);
      return PROCESS_EVENT(event);  
-    
-    
 }
  
+};
+//Let's experiment with another class with the same Event_Handler_List'
+class Robot_Character:public Character{
+    private:
+    
+    
+    public:
+    Robot_Character(){
+        
+    }
+    Robot_Character(const long& p_id):Character(p_id){
+        
+    }
 };
