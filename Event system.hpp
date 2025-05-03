@@ -47,6 +47,9 @@ class Object{
     string GetClassName() const{
         return classname;
     }
+    ~Object(){
+        
+    }
     
 };
 //Every other Event that derives from Event class must set SetClassName() to the name of the event,Otherwise,
@@ -60,8 +63,10 @@ class Event:public Object{
     long id;
     Object* orig_object;  //This is the object that sends the event
     public:
-    Event();
-    Event(EventType type,const long i):Type{type},id{i}{
+    Event(){
+        SetClassName(string("Event"));
+    }
+    Event(EventType type,const long& i):Type{type},id{i}{
         SetClassName(string("Event"));
     }
     void SetEventType(EventType type){
@@ -93,14 +98,18 @@ class Event:public Object{
         Type=event.GetType();
         id=event.GetId();
         orig_object=event.GetOrigin_Object();
+        this->SetClassName(event.GetClassName());
         
     }
     Event& operator=(const Event& event){
          this->Type=event.GetType();
         this->id=event.GetId();
         this->orig_object=event.GetOrigin_Object();
+        this->SetClassName(event.GetClassName());
         return *this;
     }
+   ~Event(){
+   }
 };
 //This stores information about the event types and an  event.A single event can produce different Event type....
 class CustomEvent:public Event{
@@ -116,11 +125,10 @@ class CustomEvent:public Event{
 //This maps the Eventtype, Event and the handler together..,Note EventArg represents the event, EventTag represents the type of event.
 template<class Class>
 class Event_Functor_Mapper{
-    
     public:
     Event event;
     Classmethod<Class>Method;
-    Event_Functor_Mapper(){
+    Event_Functor_Mapper():event{}{
         
     }
     Event_Functor_Mapper(const Event& p_event,Classmethod<Class> method){
@@ -132,6 +140,14 @@ class Event_Functor_Mapper{
        this->event=mapper.event;
        this->Method=mapper.Method;
     }
+ Event_Functor_Mapper& operator=(const Event_Functor_Mapper& mapper){
+     this->event=mapper.event;
+     this->Method=mapper.Method;
+     return *this;
+     } 
+     ~Event_Functor_Mapper(){
+         
+     }
     
 };
 template<class Class>  //Forward Declaration
@@ -162,7 +178,7 @@ namespace Function{
         EventHandler<Class> evthandler;
         Event event1(evttag,id);
         if(evthandler.Handler.get()==nullptr){
-            evthandler.Handler.reset(new Event_Functor_Mapper<Class>);
+            evthandler.Handler.reset(new Event_Functor_Mapper<Class>());
         }
         evthandler.Handler->event=event1;
         evthandler.Handler->event.SetOrigin_Object(object);
@@ -183,7 +199,7 @@ namespace Function{
        EventHandler<Class> evthandler;
        Event event1(evttag,id);
        if(evthandler.Handler.get()==nullptr){
-            evthandler.Handler.reset(new Event_Functor_Mapper<Class>);
+            evthandler.Handler.reset(new Event_Functor_Mapper<Class>());
         }
         evthandler.Handler->event=event1;
         evthandler.Handler->event.SetOrigin_Object(object);
@@ -206,7 +222,7 @@ namespace Function{
         EventHandler<Another_Class>evthandler;
         Event event1(evttag,id);
         if(evthandler.Handler.get()==nullptr){
-            evthandler.Handler.reset(new Event_Functor_Mapper<Another_Class>);
+            evthandler.Handler.reset(new Event_Functor_Mapper<Another_Class>());
             
         }
         evthandler.Handler->event=event1;
@@ -254,7 +270,8 @@ bool Unbind(const EventTag& evttag,Classmethod<Another_Class> method, Event_Hand
   return false;
 }
 /*
-
+First_Param: handler is an Event_Handler_List that contains all the events
+Second_Param:   event_arg is an event thta will be processed 
 
 
 */
@@ -263,9 +280,13 @@ template<class Class,class Another_Class>
        if(handler==nullptr){
            std::cout<<"Event_Handler_List  is empty, We can not process any event, Attach an Event_Handler_List to the pointer variable"<<std::endl;
        }
+       if(handler->empty()){
+           std::cout<<"Handler is empty, there are no event handlers to process"<<std::endl;
+           return false;
+       }
        for(const auto& Evthandler:*handler){
            Event arg=Evthandler.Handler->event;
-           if(arg.GetClassName()==event_arg.GetClassName() &&(arg.GetOrigin_Object()==event_arg.GetOrigin_Object())&& (arg.GetType()==event_arg.GetType())&& (arg.GetId()==event_arg.GetId())){
+           if(arg.GetClassName()==event_arg.GetClassName() && (arg.GetType()==event_arg.GetType())&& (arg.GetId()==event_arg.GetId())){
                 Classmethod<Another_Class>  method=static_cast<Classmethod<Another_Class>>(Evthandler.Handler->Method);
                 Another_Class instance;
                 (instance.*method)(event_arg);
@@ -280,15 +301,22 @@ template<class Class,class Another_Class>
          if(handler==nullptr){
            std::cout<<"Event_Handler_List  is empty, We can not process any event, Attach an Event_Handler_List to the pointer variable"<<std::endl;
        }
+       if(handler->empty()){
+           std::cout<<"Handler is empty, there are no event handlers to process"<<std::endl;
+           return false;
+       }
+      
        for(const auto& Evthandler:*handler){
-           Event arg=Evthandler.Handler->event;
-           if(arg.GetClassName()==event_arg.GetClassName() &&(arg.GetOrigin_Object()==event_arg.GetOrigin_Object())&& (arg.GetType()==event_arg.GetType())&& (arg.GetId()==event_arg.GetId())){
+           std::cout<<"I entered"<<std::endl;
+           Event  arg=Evthandler.Handler->event;
+           if(arg.GetClassName()==event_arg.GetClassName() && (event_arg.GetOrigin_Object()==arg.GetOrigin_Object())&& (arg.GetType()==event_arg.GetType())&& (arg.GetId()==event_arg.GetId())){
                 
                 Class instance;
                 (instance.*Evthandler.Handler->Method)(event_arg);
                 return true;  //it found the handler for the event 
      }
        }
+       std::cout<<"Could not find any Event to process"<<std::endl;
        return false;
     }
 }
@@ -296,12 +324,16 @@ template<class Class,class Another_Class>
 template<class Class>
 class EventHandler:public Object{
     public:
-    unique_ptr<Event_Functor_Mapper<Class>>Handler;
+    shared_ptr<Event_Functor_Mapper<Class>>Handler;
     long id;
     EventHandler(){
-        Handler.reset(new Event_Functor_Mapper<Class>);
+        Handler.reset(new Event_Functor_Mapper<Class>());
     }
-    EventHandler(unique_ptr<Event_Functor_Mapper<Class>>p_handler,const long& p_id){
+    EventHandler(const long& p_id){
+        Handler.reset(new Event_Functor_Mapper<Class>());
+        id=p_id;
+    }
+    EventHandler(shared_ptr<Event_Functor_Mapper<Class>>p_handler,const long& p_id){
         Handler=std::move(p_handler);
         id=p_id;
     }
@@ -313,7 +345,7 @@ class EventHandler:public Object{
         id=p_id;
         return;
     }
-    void SetHandler(unique_ptr<Event_Functor_Mapper<Class> >ptr){
+    void SetHandler(shared_ptr<Event_Functor_Mapper<Class> >ptr){
         Handler=std::move(ptr);
         return;
     }
@@ -341,5 +373,72 @@ template<class EventTag,class AnotherClass>
 void Bind(const EventTag& evttag,Classmethod<AnotherClass> method,Event_Handler_List<Class>* handler){
     Bind(evttag,method,handler,GetId(),this);
 }
+//
+template<class EventTag>
+void Bind(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<Class>*handler){
+    Bind(evttag,method,handler,GetId(),this);
+    return;
+}
+template<class EventTag,class AnotherClass>
+void Bind(const EventTag& evttag,Classmethod<Class> method,Event_Handler_List<AnotherClass>* handler){
+    Bind(evttag,method,handler,GetId(),this);
+    return;
+}
+bool ProcessEvent(Event_Handler_List<Class>* handler, Event& event_arg){
+   bool isProcessed=Function::Process_Event<Class>(handler,event_arg);
+   if(isProcessed){
+       return true;
+   }
+   return false;
+}
+template<class Another_Class>
+bool ProcessEvent(Event_Handler_List<Another_Class>*handler,Event& event_arg){
+    bool isProcessed=Function::ProcessEvent<Class,Another_Class>(handler,event_arg);
+    if(isProcessed){
+        return true;
+    }
+    return false;
+}
+~EventHandler(){
+}
 
+};
+//Let's  Start using The event handler....
+const EventType PLAYER_IS_DOWN=12;
+class Character:public EventHandler<Character>{
+   private:
+   unique_ptr<Event_Handler_List<Character> >Handler_List; 
+   
+   public:
+   Character(){
+       
+   }
+   Character(const long& p_id):EventHandler<Character>(p_id){
+       Handler_List.reset(new Event_Handler_List<Character>);
+       BIND(PLAYER_IS_DOWN,&Character::OnPlayerDown,Handler_List.get(),54);
+       
+   }
+ template<class EventTag,class Another_Class>
+ void BIND(const EventTag& evttag,Classmethod<Another_Class>method,Event_Handler_List<Character>*handler,const long& id){
+     this->Bind(evttag,method,handler,id,this);
+     return;
+ }
+ template<class EventTag>
+ void BIND(const EventTag& evt,Classmethod<Character> method,Event_Handler_List<Character>* handler,const long& id){
+     this->Bind(evt,method,handler,id,this);
+ }
+ bool PROCESS_EVENT(Event& event_arg){
+     return ProcessEvent(Handler_List.get(),event_arg);
+ }
+ void OnPlayerDown(Event& event){
+     std::cout<<"Player is down"<<std::endl;
+ }
+bool SendEvent(){
+    Event event(PLAYER_IS_DOWN,54);
+    event.SetOrigin_Object(this);
+     return PROCESS_EVENT(event);  
+    
+    
+}
+ 
 };
