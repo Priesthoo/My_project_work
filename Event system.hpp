@@ -418,6 +418,9 @@ class Character:public EventHandler<Character>{
        BIND(PLAYER_IS_DOWN,&Character::OnPlayerDown,Handler_List.get(),54);
        
    }
+   unique_ptr<Event_Handler_List<Character>>& Get_Handler_List(){
+      return Handler_List;
+   }
  template<class EventTag,class Another_Class>
  void BIND(const EventTag& evttag,Classmethod<Another_Class>method,Event_Handler_List<Character>*handler,const long& id){
      this->Bind(evttag,method,handler,id,this);
@@ -426,7 +429,14 @@ class Character:public EventHandler<Character>{
  template<class EventTag>
  void BIND(const EventTag& evt,Classmethod<Character> method,Event_Handler_List<Character>* handler,const long& id){
      this->Bind(evt,method,handler,id,this);
+     return;
  }
+ template<class EventTag,class Another_Class>
+ void BIND(const EventTag& evttag, Classmethod<Character> method, Event_Handler_List<Another_Class>* handler,const long& id){
+     this->Bind(evttag,method,handler,id);
+     return;
+ }
+ 
  bool PROCESS_EVENT(Event& event_arg){
      return ProcessEvent(Handler_List.get(),event_arg);
  }
@@ -440,7 +450,8 @@ bool SendEvent(){
 }
  
 };
-//Let's experiment with another class with the same Event_Handler_List'
+const EventType PLAYER_IS_SAFE=56;
+//Let's experiment with another class with the same Event_Handler_List of the same class
 class Robot_Character:public Character{
     private:
     
@@ -450,6 +461,16 @@ class Robot_Character:public Character{
         
     }
     Robot_Character(const long& p_id):Character(p_id){
-        
+        BIND(PLAYER_IS_SAFE,&Robot_Character::OnPlayerIsSafe,Get_Handler_List().get(),60);
     }
+    void OnPlayerIsSafe(Event& event){
+        std::cout<<"Player is Safe"<<std::endl;
+        return;
+    }
+    bool SendEvent(){
+    Event event(PLAYER_IS_SAFE,60);
+    event.SetOrigin_Object(this);
+     return PROCESS_EVENT(event);  
+}
+    
 };
