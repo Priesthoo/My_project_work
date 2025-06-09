@@ -1,4 +1,4 @@
- #include<iostream>
+#include<iostream>
 #include<string>
 #include<sstream>
 #include<fstream>
@@ -82,7 +82,45 @@ class Line{
   }
   
 };
-class Circle;
+//A circle has a radius and a center
+//An Arc has a center, start angle and end angle
+
+class Circle{
+    private:
+    double radius;
+    RealPoint Center;
+ public:
+   Circle(){
+       
+   }
+   Circle(const double& r_1,const RealPoint& pt){
+       radius=r_1;
+       Center=pt;
+   }
+   double GetRadius() const{
+       return radius;
+   }
+   double& GetRadius(){
+       return radius;
+   }
+   RealPoint GetCenter() const{
+       return Center;
+   }
+   RealPoint& GetCenter(){
+       return Center;
+   }
+   Circle(const Circle& circle){
+       GetRadius()=circle.GetRadius();
+       GetCenter()=circle.GetCenter();
+   }
+   Circle& operator=(const Circle& circle){
+       GetRadius()=circle.GetRadius();
+       GetCenter()=circle.GetCenter();
+       return  *this;
+   }
+   
+  
+};
 class Error; //This holds a variable that will indicate if an error has happened 
 //Opens file for writing and storing changes....
 class FileWriter{
@@ -91,6 +129,14 @@ class FileWriter{
        openfile<<"StartPoint:"<<"("<<line.GetStartPoint().GetX()<<","<<line.GetStartPoint().GetY()<<")\n";
        openfile<<"EndPoint:"<<"("<<line.GetEndPoint().GetX()<<","<<line.GetEndPoint().GetY()<<")\n";
        openfile<<"\n";
+       return;
+   }
+ void  WriteCircleToStream(ofstream& openfile,const Circle& circle){
+       openfile<<"CIRCLE: \n";
+       openfile<<"Radius:"<<circle.GetRadius()<<"\n";
+       openfile<<"Center:"<<"("<<circle.GetCenter().GetX()<<","<<circle.GetCenter().GetY()<<")"<<"\n";
+       openfile<<"\n";
+       return;
    }
    bool CheckForValidity(const string& filename){
        ofstream openfile(filename);
@@ -129,15 +175,20 @@ class FileWriter{
  }
   public:
   
-  FileWriter(const string& filename,const std::vector<Line>& lines){
+  FileWriter(const string& filename,const std::vector<Line>& lines,const std::vector<Circle>& circles){
       ofstream openfile(filename);
       bool Check=CheckForValidity(filename);
       if(Check){
           if(GetStateOfFile(openfile) & FILE_STREAM_STATE_OK){
-              openfile<<"PSA file Format \n";
+              openfile<<".PSA file Format \n";
               if(!lines.empty()){
-                  for(const auto line:lines){
+                  for(const auto& line:lines){
                       WriteLineToStream(openfile,line);
+                  }
+              }
+              if(!circles.empty()){
+                  for(const auto& circle:circles){
+                      WriteCircleToStream(openfile,circle);
                   }
               }
           }
@@ -153,18 +204,20 @@ class FileWriter{
 class FileReader{
  //This is not the same as Drawing Line, We are talking about lines in file context, Data is arranged per line
  //openstream is an opened file stream(the file has been opened already)
- void ReadFilePerLine(ifstream& openstream,std::vector<Line>& lines){
+ void ReadFilePerLine(ifstream& openstream,std::vector<Line>& lines, std::vector<Circle>& circles){
      char ch[90]={};
      Line ReadLine;
-     
+     Circle circle;
      while(openstream.getline(ch,70)){
         
         std::cout<<ch<<std::endl; //This is PSA file format...
         string str=string(ch);
-        
+        string value_string;
          unsigned int break_point;
          if(str.substr(0,10)==string("StartPoint")){
-                string value_string;
+                if(!value_string.empty()){
+                    value_string.clear();
+                }
                for(int i=12;i<str.size();i++){
                    if(str[i]==','){
                        break_point=i;
@@ -183,7 +236,9 @@ class FileReader{
                ReadLine.GetStartPoint().GetY()=stof(value_string);
          }
          if(str.substr(0,8)==string("EndPoint")){
-             string value_string;
+             if(!value_string.empty()){
+                 value_string.clear();
+             }
              for(int i=10;i<str.size();i++){
                  if(str[i]==','){
                      break_point=i;
@@ -202,10 +257,47 @@ class FileReader{
              ReadLine.GetEndPoint().GetY()=stof(value_string);
              lines.push_back(ReadLine);
          }
-         
+         if(str.substr(0,6)==string("Radius")){
+             if(!value_string.empty()){
+                 value_string.clear();
+             }
+             for(int i=7;i<str.size();i++){
+                   if(str[i]=='\n'){
+                       return;
+                   }
+                   value_string.push_back(str[i]);
+             }
+             circle.GetRadius()=std::stod(value_string);
+             value_string.clear();
+         }
+           if(str.substr(0,6)==string("Center")){
+               if(!value_string.empty()){
+                    value_string.clear();
+               }
+               for(int i=8;i<str.size();i++){
+                     if(str[i]==','){
+                         break_point=i;
+                         break;
+                     }
+                     value_string.push_back(str[i]);
+               }
+               circle.GetCenter().GetX()=stof(value_string);
+               value_string.clear();
+               for(int i=(break_point+1);i<str.size();i++){
+                   if(str[i]==')'){
+                       break;
+                   }
+                   value_string.push_back(str[i]);
+             }
+             circle.GetCenter().GetY()=stof(value_string);
+             circles.push_back(circle);
+             value_string.clear();
+           }
+           
         continue;
-         return;
+ 
      }
+     return;
  }
   
      
@@ -238,14 +330,18 @@ class FileReader{
      return static_cast<int>(FILE_STREAM_STATE_INVALID);
  }   
  public:
- FileReader(const string& filename,std::vector<Line>&lines){
+ FileReader(const string& filename,std::vector<Line>&lines,std::vector<Circle>&circles){
        if(!lines.empty()){
            lines.clear();   //This is used when we are suing the same object for both reading and writing....
        }
+       if(!circles.empty()){
+           circles.clear();
+       }
+       
     ifstream openstream(filename);
     if(openstream.is_open()){
           if(GetStateOfFile(openstream) & FILE_STREAM_STATE_OK){
-              ReadFilePerLine(openstream,lines);
+              ReadFilePerLine(openstream,lines,circles);
           }
     }
         
@@ -259,6 +355,10 @@ class FileReader{
 
 int main(int argc, char *argv[])
 {  std::vector<Line>lines;
+std::vector<Circle>circles;
+  Circle circle(5.0, RealPoint(6.0,7.0));
+  Circle circle_1(0.0,RealPoint(6.0,6.0));
+  Circle circle_2(1.0f,RealPoint(120.0,340.0));
    Line line(RealPoint(5.0f,6.0f),RealPoint(10.0f,13.0f));
    Line line_1(RealPoint(8.0f,9.0f),RealPoint(5.0f,20.0f));
    Line line_2(RealPoint(6.0f,45.0f),RealPoint(67.0f,56.0f));
@@ -269,11 +369,15 @@ int main(int argc, char *argv[])
    lines.push_back(line_2);
    lines.push_back(line_3);
    
-   FileWriter filewriter(string("File.PSA"),lines);
+   circles.push_back(circle);
+   circles.push_back(circle_1);
+   circles.push_back(circle_2);
+   
+   FileWriter filewriter(string("File.PSA"),lines,circles);
    
    std::cout<<"Start writing To File"<<std::endl;
    
-   FileReader filereader(string("File.PSA"),lines);
+   FileReader filereader(string("File.PSA"),lines,circles);
    std::cout<<"End of writing to file"<<std::endl;
    std::cout<<"\n";
    //Since we know that at this point, The lines won't be empty....'
@@ -285,6 +389,11 @@ int main(int argc, char *argv[])
 	for(const auto& ref: lines){
 	    std::cout<<"StartPoint:"<<"("<<ref.GetStartPoint().GetX()<<","<<ref.GetStartPoint().GetY()<<")"<<std::endl;
 	    std::cout<<"EndPoint:"<<"("<<ref.GetEndPoint().GetX()<<","<<ref.GetEndPoint().GetY()<<")"<<std::endl;
+	    std::cout<<"\n";
+	}
+	for(const auto& circle:circles){
+	    std::cout<<"Radius:"<<circle.GetRadius()<<std::endl;
+	    std::cout<<"Center:"<<circle.GetCenter().GetX()<<","<<circle.GetCenter().GetY()<<std::endl;
 	    std::cout<<"\n";
 	}
 	std::cout<<"End of Reading from file"<<std::endl;
