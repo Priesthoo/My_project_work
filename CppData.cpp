@@ -158,10 +158,10 @@ void ClearAllNode(){
 int main(int argc, char *argv[])
 {
   SinglyLinkedList<int> rlist;
-  rlist.insertValue(12);
-  InsertNextValue(rlist.GetRoot(),14);
-  insertUsingWhileLoop(rlist.GetRoot(),15);
-  PrintNode(rlist.GetRoot());
+  rlist.insertValue(12); //12 is added...
+  InsertNextValue(rlist.GetRoot(),14);      //14 is added 
+  insertUsingWhileLoop(rlist.GetRoot(),15); // 15 is added 
+  PrintNode(rlist.GetRoot()); //12,14,15
   cout<<endl; //indirectly new line....
  
   
